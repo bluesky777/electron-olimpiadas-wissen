@@ -1,0 +1,29 @@
+
+<div class="categorias-container">
+  <div ng-repeat="categoria_traduc in $parent.categorias_traducidas " ng-class="{'categ-retirada': examenes_cargados().length == 0}" class="categ-container">
+    <div class="title-categ-container txt-borde-blanco">{{ categoria_traduc.nombre }}</div>
+    <div class="participantes-container">
+      <ul style="display: inline-flex;writing-mode: vertical-lr;flex-wrap: wrap;align-content: flex-start;height: 100%;">
+        <li ng-repeat="cliente in examenes_cargados() | filter:{ 'categoria_id':categoria_traduc.categoria_id }:true | orderPuntajesActuales " style="writing-mode: horizontal-tb; width: auto; border-radius: 8px; margin-right: 4px;" class="md-whiteframe-1dp sc-cliente">
+          <div style="border-radius: 8px 0 0 8px;" class="sc-cliente-imgs"><img ng-src="{{imagesPath + cliente.imagen_nombre}}" alt="{{cliente.username}}" class="img-perfil"><img ng-class="{'showing-logo-ent-part': SocketData.config.show_logo_entidad_partici}" ng-src="{{ imagesPath + cliente.entidad.logo}}" alt="{{cliente.username}}" class="img-entidad">
+            <md-tooltip>{{ cliente.nombre_entidad }}</md-tooltip>
+          </div>
+          <div ng-class="{'ancho-sc-info': $parent.categorias_traducidas.length&lt;3 }" class="sc-info"> 
+            <h5 style="font-weight: 700; font-size: 14pt; margin-bottom: 4px; margin-left: -4px;" class="name nombresellipsis">{{ ($index+1) + '. ' + cliente.nombres}} {{cliente.apellidos}}
+              <md-tooltip>{{ ($index+1) + '. ' + cliente.nombres}} {{cliente.apellidos}}</md-tooltip>
+            </h5>
+            <div layout="row">
+              <div flex style="line-height: 1;" class="alias-enti">{{cliente.alias_entidad}}
+                <md-tooltip>{{ cliente.nombre_entidad }}</md-tooltip>
+              </div>
+              <div flex style="font-size: 14pt; font-weight: 900;" class="alias-enti"><span ng-show="cliente.res_by_promedio">{{ cliente.res_promedio | decimales_if:1 }}%</span><span ng-hide="cliente.res_by_promedio">{{ cliente.res_puntos }}</span>
+                <md-tooltip>Correctas: {{ cliente.res_correctas }} - Incor: {{ cliente.res_incorrectas }} de {{ cliente.res_cant_pregs }} </md-tooltip>
+              </div>
+              <div flex class="alias-enti">{{cliente.res_tiempo_format}}</div>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

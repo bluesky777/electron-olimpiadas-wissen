@@ -1,0 +1,42 @@
+
+<div class="row pane-chat-tile-container">
+  <div class="col-md-12 pane-chat-msgs">
+    <div class="message-container">
+      <div class="pane-chat-tile"></div>
+      <div class="message-list">
+        <div ng-repeat="mensaje in SocketClientes.mensajes" class="msg">
+          <div ng-class="{'message-in': mensaje.from.user_data.id!=$parent.$parent.USER.id, 'message-out': mensaje.from.user_data.id==$parent.$parent.USER.id}" class="message-chat">
+            <div ng-show="mensaje.from.user_data.id!=$parent.$parent.USER.id" class="message-author">
+              <div class="pointer">{{ mensaje.from.user_data.nombres }}  {{ mensaje.from.user_data.apellidos }} </div>
+            </div>
+            <div class="message-text">
+              <div class="emojitext selectable-text">
+                 
+                {{ mensaje.texto }}
+              </div>
+            </div>
+            <div class="message-meta">
+              <div ng-show="mensaje.from.user_data.entidad.nombre" class="message-entidad">{{ mensaje.from.user_data.entidad.nombre }}</div><img ng-src="{{ imagesPath + mensaje.from.user_data.entidad.logo}}" class="message-entilogo">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="message-form">
+      <form ng-submit="enviarMensaje()">
+        <div class="row">
+          <div class="col-lg-10 col-md-9 col-sm-9 col-xs-12">
+            <md-input-container flex-gt-sm style="margin-bottom: -20px; padding-bottom: 0px" class="md-block">
+              <label>Mensaje</label>
+              <input type="text" ng-model="newMensaje">
+              <md-tooltip> Envía un mensaje</md-tooltip>
+            </md-input-container>
+          </div>
+          <div class="col-lg-1 col-md-2 col-sm-2 col-xs-12">
+            <md-button aria-label="Enviar" type="submit" style="min-width:95%;  top: 7px;" class="md-raised">Enviar</md-button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

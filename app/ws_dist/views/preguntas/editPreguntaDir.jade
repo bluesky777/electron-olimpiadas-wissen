@@ -1,0 +1,71 @@
+.panel.panel-default.panel-hovered.panel-stacked.mb20
+	.panel-heading( layout style="height: 40px;")
+		span
+			|  Editar en idiomas:  
+		md-input-container(layout="row" layout-align="start center" style="margin-left: 5px; margin-top: 0px; margin-right: 5px")
+			md-select(multiple="true" placeholder="Idioma" ng-model="idiomaPreg")
+				md-option(ng-repeat="idioma in evento_actual.idiomas" value="{{idioma.id}}") {{idioma.original}}
+
+		a(href="" ng-click="mostrarConfig()" ng-show="!mostrarConfiguracion") Configurar
+		a(href="" ng-click="mostrarConfig()" ng-show="mostrarConfiguracion") Ocultar
+
+	.panel-body
+		form.form-horizontal(name="frm" role="form" ng-submit="finalizarEdicion()")
+			
+			.margin0.padding0(ng-show="mostrarConfiguracion" layout layout-margin layout-wrap layout-padding )
+				
+				md-input-container.margintb0.paddingtb0(flex="40")
+					label Descripción
+					input(type="text" ng-model="preguntaEdit.descripcion")
+
+				md-input-container.margintb0.paddingtb0(flex="20")
+					label Duración
+					input(type="number" ng-model="preguntaEdit.duracion")
+					md-tooltip En segundos. Solo para la gran final
+
+				md-input-container.margintb0.paddingtb0(flex="20")
+					label Puntos
+					input(type="number" ng-model="preguntaEdit.puntos")
+					md-tooltip Solo aplica si la evaluación es por puntos y no por promedio.
+
+				md-input-container.margintb0.paddingtb0(flex="30" layout="row" layout-align="start center" style="margin-top:-20px; height: 50px;")
+					md-select(placeholder="Tipo pregunta" ng-model="preguntaEdit.tipo_pregunta" ng-change="cambiaTipoPregunta()" style="min-width: 150px;")
+						md-option() Test
+						md-option() Multiple
+						md-option() Texto
+						md-option() Lista
+						md-option() Ordenar
+						//md-option() Cuadrícula // No aplica para pregunta_king, sino para grupos_preguntas
+
+				.form-group(flex="50" style="margin-top:-10px")
+					md-checkbox(ng-model="preguntaEdit.aleatorias" ng-true-value="1" ng-false-value="0" aria-label="Opciones aleatorias")
+						| Opciones aleatorias
+					md-tooltip No importará el orden en que ordene las opciones. Siempre saldrán aleatoriamente.
+
+
+			
+			div(ng-if="preguntaEdit.preguntas_traducidas.length > 0" 
+				ng-repeat="pregunta_traduc in preguntaEdit.preguntas_traducidas | porIdiomasEdit:idiomaPreg" 
+				ng-class-odd="'fondo-odd'" ng-class-even="'fondo-even'")
+
+				edit-preg-traduc-dir
+
+			span(ng-if="!preguntaEdit.preguntas_traducidas")
+
+				edit-preg-traduc-dir
+
+
+				br
+
+			md-button.md-raised.md-primary.right(type="button" ng-click="finalizarEdicion()") 
+				md-tooltip Guardar y finalizar edición
+				| Finalizar
+			md-button.md-raised.md-default.right(type="button" ng-click="aplicarCambios()" aria-label="Aplicar")
+				md-tooltip Guardar y continuar editando
+				| Aplicar
+			md-button.md-raised.md-default.right(type="button" ng-click="cerrarEdicion()" aria-label="Cerrar")
+				md-tooltip Cerrar edición
+				| Cerrar
+
+
+

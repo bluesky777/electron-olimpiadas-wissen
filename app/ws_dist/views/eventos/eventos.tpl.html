@@ -1,0 +1,231 @@
+
+<div class="panel panel-default panel-hovered panel-stacked mb20">
+  <div class="panel-heading">
+     
+    {{ 'EVENTS_TITLE' | translate }}
+  </div>
+  <div class="panel-body">
+    <md-button ng-show="!creando" ng-click="crear_evento()" class="md-default">Crear evento</md-button>
+    <div ng-show="creando" class="row">
+      <div class="col-sm-12 col-md-12">
+        <div class="panel panel-default panel-hovered panel-stacked mb20">
+          <div class="panel-heading">
+              
+            Nuevo
+          </div>
+          <div class="panel-body">
+            <form ng-submit="guardar_evento()" name="frm" role="form" class="form-horizontal">
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Nombre</label>
+                    <div class="col-md-9">
+                      <input ng-model="newEvent.nombre" type="text" placeholder="Nombre" class="form-control">
+                      <p class="text-danger text-right xsmall">Campo obligatorio</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Alias</label>
+                    <div class="col-md-9">
+                      <input ng-model="newEvent.alias" type="text" placeholder="Alias" class="form-control">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Descripción</label>
+                    <div class="col-md-9">
+                      <input ng-model="newEvent.descripcion" type="text" placeholder="Descripción" class="form-control">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <md-checkbox ng-model="newEvent.gran_final" ng-value="newEvent.gran_final">Gran final (Dirigido)</md-checkbox>
+                  </div>
+                  <div style="display: none;" class="form-group">
+                    <label class="control-label col-md-3">Examen actual</label>
+                    <md-select ng-model="newEvent.examen_actual_id" placeholder="Selecciona... (no sirve)">
+                      <md-option value="1">Para pruebas</md-option>
+                      <md-option value="2">Para la final</md-option>
+                    </md-select>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Con pago</label>
+                    <md-checkbox ng-model="newEvent.with_pay" ng-value="newEvent.with_pay" aria-label="Con pago"></md-checkbox>
+                  </div>
+                  <div ng-show="newEvent.with_pay" class="form-group">
+                    <label class="control-label col-md-3">Precio 1</label>
+                    <div class="col-md-9">
+                      <input ng-model="newEvent.precio1" type="number" placeholder="Precio1" class="form-control">
+                    </div>
+                    <label class="control-label col-md-3">Precio 2</label>
+                    <div class="col-md-9">
+                      <input ng-model="newEvent.precio2" type="number" placeholder="Precio2" class="form-control">
+                    </div>
+                    <label class="control-label col-md-3">Precio 3</label>
+                    <div class="col-md-9">
+                      <input ng-model="newEvent.precio3" type="number" placeholder="Precio3" class="form-control">
+                    </div>
+                    <label class="control-label col-md-3">Precio 4</label>
+                    <div class="col-md-9">
+                      <input ng-model="newEvent.precio4" type="number" placeholder="Precio4" class="form-control">
+                    </div>
+                    <label class="control-label col-md-3">Precio 5</label>
+                    <div class="col-md-9">
+                      <input ng-model="newEvent.precio5" type="number" placeholder="Precio5" class="form-control">
+                    </div>
+                    <label class="control-label col-md-3">Precio 6</label>
+                    <div class="col-md-9">
+                      <input ng-model="newEvent.precio6" type="number" placeholder="Precio6" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <md-checkbox ng-model="newEvent.actual" ng-value="newEvent.actual">Evento actual</md-checkbox>
+                  </div>
+                  <div class="form-group">
+                    <md-checkbox ng-model="newEvent.enable_public_chat" ng-value="newEvent.enable_public_chat">Habilitar chat público</md-checkbox>
+                  </div>
+                  <div class="form-group">
+                    <md-checkbox ng-model="newEvent.enable_private_chat" ng-value="newEvent.enable_private_chat">Habilitar chat privado</md-checkbox>
+                  </div>
+                  <md-divider></md-divider>
+                  <div class="form-group">
+                    <md-checkbox ng-model="newEvent.es_idioma_unico" ng-value="newEvent.es_idioma_unico">Solo usar un idioma</md-checkbox>
+                    <label class="control-label">Idioma principal:</label>
+                    <md-select placeholder="Seleccione idioma principal" ng-model="newEvent.idioma_principal_id">
+                      <md-option ng-repeat="idioma in idiomas" value="{{idioma.id}}">{{idioma.original}} ({{idioma.abrev}}) - {{idioma.nombre}}</md-option>
+                    </md-select>
+                    <div ng-show="!newEvent.es_idioma_unico">
+                      <label class="control-label">Idiomas extras:</label>
+                      <ui-select multiple="true" style="width: 100%" ng-model="newEvent.idiomas_extras" theme="select2">
+                        <ui-select-match allow-clear="true" placeholder="Idiomas a usar"> <small ng-bind-html=" $item.original + ' (' + $item.abrev+ ')' "></small></ui-select-match>
+                        <ui-select-choices repeat=" idioma in idiomas | filter: {nombre: $select.search}"><small ng-bind-html=" idioma.original + ' ('+idioma.abrev+') - ' + idioma.nombre | highlight: $select.search"></small></ui-select-choices>
+                      </ui-select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix right">
+                <md-button type="submit" ng-disabled="guardando_nuevo" class="md-primary">Guardar</md-button>
+                <md-button type="button" ng-click="cancelar_newevento()" class="md-default">Cancelar</md-button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <md-whiteframe layout ng-repeat="evento in USER.eventos" style="padding: 10px; position: relative;" class="md-whiteframe-z2 definicion-frame"><span flex="10">{{$index+1}}.</span><span flex="90">{{evento.nombre}}</span>
+      <div layout="row" class="btn-container-edit">
+        <md-button aria-label="Editar" ng-click="editarEvento(evento)" class="md-fab md-primary md-mini">
+          <md-icon class="fa fa-pencil"></md-icon>
+          <md-tooltip>Editar evento</md-tooltip>
+        </md-button>
+        <md-button aria-label="Eliminar" ng-click="eliminarEvento(evento)" class="md-fab md-warn md-mini">
+          <md-icon class="fa fa-trash"></md-icon>
+          <md-tooltip>Eliminar evento</md-tooltip>
+        </md-button>
+      </div>
+    </md-whiteframe><br><br>
+    <div ng-show="editando" class="row">
+      <div class="col-sm-12 col-md-12">
+        <div class="panel panel-default panel-hovered panel-stacked mb20">
+          <div class="panel-heading">
+              
+            Editar
+          </div>
+          <div class="panel-body">
+            <form ng-submit="update_evento()" name="frm" role="form" class="form-horizontal">
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Nombre</label>
+                    <div class="col-md-9">
+                      <input ng-model="currentEvent.nombre" type="text" placeholder="Nombre" class="form-control">
+                      <p class="text-danger text-right xsmall">Campo obligatorio</p>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Alias</label>
+                    <div class="col-md-9">
+                      <input ng-model="currentEvent.alias" type="text" placeholder="Alias" class="form-control">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Descripción</label>
+                    <div class="col-md-9">
+                      <input ng-model="currentEvent.descripcion" type="text" placeholder="Descripción" class="form-control">
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <md-checkbox ng-model="currentEvent.gran_final" ng-false-value="0" ng-true-value="1" class="ck-margin">Gran final</md-checkbox>
+                  </div>
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Examen actual</label>
+                    <md-select ng-model="currentEvent.examen_actual_id" placeholder="Selecciona...">
+                      <md-option value="1">Para pruebas</md-option>
+                      <md-option value="2">Para la final</md-option>
+                    </md-select>
+                  </div>
+                  <div class="form-group">
+                    <md-checkbox ng-model="currentEvent.with_pay" ng-value="currentEvent.with_pay" class="ck-margin">Con pago</md-checkbox>
+                  </div>
+                  <div ng-show="currentEvent.with_pay" class="form-group">
+                    <label class="control-label col-md-3">Precio 1</label>
+                    <div class="col-md-9">
+                      <input ng-model="currentEvent.precio1" type="number" placeholder="Precio1" class="form-control">
+                    </div>
+                    <label class="control-label col-md-3">Precio 2</label>
+                    <div class="col-md-9">
+                      <input ng-model="currentEvent.precio2" type="number" placeholder="Precio2" class="form-control">
+                    </div>
+                    <label class="control-label col-md-3">Precio 3</label>
+                    <div class="col-md-9">
+                      <input ng-model="currentEvent.precio3" type="number" placeholder="Precio3" class="form-control">
+                    </div>
+                    <label class="control-label col-md-3">Precio 4</label>
+                    <div class="col-md-9">
+                      <input ng-model="currentEvent.precio4" type="number" placeholder="Precio4" class="form-control">
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <!-- Borrar esto:-->
+                  <!--.form-group-->
+                  <!--	label.control-label Permitir usuarios de otros eventos-->
+                  <!--	md-checkbox(ng-model="currentEvent.allow_cross_users" ng-value="currentEvent.allow_cross_users")-->
+                  
+                  <div class="form-group">
+                    <md-checkbox ng-model="currentEvent.actual" ng-value="currentEvent.actual" class="ck-margin">Evento actual</md-checkbox>
+                  </div>
+                  <div class="form-group">
+                    <md-checkbox ng-model="currentEvent.enable_public_chat" ng-value="currentEvent.enable_public_chat" class="ck-margin">Habilitar chat público</md-checkbox>
+                  </div>
+                  <div class="form-group">
+                    <md-checkbox ng-model="currentEvent.enable_private_chat" ng-value="currentEvent.enable_private_chat" class="ck-margin">Habilitar chat privado</md-checkbox>
+                  </div>
+                  <md-divider></md-divider>
+                  <div class="form-group">
+                    <md-checkbox ng-model="currentEvent.es_idioma_unico" ng-value="currentEvent.es_idioma_unico" class="ck-margin">Solo usar un idioma</md-checkbox>
+                    <md-select placeholder="Seleccione idioma principal" ng-model="currentEvent.idioma_principal_id">
+                      <md-option ng-repeat="idioma in idiomas" value="{{idioma.id}}">{{idioma.original}} - {{idioma.nombre}}</md-option>
+                    </md-select>
+                    <div ng-show="!currentEvent.es_idioma_unico">
+                      <label class="control-label">Idiomas extras:</label>
+                      <ui-select multiple="true" style="width: 100%" on-remove="quitandoIdiomas($item, $model)" ng-model="currentEvent.idiomas_extras" theme="select2" on-select="idiomasSelect($item, $model)">
+                        <ui-select-match allow-clear="true" placeholder="Idiomas a usar"> <small ng-bind-html=" $item.nombre"></small></ui-select-match>
+                        <ui-select-choices repeat=" idioma in idiomas | filter: {nombre: $select.search}"><small ng-bind-html=" idioma.original + ' - ' + idioma.nombre | highlight: $select.search"></small></ui-select-choices>
+                      </ui-select>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="clearfix right">
+                <md-button type="submit" ng-disabled="guardando_edit" class="md-primary">Guardar</md-button>
+                <md-button type="button" ng-click="cancelar_currentEvento()" class="md-default">Cancelar</md-button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

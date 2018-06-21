@@ -1,0 +1,56 @@
+
+<div class="panel panel-default panel-hovered panel-stacked mb20">
+  <div layout style="height: 40px;" class="panel-heading"><span> Editar en idiomas:  </span>
+    <md-input-container layout="row" layout-align="start center" style="padding-bottom: 0px; margin-top: -10px;">
+      <md-select multiple="true" placeholder="Idioma" ng-model="idiomaPreg">
+        <md-option ng-repeat="idioma in eventoactual.idiomas" value="{{idioma.id}}">{{idioma.original}}</md-option>
+      </md-select>
+    </md-input-container><a href="" ng-click="mostrarConfig()" ng-show="!mostrarConfiguracion">Configurar</a><a href="" ng-click="mostrarConfig()" ng-show="mostrarConfiguracion">Ocultar</a>
+  </div>
+  <div class="panel-body">
+    <form name="frm" role="form" ng-submit="finalizarEdicion()" class="form-horizontal">
+      <div ng-show="mostrarConfiguracion" layout layout-margin layout-wrap layout-padding>
+        <md-input-container flex="40">
+          <label>Descripción</label>
+          <input type="text" ng-model="preguntaking.descripcion">
+        </md-input-container>
+        <md-input-container flex="20">
+          <label>Duración</label>
+          <input type="number" ng-model="preguntaking.duracion">
+          <md-tooltip>En segundos. Solo para la gran final</md-tooltip>
+        </md-input-container>
+        <md-input-container flex="20">
+          <label>Puntos</label>
+          <input type="number" ng-model="preguntaking.puntos">
+          <md-tooltip>Solo aplica si la evaluación es por puntos y no por promedio.</md-tooltip>
+        </md-input-container>
+        <md-input-container flex="30" layout="row" layout-align="start center">
+          <md-select placeholder="Tipo pregunta" ng-model="preguntaking.tipo_pregunta" ng-change="cambiaTipoPregunta()">
+            <md-option>Test</md-option>
+            <md-option>Multiple</md-option>
+            <md-option>Texto</md-option>
+            <md-option>Lista</md-option>
+            <md-option>Ordenar</md-option>
+            <!--md-option() Cuadrícula // No aplica para pregunta_king, sino para grupos_preguntas-->
+          </md-select>
+        </md-input-container>
+        <div flex="50" class="form-group">
+          <md-checkbox ng-model="preguntaking.aleatorias" ng-true-value="1" ng-false-value="0" aria-label="Opciones aleatorias">Opciones aleatorias</md-checkbox>
+          <md-tooltip>No importará el orden en que ordene las opciones. Siempre saldrán aleatoriamente.</md-tooltip>
+        </div>
+      </div>
+      <div ng-repeat="pregunta_traduc in preguntaking.preguntas_traducidas | porIdiomasEdit:idiomaPreg" ng-class-odd="'fondo-odd'" ng-class-even="'fondo-even'">
+        <edit-preg-traduc-dir preguntatraduc="pregunta_traduc" preguntaking="preguntaking" eventoactual="eventoactual"></edit-preg-traduc-dir><br>
+      </div>
+      <md-button type="button" ng-click="finalizarEdicion()" class="md-raised md-primary right"> 
+        <md-tooltip>Guardar y finalizar edición</md-tooltip>Finalizar
+      </md-button>
+      <md-button type="button" ng-click="aplicarCambios()" aria-label="Aplicar" class="md-raised md-default right">
+        <md-tooltip>Guardar y continuar editando</md-tooltip>Aplicar
+      </md-button>
+      <md-button type="button" ng-click="cerrarEdicion()" aria-label="Cerrar" class="md-raised md-default right">
+        <md-tooltip>Cerrar edición</md-tooltip>Cerrar
+      </md-button>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,16 @@
+
+<div class="grafico-container">
+  <div layout="column" class="wrapper-grafico">
+    <h1 class="txt-borde-blanco">Progreso de participantes</h1>
+    <div id="chart" layout="row" layout-align="space-around end">
+      <div ng-repeat="cliente in participantes_actuales()" style="height: {{ calc_porcentaje(cliente.respondidas) }}%; " class="bar barc{{ calc_indice($index+1) }}">
+        <text>{{cliente.respondidas}}</text>
+      </div>
+    </div>
+    <div layout="row" layout-align="space-around start" class="labels-barchart">
+      <text ng-repeat="cliente in participantes_actuales()">
+        <div class="etiqueta-grafico">{{cliente.user_data.nombres}}</div>
+      </text>
+    </div>
+  </div>
+</div>

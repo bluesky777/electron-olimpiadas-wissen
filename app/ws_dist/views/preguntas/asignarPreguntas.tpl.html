@@ -1,0 +1,18 @@
+
+<div class="modal-header">
+  <h3 class="modal-title">Seleccione el examen al que desea asignar estas preguntas</h3>
+</div>
+<div class="modal-body">
+  <div class="row">
+    <div class="col-lg-12 col-xs-12">
+      <h4>{{ preguntas.length }} preguntas. </h4>
+      <md-radio-group ng-model="selected">
+        <md-radio-button ng-repeat="evaluacion in evaluaciones" ng-value="evaluacion.id">{{evaluacion.descripcion}} (id: {{evaluacion.id}})</md-radio-button>
+      </md-radio-group>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+  <md-button ng-click="cancel()" class="md-raised">Cancelar</md-button>
+  <md-button ng-click="ok()" ng-disabled="asignando || !selected" class="md-primary md-raised">Asignar<i class="fa fa-check"></i></md-button>
+</div>

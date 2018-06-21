@@ -1,0 +1,100 @@
+.nav-head
+	// site logo
+	a.site-logo.text-uppercase(href="" ng-click="toggleNav()")
+		i.fa.fa-globe
+		span.text Wissen
+
+// Site nav (vertical) 
+nav.site-nav.clearfix(role="navigation")
+
+	.container-entidad.clearfix.mb15(ng-if="!hasRoleOrPerm('admin', 'tecnico', 'profesor')")
+		img.img-thumbnail.img-entidad(ng-src="{{ imagesPath + USER.entidad.logo}}" alt="{{USER.username}}")
+		md-tooltip {{USER.entidad.nombre}}
+
+
+	.profile.clearfix.mb15
+		img(ng-src="{{imagesPath + USER.imagen_nombre}}" alt="{{USER.username}}")
+		div.group
+			h5.name {{USER.nombres}}
+			small.desig {{USER.apellidos}}
+
+
+	// navigation
+	ul.list-unstyled.clearfix.nav-list.mb15(highlight-active="")
+		li(ng-class="{active: $state.is('panel') }")
+			a(href="" ui-sref="panel" md-ink-ripple="")
+				i.fa.fa-home
+				span.text {{ 'INICIO_MENU' | translate }}
+
+		li(ui-sref-active="active" ng-if="hasRoleOrPerm(['admin'])")
+			a(href="" ui-sref="panel.eventos" md-ink-ripple="")
+				i.fa.fa-laptop
+				span.text {{ 'EVENTS_MENU' | translate }}
+
+		li(ui-sref-active="active" ng-if="hasRoleOrPerm(['admin'])")
+			a(href="" ui-sref="panel.categorias" md-ink-ripple="")
+				i.fa.fa-map-marker
+				span.text {{ 'CATEGS_MENU' | translate }}
+
+		li(ui-sref-active="active" ng-if="hasRoleOrPerm(['admin', 'Asesor'])")
+			a(href="" ui-sref="panel.entidades" md-ink-ripple="")
+				i.fa.fa-bank
+				span.text {{ 'ENTIDADES_MENU' | translate }}
+
+		li(ui-sref-active="active" ng-if="hasRoleOrPerm(['admin', 'profesor'])")
+			a(href="" ui-sref="panel.preguntas" md-ink-ripple="")
+				i.fa.fa-question
+				span.text {{ 'PREGUNTAS_MENU' | translate }}
+
+		li(ui-sref-active="active" ng-if="hasRoleOrPerm(['admin'])")
+			a(href="" ui-sref="panel.evaluaciones" md-ink-ripple="")
+				i.fa.fa-clipboard
+				span.text {{ 'EVALUACIONES_MENU' | translate }}
+
+		li(ui-sref-active="active" ng-if="hasRoleOrPerm(['admin', 'Asesor'])")
+			a(href="" ui-sref="panel.usuarios" md-ink-ripple="")
+				i.fa.fa-users
+				span.text {{ 'USERS_MENU' | translate }}
+
+		li(ui-sref-active="active" ng-if="hasRoleOrPerm(['admin', 'Asesor', 'profesor'])")
+			a(href="" ui-sref="panel.control" md-ink-ripple="")
+				i.fa.fa-desktop
+				span.text {{ 'CONTROL_MENU' | translate }}
+
+		li(ui-sref-active="active" ng-if="hasRoleOrPerm(['admin', 'Asesor', 'profesor'])")
+			a(href="" ui-sref="panel.informes" md-ink-ripple="")
+				i.fa.fa-print
+				span.text {{ 'INFORMES_MENU' | translate }}
+
+		li(ui-sref-active="active" ng-if="hasRoleOrPerm(['admin', 'Asesor', 'profesor'])")
+			a(href="" ui-sref="qrscanner" md-ink-ripple="")
+				i.fa.fa-camera
+				span.text {{ 'SCANNER_MENU' | translate }}
+
+
+		li
+			a(href="" ng-click="logout()" md-ink-ripple="")
+				i.fa.fa-sign-out
+				span.text {{ 'SALIR' | translate }}
+
+
+		li(ui-sref-active="active" ng-if="false")
+			a(href="" md-ink-ripple="")
+				i.fa.fa-asterisk
+				span.text Construcción
+				i.arrow.fa.fa-angle-left
+				span.badge.badge-xs.badge-primary 2
+
+			ul.inner-drop.nested.list-unstyled
+				li 
+					a(href="" md-ink-ripple="") Font Awesome
+				li 
+					a(href="" md-ink-ripple="") Ionicons
+
+		
+
+
+<!-- nav-foot -->
+footer.nav-foot
+	p 2015 © 
+		span Wissen

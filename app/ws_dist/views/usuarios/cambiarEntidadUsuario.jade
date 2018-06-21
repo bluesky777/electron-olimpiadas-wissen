@@ -1,0 +1,13 @@
+.modal-header
+	h3.modal-title Cambiar entidad de {{usuario.nombres}}
+.modal-body
+	.row
+		.col-lg-12.col-xs-12
+			h4 Actual: {{usuario.entidad_id | nombreEntidad:entidades:false}} ({{usuario.entidad_id | nombreEntidad:entidades:true}})
+			
+			md-radio-group(ng-model="usuario.entidad_id")
+				md-radio-button(ng-repeat="entidad in entidades_extras" ng-value="entidad.id" ng-click="seleccionar(entidad)") {{entidad.nombre}} ({{entidad.alias}})
+			
+
+.modal-footer
+	button.btn.btn-default(ng-click="cancel()") Cancelar

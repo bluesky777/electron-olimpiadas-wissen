@@ -1,0 +1,28 @@
+
+<div>
+  <md-content ng-if="idiomaPreg.selected" class="md-padding">
+    <md-input-container ng-if="!evento_actual.es_idioma_unico" layout="row" layout-align="start center">
+      <label>Idioma: </label>
+      <md-select ng-model="idiomaPreg.selected">
+        <md-option placeholder="Idioma" ng-repeat="idioma in evento_actual.idiomas" value="{{idioma.id}}">{{idioma.original}}</md-option>
+      </md-select>
+    </md-input-container>
+    <md-tabs class="md-dynamic-height md-border-bottom">
+      <md-tab label="{{'CATEGORIAS_TITLE'| translate}}">
+        <div style="padding: 25px;">
+          <categorias-dir idiomapreg="idiomaPreg" eventoactual="evento_actual" categoriasking="categorias_king" nivelesking="niveles_king" disciplinasking="disciplinas_king"></categorias-dir>
+        </div>
+      </md-tab>
+      <md-tab label="{{'NIVELES_TITLE'| translate}}">
+        <div style="padding: 25px;">
+          <niveles-dir idiomapreg="idiomaPreg" eventoactual="evento_actual" categoriasking="categorias_king" nivelesking="niveles_king" disciplinasking="disciplinas_king"></niveles-dir>
+        </div>
+      </md-tab>
+      <md-tab label="{{'DISCIPLINA_TITLE'| translate}}">
+        <div style="padding: 25px;">
+          <disciplinas-dir idiomapreg="idiomaPreg" eventoactual="evento_actual" categoriasking="categorias_king" nivelesking="niveles_king" disciplinasking="disciplinas_king"></disciplinas-dir>
+        </div>
+      </md-tab>
+    </md-tabs>
+  </md-content>
+</div>

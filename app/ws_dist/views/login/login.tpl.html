@@ -1,0 +1,119 @@
+
+<div class="page page-auth"><span ng-show="in_evento_actual.mostrar_nombre_punto">
+    <div ng-hide="editando_nombre_punto" class="row">
+      <div id="nombre_punto" ng-click="editarNombrePunto($event)" class="col-md-12">
+        <div ng-bind-html=" in_evento_actual.ip " class="titulo-3d"></div>
+      </div>
+    </div>
+    <div style="margin-bottom: 50px;" ng-show="editando_nombre_punto" class="auth-container">
+      <div class="form-container">
+        <form ng-submit="guardarNombrePunto()" class="form-horizontal">
+          <md-input-container flex-gt-sm style="margin-bottom: 0px" class="md-block">
+            <label>Nombre de equipo</label>
+            <input type="text" ng-model="in_evento_actual.ip">
+            <md-tooltip> Ingresa un nombre fácil de identificar</md-tooltip>
+          </md-input-container>
+        </form>
+        <div ng-show="bring_registered_boolean()">
+          <h4 style="text-align: center; background-color: #d4d4ff;">Registrado</h4>
+          <md-button ng-click="desregistrar()">Desregistrar
+            <md-tooltip>Que ya no sea equipo oficial</md-tooltip>
+          </md-button>
+        </div>
+        <div ng-hide="bring_registered_boolean()">
+          <h4 style="text-align: center; color: red">NO Registrado</h4>
+          <md-button ng-click="registrar()">Registrar
+            <md-tooltip>Registrar como equipo oficial</md-tooltip>
+          </md-button>
+        </div>
+      </div>
+    </div></span>
+  <div class="auth-container">
+    <div class="form-head mb20">
+      <h1 class="site-logo h2 mb5 mt5 text-center text-uppercase text-bold"><a href="">Wissen <span ng-show="!MySocket.readyState() &amp;&amp; in_evento_actual.gran_final" style="color: red;">
+            <icon style="font-size: 30px;" class="fa fa-warning"></icon>
+            <md-tooltip>Desconectado del chat...</md-tooltip></span><span ng-show="MySocket.readyState()">
+            <icon style="font-size: 30px;" class="fa fa-fighter-jet"></icon>
+            <md-tooltip>Conectado al chat</md-tooltip></span></a></h1>
+      <h5 class="text-normal h5 text-center">Pon a prueba tu conocimiento</h5>
+    </div>
+    <div class="form-container">
+      <form ng-submit="login()" class="form-horizontal">
+        <md-input-container flex-gt-sm style="padding-bottom: 0px" class="md-block">
+          <label>Nombre de usuario</label>
+          <input type="text" ng-model="credentials.username" name="usuario">
+          <md-tooltip> Ingresa tu nombre de usuario</md-tooltip>
+        </md-input-container>
+        <md-input-container flex-gt-sm style="margin-bottom: 0px" class="md-block">
+          <label>Password</label>
+          <input type="password" ng-model="credentials.password" name="password">
+          <md-tooltip> Ingresa tu password</md-tooltip>
+        </md-input-container>
+        <div ng-if="false" class="clearfix">
+          <div class="ui-checkbox ui-checkbox-primary right">
+            <label>
+              <input type="checkbox"><span>Remember me</span>
+            </label>
+          </div>
+        </div>
+        <div class="btn-group btn-group-justified mb15">
+          <div class="btn-group">
+            <button type="button" ng-click="entrar_como_invitado()" class="btn btn-facebook"><span class="fa fa-smile-o"> Soy invitado</span></button>
+          </div>
+          <div class="btn-group">
+            <button type="submit" class="btn btn-success">Entrar</button>
+          </div>
+        </div>
+        <div ng-show="false" class="clearfix mb15"><a href="" ng-click="recuperar_password()" class="text-success small">¿Olvidaste cómo ingresar?</a></div>
+      </form>
+      <div class="clearfix text-center small">
+        <p>Modificar <a href="" ng-click="mostrar_modificar_servidor()"> el equipo servidor</a></p>
+        <form ng-submit="guardar_servidor()" ng-show="modificando_servidor" class="form-horizontal">
+          <md-input-container flex-gt-sm style="margin-bottom: 0px" class="md-block">
+            <label>Equipo servidor</label>
+            <input type="text" ng-model="dominio">
+            <md-tooltip> Ingresa el equipo principal, el servidor Apache y de Base de datos</md-tooltip>
+          </md-input-container>
+          <div class="btn-group btn-group-justified mb15">
+            <div class="btn-group">
+              <button type="button" ng-click="borrar_servidor()" class="btn btn-default"><span class="fa fa-eraser"> Borrar</span></button>
+            </div>
+            <div class="btn-group">
+              <button type="submit" class="btn btn-purple"><span class="fa fa-check"> Aplicar</span></button>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="clearfix text-center small">
+        <h4 ng-show="bring_registered_boolean()">Registrado</h4>
+        <h4 ng-hide="bring_registered_boolean()" style="color: red">NO Registrado</h4>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top: 150px; max-width: 450px;padding-left: 0px;padding-right: 0px" class="auth-container"><span ng-show="SocketClientes.usuarios_all.length == 0">
+      <div class="form-head mb20">
+        <h1 class="site-logo h2 mb5 mt5 text-center text-uppercase text-bold"><a href="">Código QR</a></h1>
+        <h5 class="text-normal h5 text-center">Escanea este código desde un dispositivo con privilegios:</h5>
+      </div>
+      <div style="text-align: center;" class="form-container">
+        <qr text="in_evento_actual.qr" size="300" ng-if="in_evento_actual.qr"></qr>
+      </div></span><span ng-show="SocketClientes.usuarios_all.length &gt; 0">
+      <section>
+        <md-subheader class="md-primary">Usuarios
+          <md-input-container flex class="filtrarusuario">
+            <label>Filtrar</label>
+            <input type="text" ng-model="filtro">
+          </md-input-container>
+          <button type="button" ng-click="ingresar_seleccionado()" class="btn btn-primary">Ingresar</button>
+        </md-subheader>
+        <md-list class="md-dense"> 
+          <md-list-item ng-repeat="usuario in SocketClientes.usuarios_all | filter:filtro | orderBy:'nombres' " ng-click="seleccionarUsu(usuario)" class="md-2-line"><img ng-src="{{imagesPath + usuario.imagen_nombre}}" alt="{{usuario.username}}" class="md-avatar">
+            <div class="md-list-item-text">
+              <h3>{{ ($index+1) + '. ' + usuario.nombres + ' ' + usuario.apellidos}}</h3>
+              <h4>{{ usuario.nombre_entidad }}</h4>
+            </div>
+            <md-checkbox ng-model="usuario.seleccionado" ng-click="seleccionarCkUsu(usuario)" aria-label="Seleccionado" class="md-secondary"></md-checkbox>
+          </md-list-item>
+        </md-list>
+      </section></span></div>
+</div>

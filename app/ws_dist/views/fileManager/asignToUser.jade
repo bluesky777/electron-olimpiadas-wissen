@@ -1,0 +1,26 @@
+.modal-header
+  h3.modal-title Asignar imagen a usuario
+.modal-body
+  .row
+    .col-lg-12.col-xs-12
+      h4 Asignar imagen a usuario
+      form
+        md-input-container.md-block(flex-gt-sm style=" margin-bottom: -21px; padding-bottom: 0px;")
+            label Buscar usuario
+            input(type="text" ng-model="busqueda")
+            md-tooltip  Buscar usuario
+      
+          md-content(style="height: 400px;")
+            section
+              md-subheader.md-primary Usuarios:
+              md-list
+                md-list-item(ng-click="asignar(usuario)" ng-repeat="usuario in usuarios | orderBy:'nombres' | filter:busqueda track by usuario.id" style="margin: 0px;")
+
+                  .md-list-item-text
+                    p {{$index+1}}. 
+                      img(ng-src="{{imagesPath + usuario.imagen_nombre}}" style="width:40px;height:40px")
+                      |  {{usuario.nombres}} {{usuario.apellidos}}
+
+
+.modal-footer
+  md-button.md-raised(ng-click="cancel()") Cancelar

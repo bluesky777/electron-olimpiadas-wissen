@@ -1,0 +1,13 @@
+.modal-header
+	h3.modal-title ¿Seguro que deseas eliminar?
+.modal-body
+	.row
+		.col-lg-12.col-xs-12
+			h4(ng-bind-html="usuario.nombres + ' ' + usuario.apellidos" flex="90")
+			div(ng-bind-html="'Entidad: ' + (usuario.entidad_id|nombreEntidad:entidades)" flex="90")
+			h5 Id: {{usuario.id}}
+
+.modal-footer
+	button.btn.btn-labeled.btn-danger(ng-click="ok()") Eliminar
+		i.btn-label.fa.fa-times
+	button.btn.btn-default(ng-click="cancel()") Cancelar

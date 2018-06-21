@@ -1,0 +1,26 @@
+md-sidenav.md-sidenav-right.md-whiteframe-4dp(md-component-id="sidenavSelectusu" style="width: 600px;")
+	md-toolbar.md-theme-light( style="margin-top: 50px;")
+		h1.md-toolbar-tools Seleccione usuario
+
+	md-content(layout-padding)
+		
+		
+		section
+			md-subheader.md-primary Usuarios
+				md-input-container.filtrarusuario(flex )
+					label Filtrar
+					input(type="text" ng-model="filtro" )
+				button.btn.btn-primary(type="button" ng-click="ingresar_seleccionado()") Ingresar
+			md-list.md-dense 
+
+				md-list-item.md-2-line(ng-repeat="usuario in SocketClientes.usuarios_all | filter:filtro | orderBy:'nombres' " 
+					ng-click="seleccionarUsu(usuario)" ng-dblclick="ingresar_seleccionado(usuario)")
+					
+					img.md-avatar(ng-src="{{imagesPath + usuario.imagen_nombre}}" alt="{{usuario.username}}")
+					.md-list-item-text
+						h3 {{ ($index+1) + '. ' + usuario.nombres + ' ' + usuario.apellidos}}
+						h4 {{ usuario.nombre_entidad }}
+					md-checkbox.md-secondary(ng-model="usuario.seleccionado" ng-click="seleccionarCkUsu(usuario)" aria-label="Seleccionado")
+
+
+

@@ -1,0 +1,13 @@
+
+<md-whiteframe layout style="padding: 10px" ng-class-odd="'fondo-gris-odd'" class="md-whiteframe-z2 definicion-frame"><span flex="5" ng-dblclick="actualizarOrdenPregEval(preguntaking)">
+     
+    {{$parent.$index+1}}.
+    <input type="text" placeholder="{{preguntaking.orden}}" ng-model="preguntaking.orden_nuevo" style="width: 33px; font-size: 8pt">
+    <md-tooltip>Presione dobleclick para actualizar orden</md-tooltip></span><span ng-bind-html="preguntaking.enunciado" flex="95"></span>
+  <div layout="row" style="margin-left: -50px;" class="btn-container-edit">
+    <md-button aria-label="Preview" ng-click="quitarPregunta(preguntaking)" class="md-icon-button md-mini">
+      <md-icon class="fa fa-times"></md-icon>
+      <md-tooltip>Quitar</md-tooltip>
+    </md-button>
+  </div>
+</md-whiteframe>

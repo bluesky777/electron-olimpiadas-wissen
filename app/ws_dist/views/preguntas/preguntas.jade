@@ -1,0 +1,127 @@
+.row
+	.col-sm-12.col-md-12
+		
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading(layout style="padding: 0; padding-bottom: 5px;")
+
+				md-input-container(layout="row" layout-align="start center" style="padding-bottom: 0px; margin-top: 2px;    margin-bottom: 4px;")
+					md-select(placeholder="Idioma" ng-model="idiomaPreg.selected")
+						md-option(ng-repeat="idioma in evento_actual.idiomas" value="{{idioma.id}}")  En {{idioma.original}}
+
+
+				md-input-container(layout="row" layout-align="start center" style="padding-bottom: 0px; margin-top: 2px;    margin-bottom: 4px;")
+					md-select.categoria(placeholder="Categoría" ng-model="categoria" ng-change="traerPreguntasYEvaluaciones()")
+						span(ng-repeat="catking in categorias")
+							md-option(ng-repeat="cat_traduc in catking.categorias_traducidas | catsByIdioma:idiomaPreg.selected" 
+								ng-show="cat_traduc.idioma_id==idiomaPreg.selected" value="{{cat_traduc.categoria_id}}") 
+								| {{cat_traduc.nombre}}
+
+
+				md-input-container(layout="row" layout-align="start center" style="padding-bottom: 0px; margin-top: 2px;    margin-bottom: 4px;")
+					md-select(placeholder="Evaluaciones" ng-model="evaluacion_id" ng-change="traerPreguntasDeEvaluacion()")
+						md-option(ng-repeat="evalu in evaluaciones" value="{{evalu.id}}") 
+							|  {{evalu.id}} - {{evalu.descripcion}}
+
+						md-option(value="0") 
+							|  Todas
+
+						md-option(value="sin_asignar") 
+							|  Sin asignar
+
+				//md-checkbox(ng-model="showDetail" style="display:inline-block") Detalles
+
+				input.form-control.ancho-200(type="text" ng-model="preg_buscar" placeholder="{{ 'BUSCAR_PLACEHOLDER' | translate }}")
+
+			.panel-body(ng-show="evaluacion_id!='sin_asignar'")
+				.row
+					.col-lg-12
+						.btn-group(style="margin-bottom: 20px;")
+							label.btn.btn-primary(ng-model="showSelectables" uib-btn-checkbox style="height: 33px;") 
+								span.fa.fa-check-square-o
+							label.btn.btn-primary(ng-model="showOptions" uib-btn-checkbox) Ver opciones
+							label.btn.btn-primary(ng-model="showCorrects" uib-btn-checkbox) Revelar correctas
+							
+						button.btn.btn-default(ng-click="cambiarRutaImagenes()" style="margin-bottom: 20px;") Rutas
+				
+				.row(ng-show="showSelectables")
+					.col-lg-12
+						.btn-group(aria-label="...")
+							button.btn.btn-default(type="button" ng-click="eliminarPreguntas()") 
+								i.fa.fa-trash
+								| Eliminar preguntas
+							button.btn.btn-default(type="button" ng-click="asignarPreguntasAEvaluacion()")
+								i.fa.fa-clipboard
+								| Asignar a Evaluación
+							button.btn.btn-default(type="button" ng-click="cambiarPreguntasACategoria()")
+								i.fa.fa-eye
+								| Cambiar de categoría
+					
+
+				add-pregunta(ng-show="inicializado && !showSelectables")
+
+				
+				#edicionking
+					// Editar una pregunta
+					edit-pregunta(ng-if="editando")
+					// Editar un grupo
+					edit-contenido(ng-if="editandoContenido")
+
+
+				#pregunta-en-pantalla
+					// Pregunta que se está mostrando en pantalla
+					pregunta-en-pantalla(ng-show="SocketData.config.pregunta.id")
+
+
+				div(ng-repeat="pg_pregunta in pg_preguntas | filter:preg_buscar " 
+					ng-class-odd="'fondo-gris-odd'" style="position: relative;")
+					
+					
+					view-pregunta(ng-if="pg_pregunta.is_preg")
+
+					view-grupo(ng-if="!pg_pregunta.is_preg")
+							
+							
+
+
+				add-pregunta(ng-show="inicializado && !showSelectables")
+				
+
+.row
+	.col-sm-12.col-md-4
+		
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading(layout)
+				| Evaluaciones
+
+
+			.panel-body
+
+				md-list-item(ng-repeat="evalu in evaluaciones" ng-click="selectEvaluacion(evalu, $event)" ng-class="{'bg-success': evalu.selected==true}")
+	
+					p  {{evalu.id}} - {{evalu.descripcion}}
+
+
+	.col-sm-12.col-md-8
+		
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading(layout)
+				| Preguntas
+
+
+			.panel-body
+
+				.row
+					button.btn.btn-default(ng-click="asignarPreguntasRandom()" style="margin-bottom: 20px; margin-left: 20px;") Asignar preguntas
+				
+
+				div(ng-repeat="pregunta_king in pg_preguntas | pregsByCatsAndEvaluacion:categoria:preguntas_evaluacion2:evalu_seleccionada.id | orderBy:'orden' " 
+					style="position: relative;")
+					
+					view-pregunta-eval(ng-if="pregunta_king.tipo_pregunta" preguntaking="pregunta_king")
+
+					view-grupo-eval(ng-if="!pregunta_king.tipo_pregunta" grupoking="pregunta_king")
+							
+
+
+
+

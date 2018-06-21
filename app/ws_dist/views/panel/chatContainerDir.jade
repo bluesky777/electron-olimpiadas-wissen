@@ -1,0 +1,40 @@
+.row.pane-chat-tile-container
+	.col-md-12.pane-chat-msgs
+		
+		.message-container
+			.pane-chat-tile
+
+
+			.message-list
+				.msg(ng-repeat="mensaje in SocketClientes.mensajes")
+					.message-chat(ng-class="{'message-in': mensaje.from.user_data.id!=$parent.$parent.USER.id, 'message-out': mensaje.from.user_data.id==$parent.$parent.USER.id}")
+						.message-author(ng-show="mensaje.from.user_data.id!=$parent.$parent.USER.id")
+							.pointer
+								| {{ mensaje.from.user_data.nombres }}  {{ mensaje.from.user_data.apellidos }} 
+						.message-text
+							.emojitext.selectable-text 
+								| {{ mensaje.texto }}
+						.message-meta
+							.message-entidad(ng-show="mensaje.from.user_data.entidad.nombre") {{ mensaje.from.user_data.entidad.nombre }}
+							img.message-entilogo(ng-src="{{ imagesPath + mensaje.from.user_data.entidad.logo}}") 
+
+
+
+			
+
+
+		.message-form
+			form(ng-submit="enviarMensaje()")
+				.row
+					.col-lg-10.col-md-9.col-sm-9.col-xs-12
+						md-input-container.md-block(flex-gt-sm style="margin-bottom: -20px; padding-bottom: 0px")
+							label Mensaje
+							input(type="text" ng-model="newMensaje")
+							md-tooltip  Envía un mensaje
+
+					.col-lg-1.col-md-2.col-sm-2.col-xs-12
+						md-button.md-raised(aria-label="Enviar" type="submit" style="min-width:95%;  top: 7px;")
+							| Enviar
+
+
+

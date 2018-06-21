@@ -1,0 +1,30 @@
+
+<div class="page page-auth">
+  <div style="max-width: 450px;padding-left: 0px;padding-right: 0px" class="auth-container">
+    <div class="form-head mb20">
+      <h1 class="site-logo h2 mb5 mt5 text-center text-uppercase text-bold"><a href="">QR Scanner </a></h1>
+      <h5 class="text-normal h5 text-center">Coloca el código frente a la cámara</h5>
+    </div>
+    <div style="text-align: center;" class="form-container">
+      <section>
+        <md-subheader class="md-primary">Usuarios
+          <md-input-container flex class="filtrarusuario">
+            <label>Filtrar</label>
+            <input type="text" ng-model="filtro">
+          </md-input-container>
+        </md-subheader>
+        <md-list style="max-height: 500px; overflow-y: auto;" class="md-dense"> 
+          <md-list-item ng-repeat="usuario in usuarios | filter:filtro | orderBy:'nombres' " ng-click="seleccionarUsu(usuario)" class="md-2-line"><img ng-src="{{imagesPath + usuario.imagen_nombre}}" alt="{{usuario.username}}" class="md-avatar">
+            <div aria-label="Seleccionado{{ ($index+1) + usuario.nombres}}" class="md-list-item-text">
+              <h3>{{ ($index+1) + '. ' + usuario.nombres + ' ' + usuario.apellidos}}</h3>
+              <h4>{{ usuario.nombre_entidad }}</h4>
+            </div>
+            <md-checkbox ng-model="usuario.seleccionado" ng-click="seleccionarCkUsu(usuario)" aria-label="Seleccionado{{ ($index+1) + usuario.nombres}}"></md-checkbox>
+          </md-list-item>
+        </md-list>
+      </section>
+      <md-divider></md-divider>
+      <qr-scanner width="400" height="300" ng-success="onSuccess(data)" ng-error="onError(error)"></qr-scanner>
+    </div>
+  </div>
+</div>

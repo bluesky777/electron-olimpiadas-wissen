@@ -1,0 +1,151 @@
+
+<div class="row hidden-print">
+  <div class="col-lg-12">
+    <div class="panel panel-default panel-hovered mb20">
+      <div class="panel-heading">Informes</div>
+      <div class="panel-body">
+        <md-content style="overflow: visible;">
+          <md-tabs md-selected="config.informe_tab_actual" md-dynamic-height md-border-bottom>
+            <md-tab label="Exámenes" md-selected="config.tab_seleccionado" md-on-select="tabSeleccionado(0)">
+              <md-content style="overflow-y: visible; height: 800px" class="md-padding">
+                <md-select placeholder="Elija un evento" ng-model="selected.evento_id" ng-change="cargar_entidades_categorias()">
+                  <md-option ng-repeat="event in eventos_infor" ng-value="event.id">Evento: <b>{{event.nombre}} ({{event.alias}})</b></md-option>
+                </md-select>
+                <div style="text-align: center;">
+                  <md-button ng-click="cargarResultados()" class="md-raised">Cargar resultados</md-button>
+                </div>
+                <md-checkbox ng-model="config.gran_final" aria-label="Gran final">Solo exámenes hechos de forma 'Dirigida'</md-checkbox>
+                <div style="text-align: center;">
+                  <md-button ng-click="traerTodosLosExamenes()" class="md-raised">Traer todos los exámenes</md-button>
+                </div>
+                <!-- Select Entidades-->
+                <div class="row">
+                  <div class="col-sm-12 col-md-12">
+                    <div>
+                      <md-checkbox ng-model="config.todas_entidades" style="margin-bottom: 5px; font-size: 9pt;" aria-label="Todas las entidades">Todas las entidades </md-checkbox>
+                    </div>
+                    <select multiple="true" ng-disabled="config.todas_entidades" ng-model="selected.entidades" style="width: 100%; height: 150px; font-size: 9pt">
+                      <option ng-repeat="entidad in selected.evento.entidades" ng-value="{{entidad.id}}">{{entidad.nombre}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="text-align: center;">
+                  <md-button ng-click="traerTodosLosExamenesPorEntidades()" class="md-raised">Todos por entidades</md-button>
+                </div><br>
+                <!-- Select Categorías-->
+                <div class="row">
+                  <div class="col-sm-4 col-md-4">
+                    <div md-tooltip="La evaluación actual de cada categoría">
+                      <md-checkbox ng-model="config.todas_categorias" style="margin-bottom: 5px; font-size: 9pt;" aria-label="Todas las categorías">Todas las categorías </md-checkbox>
+                    </div>
+                    <select multiple="true" ng-disabled="config.todas_categorias" ng-model="selected.categorias" style="width: 150px; height: 150px; font-size: 9pt">
+                      <option ng-repeat="categoria in selected.categorias_cargadas" ng-click="cargar_evaluaciones(categoria)" ng-value="{{categoria.id}}">{{categoria.nombre}}</option>
+                    </select>
+                  </div>
+                  <div ng-hide="config.todas_categorias || selected.categoria_id.length &gt; 1" style="padding-left: 0px;" class="col-sm-8 col-md-8">
+                    <div style="height: 26px; font-size: 9pt; padding-top: 5px;">Elija evaluación: </div>
+                    <div class="div-lista">
+                      <div ng-repeat="evaluacion in selected.evaluaciones" ng-click="cargar_preguntas(evaluacion, $index)" ng-class="{'opcion-seleccionada': evaluacion.selected}"> <span ng-hide="evaluacion.actual">{{ ($index+1) + '. ' + evaluacion.descripcion }}</span><span ng-show="evaluacion.actual">{{ ($index+1) }}.  <b> ACTUAL:   </b> {{ evaluacion.descripcion }}</span></div>
+                    </div>
+                  </div>
+                </div>
+                <!--
+                select(multiple="true" style="width: 250px; height: 150px; font-size: 9pt; overflow: scroll")
+                	option(ng-repeat="pregunta in selected.preguntas" ng-model="selected.pregunta_id" 
+                		ng-click="cmdClickPreguntaSelected(pregunta, $index)" ng-bind-html="($index+1) + '. ' + pregunta.enunciado") 
+                
+                
+                
+                
+                
+                
+                
+                -->
+                <md-button ng-click="traerExamenesEntidadesCategorias()" class="md-raised">Por entidades-categorías</md-button>
+                <md-button ng-click="traerExamenesCategorias()" class="md-raised">Por categorías</md-button>
+                <form>
+                  <div style="width: 300px;margin-top: 15px;" class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                      <input type="text" placeholder="Buscar" ng-model="searchExam" style="border-top: 1px solid #ccc; border-right: 1px solid #ccc;" class="form-control">
+                    </div>
+                  </div>
+                </form>
+              </md-content>
+            </md-tab>
+            <md-tab label="Usuarios" md-selected="config.tab_seleccionado" md-on-select="tabSeleccionado(1)">
+              <md-content style="overflow-y: visible; height: 600px" class="md-padding">
+                <md-select placeholder="Elija un evento" ng-model="selected.evento_id" ng-change="cargar_entidades_categorias()">
+                  <md-option ng-repeat="event in eventos_infor" ng-value="event.id">Evento: <b>{{event.nombre}} ({{event.alias}})</b></md-option>
+                </md-select>
+                <!-- Select Entidades-->
+                <div class="row">
+                  <div class="col-sm-12 col-md-12">
+                    <div>
+                      <md-checkbox ng-model="config.todas_entidades" style="margin-bottom: 5px; font-size: 9pt;" aria-label="Todas las entidades">Todas las entidades </md-checkbox>
+                    </div>
+                    <select multiple="true" ng-disabled="config.todas_entidades" ng-model="selected.entidades" style="width: 100%; height: 150px; font-size: 9pt">
+                      <option ng-repeat="entidad in selected.evento.entidades" ng-value="{{entidad.id}}">{{entidad.nombre}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div style="text-align: center;">
+                  <md-button ng-click="traerTodosLosExamenesPorEntidades()" class="md-raised">Todos por entidades</md-button>
+                </div><br>
+                <!-- Select Categorías-->
+                <div class="row">
+                  <div class="col-sm-4 col-md-4">
+                    <div md-tooltip="La evaluación actual de cada categoría">
+                      <md-checkbox ng-model="config.todas_categorias" style="margin-bottom: 5px; font-size: 9pt;" aria-label="Todas las categorías">Todas las categorías </md-checkbox>
+                    </div>
+                    <select multiple="true" ng-disabled="config.todas_categorias" ng-model="selected.categorias" style="width: 150px; height: 150px; font-size: 9pt">
+                      <option ng-repeat="categoria in selected.categorias_cargadas" ng-click="cargar_evaluaciones(categoria)" ng-value="{{categoria.id}}">{{categoria.nombre}}</option>
+                    </select>
+                  </div>
+                </div>
+                <md-button ng-click="traerExamenesEntidadesCategorias()" class="md-raised">Por entidades-categorías</md-button>
+                <md-button ng-click="traerExamenesCategorias()" class="md-raised">Por categorías</md-button>
+                <md-button ng-click="traerIncritosEnt()" class="md-raised">Ver inscritos</md-button>
+                <form>
+                  <div style="width: 300px;margin-top: 15px;" class="form-group">
+                    <div class="input-group">
+                      <div class="input-group-addon"><i class="fa fa-search"></i></div>
+                      <input type="text" placeholder="Buscar" ng-model="searchExam" style="border-top: 1px solid #ccc; border-right: 1px solid #ccc;" class="form-control">
+                    </div>
+                  </div>
+                </form>
+              </md-content>
+            </md-tab>
+          </md-tabs>
+        </md-content>
+        <hr class="wide">
+        <h5>Orientación de la página:</h5>
+        <div class="control-group">
+          <div class="radio">
+            <label>
+              <input type="radio" ng-model="config.orientacion" value="oficio_horizontal">
+              <div class="text">Oficio Horizontal</div>
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" ng-model="config.orientacion" value="carta_horizontal">
+              <div class="text">Carta horizontal</div>
+            </label>
+          </div>
+          <div class="radio">
+            <label>
+              <input type="radio" ng-model="config.orientacion" value="vertical">
+              <div class="text">Vertical</div>
+            </label>
+          </div>
+        </div>
+        <hr class="wide">
+        <h5>{{descripcion_informe}}</h5>
+      </div>
+    </div>
+  </div>
+</div>
+<div ui-view="report_content" class="informes-pages page-wrap margen0">
+  <h5 style="text-align: center">Aquí saldrán tus reportes</h5>
+</div>

@@ -1,0 +1,69 @@
+div(ng-repeat="contenido in grupoking.contenidos_traducidos | porIdioma:idiomapreg" ng-class-odd="'fondo-gris-odd'")
+	
+	div()
+		md-whiteframe.md-whiteframe-z2.definicion-frame(layout layout-wrap style="padding: 10px; position: relative")
+
+			//span(flex="5" style="font-weight: bold") {{ indice }}.
+			span(ng-bind-html="contenido.definicion" flex="95") 
+
+
+
+			br
+			br
+
+			div(ng-repeat="pregunta_agrup in contenido.preguntas_agrupadas" flex="100")
+
+				br
+				br
+				
+				div()
+					md-whiteframe.md-whiteframe-z2.definicion-frame(layout style="margin-left: 20px; padding: 10px")
+						span(flex="5") {{$index+indice}}.
+						span(ng-bind-html="pregunta_agrup.enunciado" flex="95")
+
+						div(ng-show="pregunta_agrup.ayuda && pregunta_agrup.showDetail" ng-click="toggleMostrarAyuda(pregunta_agrup)" ng-class="{'ayuda-preg-showed': pregunta_agrup.mostrar_ayuda, 'ayuda-preg-hidded':!pregunta_agrup.mostrar_ayuda}")
+							a(ng-show="!pregunta_agrup.mostrar_ayuda")
+								i.fa.fa-anchor
+							span(ng-show="pregunta_agrup.mostrar_ayuda")
+								| {{pregunta_agrup.ayuda}}
+
+
+
+						
+
+
+					span()
+						// Opciones checkbox para seleccionar varios
+						md-list(ng-if="pregunta_agrup.tipo_pregunta=='Multiple'")
+							md-list-item(ng-repeat="opcion in pregunta_agrup.opciones | filter:{id: '!-1'} ")
+								md-checkbox(ng-model="topping.wanted")
+								p {{ opcion.definicion }}
+								md-icon.md-secondary.fa.fa-comment(ng-click="" aria-label="Chat")
+						
+
+						// Opciones de tipo ICFES con única respuesta
+						div.opciones(layout="row" layout-wrap layout-fill ng-if="pregunta_agrup.tipo_pregunta=='Test'" style="padding-bottom: 32px; justify-content: center;")
+							md-whiteframe.pointer.md-whiteframe-z2.btn(ng-class="{'elegida':opcion.elegida}" ng-if="!opcion.nueva" flex="40" ng-click="elegirOpcion(pregunta_agrup, opcion, $index)" ng-repeat="opcion in pregunta_agrup.opciones") 
+								span(style="font-weight: bold;") {{ indexChar($index) }}. 
+								span {{ opcion.definicion }}
+
+			br
+			br
+
+		div(ng-show="examen_actual.one_by_one" style="text-align: center;")
+			md-button.md-default(type="submit" ng-click="guardando()") Guardar y continuar
+			md-button.md-primary(ng-click="save_and_next()") Guardar pasar a la siguiente pregunta
+				i.fa.fa-arrow-right
+
+
+br
+br
+br
+br
+md-divider
+br
+br
+
+
+
+

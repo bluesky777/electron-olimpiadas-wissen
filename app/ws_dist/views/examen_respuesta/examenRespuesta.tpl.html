@@ -1,0 +1,29 @@
+
+<div class="row pr0-sm pl0-sm">
+  <div class="col-sm-12 col-md-12 pr0-sm pl0-sm">
+    <div class="panel panel-default panel-hovered panel-stacked">
+      <div style="height: 90vh; overflow: auto;" class="panel-body">
+        <timer-dir tiempomax="tiempo_max" class="timer-count"></timer-dir>
+        <div ng-bind-html=" categoria_traducida.nombre " style="font-size: 40px" class="titulo-3d"></div><br><br>
+        <div><b>Descripción: </b><span>{{ examen_actual.descripcion }}</span></div><br>
+        <!--md-divider-->
+        <div class="progreso-preguntas"><span style="color: #aaa;">{{ pregunta_actual }}</span>
+          <md-progress-linear md-mode="determinate" value="{{pregunta_actual_porc}}"></md-progress-linear>
+          <div class="total-pregs">{{ total_preguntas }}</div>
+        </div><br><br><span ng-if="!waiting_question">
+          <div ng-repeat="pregunta in examen_actual.preguntas | preguntaActual:pregunta_actual ">
+            <view-pregunta-examen ng-if="(pregunta.tipo_pregunta || !examen_actual.one_by_one) &amp;&amp; !pregunta.terminado" preguntaking="pregunta" indice="pregunta_actual" idiomapreg="USER.idioma_main_id"></view-pregunta-examen>
+            <view-grupo-examen ng-if="(!pregunta.tipo_pregunta || !examen_actual.one_by_one) &amp;&amp; !pregunta.terminado" grupoking="pregunta" indice="pregunta_actual" idiomapreg="USER.idioma_main_id"></view-grupo-examen>
+            <h4 ng-show="pregunta.terminado">Examen terminado.</h4>
+          </div></span><span ng-if="waiting_question" style="text-align: center;">
+          <h4>Respuesta {{opcion_eligida}}</h4>
+          <h4>Espera la siguiente pregunta</h4></span>
+        <div ng-show="!examen_actual.one_by_one" style="text-align: center;">
+          <md-button type="submit" ng-click="guardando()" class="md-default">Guardar y continuar</md-button>
+          <md-button ng-click="finalizar_examen()" class="md-primary">Finalizar</md-button>
+        </div>
+      </div>
+      <div class="panel-footer todo-foot clearfix">No salgas de esta ventana</div>
+    </div>
+  </div>
+</div>

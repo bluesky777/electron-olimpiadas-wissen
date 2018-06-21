@@ -1,0 +1,64 @@
+div(ng-repeat="pregunta in preguntaking.preguntas_traducidas | porIdioma:idiomapreg.selected" ng-class-odd="'fondo-gris-odd'")
+	div(ng-show="!preguntaking.editando")
+		md-whiteframe.md-whiteframe-z2.definicion-frame(layout style="padding: 10px")
+			span(flex="5") {{indice+1}}.
+			span(ng-bind-html="pregunta.enunciado" flex="95")
+
+			div(ng-show="pregunta.ayuda && preguntaking.showDetail" ng-click="toggleMostrarAyuda(pregunta)" ng-class="{'ayuda-preg-showed': pregunta.mostrar_ayuda, 'ayuda-preg-hidded':!pregunta.mostrar_ayuda}")
+				a(ng-show="!pregunta.mostrar_ayuda")
+					i.fa.fa-anchor
+				span(ng-show="pregunta.mostrar_ayuda")
+					| {{pregunta.ayuda}}
+
+			div.btn-container-edit(layout="row")
+				//md-button.md-default.md-raised(ng-click="editarPregunta(preguntaking)") Editar
+
+				md-button.md-fab.md-primary.md-mini(aria-label="Editar" ng-click="editarPregunta(preguntaking)")
+					md-icon.fa.fa-pencil
+					md-tooltip Editar pregunta
+
+				md-button.md-icon-button.md-mini(aria-label="Preview" ng-click="previewPregunta(preguntaking)")
+					md-icon.fa.fa-eye
+					md-tooltip Preview
+				
+
+				md-menu(style="padding:0" )
+					md-button.md-icon-button(aria-label="Opciones de la pregunta" ng-click="$mdOpenMenu($event)")
+						md-icon.fa.fa-align-justify(md-menu-origin)
+
+					md-menu-content
+						md-menu-item
+							md-button(ng-click="eliminarPregunta(preguntaking)")
+								md-icon.fa.fa-trash(md-menu-align-target)
+								| Eliminar pregunta
+
+
+						md-menu-item
+							md-button(ng-click="asignarAEvaluacion(preguntaking)")
+								md-icon.fa.fa-clipboard()
+								| Asignar a Evaluación
+
+						md-menu-divider
+						md-menu-item
+							md-button(ng-click="cambiarCategoria(preguntaking)")
+								md-icon.fa.fa-eye()
+								| Cambiar categoría
+
+
+
+		span(ng-show="preguntaking.showDetail")
+			md-list(ng-if="preguntaking.tipo_pregunta=='Multiple'")
+				md-list-item(ng-repeat="opcion in pregunta.opciones | filter:{id: '!-1'} ")
+					md-checkbox(ng-model="topping.wanted")
+					p(ng-bind-html="opcion.definicion") 
+					md-icon.md-secondary.fa.fa-comment(ng-click="" aria-label="Chat")
+			
+
+			div.opciones(layout="row" layout-wrap layout-fill ng-if="preguntaking.tipo_pregunta=='Test'" style="padding-bottom: 32px;")
+				md-whiteframe.pointer.md-whiteframe-z2.btn(ng-class="{'elegida':opcion.elegida}" ng-if="!opcion.nueva" flex="40" ng-click="elegirOpcion(pregunta, opcion)" ng-repeat="opcion in pregunta.opciones") 
+					span(style="font-weight: bold;") {{ indexChar($index) }}. 
+					span(ng-bind-html="opcion.definicion") 
+
+	edit-pregunta(preguntaking="preguntaking" ng-show="preguntaking.editando" eventoactual="eventoactual" eventoactualselec="{{eventoactualselec}}")
+
+

@@ -1,0 +1,98 @@
+//div(ng-repeat="contenido in grupoking.contenidos_traducidos" ng-class-odd="'fondo-gris-odd'")
+
+md-whiteframe.md-whiteframe-z2.definicion-frame(layout layout-wrap style="padding: 10px")
+
+	span(flex="5" style="font-weight: bold") {{ $index+1}}.
+	span(ng-bind-html="pg_pregunta.definicion" flex="95")
+
+
+
+	div.btn-container-edit(layout="row")
+		
+
+		md-button.md-fab.md-primary.md-mini(aria-label="Editar" ng-click="editarGrupo(pg_pregunta)")
+			md-icon.fa.fa-pencil
+			md-tooltip Editar contenido
+
+
+		md-button.md-fab.md-success.md-mini(ng-click="addNewPregunta(pg_pregunta)" aria-label="Nueva pregunta"  ng-disabled="creandoGrupoPreg")
+			md-icon.fa.fa-plus
+			md-tooltip Nueva pregunta
+
+
+		md-menu(style="padding:0; " )
+			md-button.md-icon-button(aria-label="Opciones del contenido" ng-click="$mdOpenMenu($event)")
+				md-icon.fa.fa-align-justify(md-menu-origin)
+
+			md-menu-content
+				md-menu-item
+					md-button(ng-click="eliminarContenido(pg_pregunta)")
+						md-icon.fa.fa-trash(md-menu-align-target)
+						| Eliminar contenido
+
+
+				md-menu-item
+					md-button(ng-click="asignarAEvaluacion(pg_pregunta)")
+						md-icon.fa.fa-clipboard()
+						| Asignar a Evaluación
+
+				md-menu-divider
+				md-menu-item
+					md-button(ng-click="asignarExamen()")
+						md-icon.fa.fa-eye()
+						| notifications
+
+
+
+	div(ng-repeat="pregunta_agrup in pg_pregunta.pregs_agrupadas" flex="100")
+		div(ng-if="!pregunta_agrup.editando")
+			md-whiteframe.md-whiteframe-z2.definicion-frame(layout style="margin-left: 20px; padding: 10px")
+				span(flex="5") {{$index+1}}.
+				span(ng-bind-html="pregunta_agrup.enunciado" flex="95")
+
+				div(ng-show="pregunta_agrup.ayuda && pregunta_agrup.showDetail" ng-click="toggleMostrarAyuda(pregunta_agrup)" ng-class="{'ayuda-preg-showed': pregunta_agrup.mostrar_ayuda, 'ayuda-preg-hidded':!pregunta_agrup.mostrar_ayuda}")
+					a(ng-show="!pregunta_agrup.mostrar_ayuda")
+						i.fa.fa-anchor
+					span(ng-show="pregunta_agrup.mostrar_ayuda")
+						| {{pregunta_agrup.ayuda}}
+
+
+
+				
+				.btn-container-edit-pregagrup(layout="row")
+					md-button.md-primary.md-icon-button.md-mini(ng-click="editarPreguntaAgrup(pregunta_agrup)")
+						md-icon.fa.fa-pencil
+						md-tooltip Editar
+
+					md-button.md-warn.md-icon-button.md-mini(ng-click="eliminarPreguntaAgrup(pregunta_agrup, pg_pregunta)")
+						md-icon.fa.fa-trash()
+						md-tooltip Eliminar
+
+					md-button.md-icon-button.md-mini(aria-label="Preview" ng-click="previewPreguntaAgrup(pregunta_agrup)")
+						md-icon.fa.fa-eye
+						md-tooltip Preview
+
+
+
+			span(ng-show="pregunta_agrup.showDetail || showOptions")
+				md-list(ng-if="pregunta_agrup.tipo_pregunta=='Multiple'")
+					md-list-item(ng-repeat="opcion in pregunta_agrup.opciones | filter:{id: '!-1'} ")
+						md-checkbox(ng-model="topping.wanted")
+						p {{ opcion.definicion }}
+						md-icon.md-secondary.fa.fa-comment(ng-click="" aria-label="Chat")
+				
+
+				div.opciones(layout="row" layout-wrap layout-fill ng-if="pregunta_agrup.tipo_pregunta=='Test'" style="padding-bottom: 32px;")
+					md-whiteframe.pointer.md-whiteframe-z2.btn(ng-class="{'elegida':opcion.elegida, 'correcta-revelada':opcion.is_correct && showCorrects}" ng-if="!opcion.nueva" flex="40" ng-click="elegirOpcion(pregunta_agrup, opcion)" ng-repeat="opcion in pregunta_agrup.opciones") 
+						span(style="font-weight: bold;") {{ indexChar($index) }}. 
+						span {{ opcion.definicion }}
+
+
+		edit-pregunta-agrupada(pregagrup="pregunta_agrup" ng-if="pregunta_agrup.editando")
+
+
+edit-contenido(grupoking="grupoking" ng-show="grupoking.editando" eventoactual="eventoactual" idiomaactualselec="idiomaactualselec")
+
+
+
+

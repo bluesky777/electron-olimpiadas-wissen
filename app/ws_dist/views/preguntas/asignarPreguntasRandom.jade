@@ -1,0 +1,42 @@
+.modal-header
+	h3.modal-title Asignar preguntas a la Evaluación
+.modal-body
+	.row(ng-hide="examenes.length == 0")
+		.col-lg-12.col-xs-12
+			
+			h3.alert.alert-danger ¡Cuidado! YA existen exámenes realizado en esta evaluación
+
+			div(style="max-height: 200px; overflow: scroll; border: solid 1px #ccc;")
+				div(ng-repeat="exam in examenes")
+					span {{ exam.usuario.nombres + ' ' + exam.usuario.apellidos }}.  
+					span
+						b  Correctas: 
+						| {{ exam.puntajes.correctas }} de {{ exam.puntajes.cantidad_pregs }}. 
+						b  Puntos: 
+						| {{ exam.puntajes.promedio }}
+	.row
+		.col-lg-12.col-xs-12
+			form(name="asignar-aleatoriamente")
+
+				.form-group(flex="50" style="margin-top:10px")
+					md-checkbox(ng-model="pregNoAsignadas" aria-label="Opciones aleatorias")
+						| Usar preguntas NO asignadas
+					md-tooltip Usar preguntas que NO estén asignadas a otras evaluaciones
+
+
+			
+				md-input-container
+					label Cantidad preguntas
+					input(required type="number" step="any" name="cantidad" ng-model="cantPregRandom" min="0" max="999")
+
+					div(ng-messages="asignar-aleatoriamente.cantidad.$error" multiple md-auto-hide="false")
+						div(ng-message="required") Debes poner un valor
+
+				
+
+
+
+.modal-footer
+	button.btn.btn-labeled.btn-success(ng-click="ok()") Asignar preguntas aleatoriamente
+		i.btn-label.fa.fa-check
+	button.btn.btn-default(ng-click="cancel()") Cancelar

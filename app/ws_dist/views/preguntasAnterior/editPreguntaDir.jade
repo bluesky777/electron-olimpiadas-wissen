@@ -1,0 +1,68 @@
+.panel.panel-default.panel-hovered.panel-stacked.mb20
+	.panel-heading( layout style="height: 40px;")
+		span
+			|  Editar en idiomas:  
+
+		md-input-container(layout="row" layout-align="start center" style="padding-bottom: 0px; margin-top: -10px;")
+			md-select(multiple="true" placeholder="Idioma" ng-model="idiomaPreg")
+				md-option(ng-repeat="idioma in eventoactual.idiomas" value="{{idioma.id}}") {{idioma.original}}
+
+		a(href="" ng-click="mostrarConfig()" ng-show="!mostrarConfiguracion") Configurar
+		a(href="" ng-click="mostrarConfig()" ng-show="mostrarConfiguracion") Ocultar
+
+	.panel-body
+		form.form-horizontal(name="frm" role="form" ng-submit="finalizarEdicion()")
+			
+			div(ng-show="mostrarConfiguracion" layout layout-margin layout-wrap layout-padding )
+				
+				md-input-container(flex="40")
+					label Descripción
+					input(type="text" ng-model="preguntaking.descripcion")
+
+				md-input-container(flex="20")
+					label Duración
+					input(type="number" ng-model="preguntaking.duracion")
+					md-tooltip En segundos. Solo para la gran final
+
+				md-input-container(flex="20")
+					label Puntos
+					input(type="number" ng-model="preguntaking.puntos")
+					md-tooltip Solo aplica si la evaluación es por puntos y no por promedio.
+
+				md-input-container(flex="30" layout="row" layout-align="start center")
+					md-select(placeholder="Tipo pregunta" ng-model="preguntaking.tipo_pregunta" ng-change="cambiaTipoPregunta()")
+						md-option() Test
+						md-option() Multiple
+						md-option() Texto
+						md-option() Lista
+						md-option() Ordenar
+						//md-option() Cuadrícula // No aplica para pregunta_king, sino para grupos_preguntas
+
+				.form-group(flex="50")
+					md-checkbox(ng-model="preguntaking.aleatorias" ng-true-value="1" ng-false-value="0" aria-label="Opciones aleatorias")
+						| Opciones aleatorias
+					md-tooltip No importará el orden en que ordene las opciones. Siempre saldrán aleatoriamente.
+
+
+			
+			div(ng-repeat="pregunta_traduc in preguntaking.preguntas_traducidas | porIdiomasEdit:idiomaPreg" ng-class-odd="'fondo-odd'" ng-class-even="'fondo-even'")
+
+				
+
+				edit-preg-traduc-dir(preguntatraduc="pregunta_traduc" preguntaking="preguntaking" eventoactual="eventoactual")
+
+
+				br
+
+			md-button.md-raised.md-primary.right(type="button" ng-click="finalizarEdicion()") 
+				md-tooltip Guardar y finalizar edición
+				| Finalizar
+			md-button.md-raised.md-default.right(type="button" ng-click="aplicarCambios()" aria-label="Aplicar")
+				md-tooltip Guardar y continuar editando
+				| Aplicar
+			md-button.md-raised.md-default.right(type="button" ng-click="cerrarEdicion()" aria-label="Cerrar")
+				md-tooltip Cerrar edición
+				| Cerrar
+
+
+

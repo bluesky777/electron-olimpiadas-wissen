@@ -1,0 +1,26 @@
+
+<md-sidenav md-component-id="sidenavSelectusu" style="width: 600px;" class="md-sidenav-right md-whiteframe-4dp">
+  <md-toolbar style="margin-top: 50px;" class="md-theme-light">
+    <h1 class="md-toolbar-tools">Seleccione usuario</h1>
+  </md-toolbar>
+  <md-content layout-padding>
+    <section>
+      <md-subheader class="md-primary">Usuarios
+        <md-input-container flex class="filtrarusuario">
+          <label>Filtrar</label>
+          <input type="text" ng-model="filtro">
+        </md-input-container>
+        <button type="button" ng-click="ingresar_seleccionado()" class="btn btn-primary">Ingresar</button>
+      </md-subheader>
+      <md-list class="md-dense"> 
+        <md-list-item ng-repeat="usuario in SocketClientes.usuarios_all | filter:filtro | orderBy:'nombres' " ng-click="seleccionarUsu(usuario)" ng-dblclick="ingresar_seleccionado(usuario)" class="md-2-line"><img ng-src="{{imagesPath + usuario.imagen_nombre}}" alt="{{usuario.username}}" class="md-avatar">
+          <div class="md-list-item-text">
+            <h3>{{ ($index+1) + '. ' + usuario.nombres + ' ' + usuario.apellidos}}</h3>
+            <h4>{{ usuario.nombre_entidad }}</h4>
+          </div>
+          <md-checkbox ng-model="usuario.seleccionado" ng-click="seleccionarCkUsu(usuario)" aria-label="Seleccionado" class="md-secondary"></md-checkbox>
+        </md-list-item>
+      </md-list>
+    </section>
+  </md-content>
+</md-sidenav>

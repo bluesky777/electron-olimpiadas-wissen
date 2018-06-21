@@ -1,0 +1,55 @@
+.row.pr0-sm.pl0-sm
+	.col-sm-12.col-md-12.pr0-sm.pl0-sm
+		
+		.panel.panel-default.panel-hovered.panel-stacked
+			.panel-body(style="height: 90vh; overflow: auto;")
+
+				timer-dir.timer-count(tiempomax="tiempo_max")
+
+				.titulo-3d(ng-bind-html=" categoria_traducida.nombre " style="font-size: 40px")
+
+
+				br
+				br
+				
+				div
+					b Descripción: 
+					span {{ examen_actual.descripcion }}
+
+
+				
+
+
+				br
+				//md-divider
+				.progreso-preguntas
+					span(style="color: #aaa;") {{ pregunta_actual }}
+					md-progress-linear(md-mode="determinate" value="{{pregunta_actual_porc}}")
+					.total-pregs {{ total_preguntas }}
+				br
+				br
+
+				span(ng-if="!waiting_question")
+					div(ng-repeat="pregunta in examen_actual.preguntas | preguntaActual:pregunta_actual ")
+						
+						view-pregunta-examen(ng-if="(pregunta.tipo_pregunta || !examen_actual.one_by_one) && !pregunta.terminado" 
+							preguntaking="pregunta" indice="pregunta_actual" idiomapreg="USER.idioma_main_id" )
+
+
+						view-grupo-examen(ng-if="(!pregunta.tipo_pregunta || !examen_actual.one_by_one) && !pregunta.terminado" 
+							grupoking="pregunta" indice="pregunta_actual" idiomapreg="USER.idioma_main_id" )
+
+						h4(ng-show="pregunta.terminado") Examen terminado.
+
+				span(ng-if="waiting_question" style="text-align: center;")
+					h4 Respuesta {{opcion_eligida}}
+					h4 Espera la siguiente pregunta
+					
+
+				div(ng-show="!examen_actual.one_by_one" style="text-align: center;")
+					md-button.md-default(type="submit" ng-click="guardando()") Guardar y continuar
+					md-button.md-primary(ng-click="finalizar_examen()") Finalizar
+
+
+			.panel-footer.todo-foot.clearfix
+				| No salgas de esta ventana

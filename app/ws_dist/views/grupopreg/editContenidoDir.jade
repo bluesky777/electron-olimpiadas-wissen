@@ -1,0 +1,45 @@
+.panel.panel-default.panel-hovered.panel-stacked.mb20
+	.panel-heading( layout style="height: 40px;")
+		span
+			|  Editar en idiomas:  
+		md-input-container(layout="row" layout-align="start center" style="margin-left: 5px; margin-top: 0px; margin-right: 5px")
+			md-select(multiple="true" placeholder="Idioma" ng-model="idiomaPreg")
+				md-option(ng-repeat="idioma in evento_actual.idiomas" value="{{idioma.id}}") {{idioma.original}}
+
+
+	.panel-body
+		form.form-horizontal(name="frm" role="form" ng-submit="finalizarEdicion()")
+
+			// Se muestra cuando aún no han cargado las traducciones
+			div(ng-if="contenidoEdit.contenidos_traducidos.length > 0" 
+				ng-repeat="contenido in contenidoEdit.contenidos_traducidos | porIdiomasEdit:idiomaPreg" 
+				ng-class-odd="'fondo-odd'" ng-class-even="'fondo-even'")
+
+
+				a.btn-tag.btn-tag-info(md-ink-ripple)
+					| Contenido en {{contenido.idioma}}
+
+				.definicion-preg
+					div(text-angular ta-toolbar-group-class="btn-group btn-group-xs" ng-model="contenido.definicion")
+			
+			// Se muestra cuando ya cargaron
+			span(ng-if="!contenidoEdit.contenidos_traducidos")
+
+				.definicion-preg
+					div(text-angular ta-toolbar-group-class="btn-group btn-group-xs" ng-model="contenidoEdit.definicion")
+					
+			br
+
+			md-button.md-raised.md-primary.right(type="button" ng-click="finalizarEdicion()") 
+				md-tooltip Guardar y finalizar edición
+				| Finalizar
+			md-button.md-raised.md-default.right(type="button" ng-click="aplicarCambios()" aria-label="Aplicar")
+				md-tooltip Guardar y continuar editando
+				| Aplicar
+			md-button.md-raised.md-default.right(type="button" ng-click="cerrarEdicion()" aria-label="Cerrar")
+				md-tooltip Cerrar edición
+				| Cerrar
+
+
+
+

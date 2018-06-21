@@ -1,0 +1,227 @@
+
+<md-button ng-click="empezarCrear()" ng-show="!creando" class="md-raised md-primary">Nuevo usuario</md-button>
+<sidenav-select-pc-dir id="sidenavSelectPC"></sidenav-select-pc-dir>
+<div ng-show="creando" class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="panel panel-default panel-hovered panel-stacked mb20 mr--15-sm ml--15-sm"> 
+      <div class="panel-heading">
+          
+        Nuevo
+      </div>
+      <div style="padding-top: 30px;" class="panel-body">
+        <form ng-submit="guardarNuevo()" name="frm" role="form" class="form-horizontal">
+          <div class="row">
+            <div class="col-md-8">
+              <div layout layout-sm="column">
+                <md-input-container flex class="margintb0">
+                  <label>Nombre</label>
+                  <input type="text" ng-model="newUsu.nombres" name="nombres" required>
+                </md-input-container>
+                <md-input-container flex class="margintb0">
+                  <label>Apellidos</label>
+                  <input type="text" ng-model="newUsu.apellidos">
+                </md-input-container>
+              </div>
+              <div layout layout-sm="column">
+                <md-input-container flex class="margintb0">
+                  <label>Username</label>
+                  <input type="text" ng-model="newUsu.username" required>
+                </md-input-container>
+                <md-input-container flex class="margintb0">
+                  <label>Contraseña</label>
+                  <input type="text" ng-model="newUsu.password" required>
+                </md-input-container>
+              </div>
+              <div layout layout-sm="column">
+                <md-input-container flex class="margintb0">
+                  <label>Email</label>
+                  <input type="text" ng-model="newUsu.email">
+                </md-input-container>
+                <md-input-container flex class="margintb0">
+                  <label>Celular</label>
+                  <input type="text" ng-model="newUsu.cell">
+                </md-input-container>
+                <md-input-container flex class="margintb0">
+                  <label>Edad</label>
+                  <input ng-model="newUsu.edad" type="text">
+                </md-input-container>
+              </div>
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Sexo</label>
+                    <div class="col-md-9">
+                      <md-radio-group ng-model="newUsu.sexo">
+                        <md-radio-button ng-value="avatar.masculino.abrev" aria-label="{{avatar.masculino.def}}" class="rd-gender"><img ng-src="{{avatar.masculino.img}}" class="img-gender">
+                          <md-tooltip>Masculino</md-tooltip>
+                        </md-radio-button>
+                        <md-radio-button ng-value="avatar.femenino.abrev" aria-label="{{avatar.femenino.def}}" class="rd-gender"><img ng-src="{{avatar.femenino.img}}" class="img-gender">
+                          <md-tooltip>Femenino</md-tooltip>
+                        </md-radio-button>
+                      </md-radio-group>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div style="padding-left: 15px;" class="form-group">
+                    <label>Imagen</label>
+                    <button type="button" ng-click="misImagenes()" style="float: right;margin-right: 20px;" class="btn btn-primary fa fa-image btn-xs"> Imágenes...</button>
+                    <ui-select ng-model="newUsu.imgUsuario" on-select="imagenSelect($item, $model)" theme="select2" style="width: 95%;">
+                      <ui-select-match placeholder="Imagen usuario"> <img ng-src="{{imagesPath + $select.selected.nombre}}" style="width:25px; height:25px;"><small ng-bind-html="' ' + $select.selected.nombre"></small></ui-select-match>
+                      <ui-select-choices repeat="imagen in imagenes | filter: {nombre: $select.search}"><img ng-src="{{imagesPath + imagen.nombre}}" style="width:25px; height:25px;"><small ng-bind-html="' ' + imagen.nombre | highlight: $select.search"></small></ui-select-choices>
+                      <ui-select-no-choice><img ng-src="{{imagesPath + 'perfil/system/avatars/no-photo.jpg'}}" style="width:25px; height:25px;"><small ng-bind-html="' Sin foto '"></small></ui-select-no-choice>
+                    </ui-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div style="padding-left: 15px;" class="form-group">
+                <label>Entidad</label>
+                <ui-select ng-model="newUsu.entidad" theme="select2" style="width: 95%;">
+                  <ui-select-match placeholder="Entidad"> <img ng-src="{{perfilPath + $select.selected.logo_nombre}}" style="width:25px; height:25px;"><small ng-bind-html="' ' + $select.selected.nombre"></small></ui-select-match>
+                  <ui-select-choices repeat="entidad in entidades"><img ng-src="{{perfilPath + entidad.logo_nombre}}" style="width:25px; height:25px;"><small ng-bind-html="' ' + entidad.nombre | highlight: $select.search"></small></ui-select-choices>
+                </ui-select>
+              </div>
+              <md-select ng-model="newUsu.nivel_id" placeholder="Niveles" ng-change="cambiaNivelNewUsu()">
+                <md-option ng-value="nivel.nivel_king_id" ng-repeat="nivel in niveles_king | nivelesTraducidos:$parent.evento_actual.idioma_principal_id">Nivel {{nivel.nombre}}</md-option>
+                <md-option value="-1">Todos</md-option>
+              </md-select>
+              <md-content class="alto-inscribir">
+                <md-list>
+                  <md-subheader class="md-no-sticky">Inscribir en:</md-subheader>
+                  <md-list-item ng-repeat="categoria in categorias_king1 | categoriasTraducidas:$parent.evento_actual.idioma_principal_id:newUsu.nivel_id">
+                    <md-checkbox ng-checked="checkeandoCategorias(categoria, newUsu.inscripciones)" ng-click="toggle(categoria, newUsu.inscripciones)"></md-checkbox>
+                    <p>{{categoria.nombre}}</p>
+                  </md-list-item>
+                </md-list>
+              </md-content>
+            </div>
+          </div>
+          <div class="clearfix right">
+            <md-button type="button" ng-click="guardarNuevoYLogin()" ng-disabled="guardando" class="md-primary">Guardar y enviar</md-button>
+            <md-button type="submit" ng-disabled="guardando" class="md-primary">Guardar</md-button>
+            <md-button type="button" ng-click="cancelarNuevo()" class="md-default">Cancelar</md-button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div ng-show="editando" class="row">
+  <div class="col-sm-12 col-md-12">
+    <div class="panel panel-default panel-hovered panel-stacked mb20 mr--15-sm ml--15-sm">
+      <div class="panel-heading">
+          
+        Editar a {{currentUser.nombres}}
+      </div>
+      <div style="padding-top: 30px;" class="panel-body">
+        <form ng-submit="guardarEdicion()" name="frmEdit" role="form" class="form-horizontal">
+          <div class="row">
+            <div class="col-md-8">
+              <div layout layout-sm="column">
+                <md-input-container flex class="margintb0">
+                  <label>Nombre</label>
+                  <input type="text" ng-model="currentUser.nombres" name="nombres" required>
+                </md-input-container>
+                <md-input-container flex class="margintb0">
+                  <label>Apellidos</label>
+                  <input type="text" ng-model="currentUser.apellidos">
+                </md-input-container>
+              </div>
+              <div layout layout-sm="column">
+                <md-input-container flex class="margintb0">
+                  <label>Username</label>
+                  <input type="text" ng-model="currentUser.username" required>
+                </md-input-container>
+                <md-input-container flex class="margintb0">
+                  <label>Contraseña</label>
+                  <input type="text" ng-model="currentUser.password">
+                </md-input-container>
+              </div>
+              <div layout layout-sm="column">
+                <md-input-container flex class="margintb0">
+                  <label>Email</label>
+                  <input type="text" ng-model="currentUser.email">
+                </md-input-container>
+                <md-input-container flex class="margintb0">
+                  <label>Celular</label>
+                  <input type="text" ng-model="currentUser.cell">
+                </md-input-container>
+                <md-input-container flex class="margintb0">
+                  <label>Edad</label>
+                  <input ng-model="currentUser.edad" type="text">
+                </md-input-container>
+              </div>
+              <div class="row">
+                <div class="col-md-8">
+                  <div class="form-group">
+                    <label class="control-label col-md-3">Sexo</label>
+                    <div class="col-md-9">
+                      <md-radio-group ng-model="currentUser.sexo">
+                        <md-radio-button ng-value="avatar.masculino.abrev" aria-label="{{avatar.masculino.def}}" class="rd-gender"><img ng-src="{{avatar.masculino.img}}" class="img-gender">
+                          <md-tooltip>Masculino</md-tooltip>
+                        </md-radio-button>
+                        <md-radio-button ng-value="avatar.femenino.abrev" aria-label="{{avatar.femenino.def}}" class="rd-gender"><img ng-src="{{avatar.femenino.img}}" class="img-gender">
+                          <md-tooltip>Femenino</md-tooltip>
+                        </md-radio-button>
+                      </md-radio-group>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12">
+                  <div style="padding-left: 15px;" class="form-group">
+                    <label>Imagen</label>
+                    <button type="button" ng-click="misImagenes()" style="float: right;margin-right: 20px;" class="btn btn-primary fa fa-image btn-xs"> Imágenes...</button>
+                    <ui-select ng-model="currentUser.imgUsuario" on-select="imagenSelect($item, $model)" theme="select2" style="width: 95%;">
+                      <ui-select-match placeholder="Imagen usuario"> <img ng-src="{{imagesPath + $select.selected.nombre}}" style="width:25px; height:25px;"><small ng-bind-html="' ' + $select.selected.nombre"></small></ui-select-match>
+                      <ui-select-choices repeat="imagen in imagenes | filter: {nombre: $select.search}"><img ng-src="{{imagesPath + imagen.nombre}}" style="width:25px; height:25px;"><small ng-bind-html="' ' + imagen.nombre | highlight: $select.search"></small></ui-select-choices>
+                      <ui-select-no-choice><img ng-src="{{imagesPath + 'perfil/system/avatars/no-photo.jpg'}}" style="width:25px; height:25px;"><small ng-bind-html="' Sin foto '"></small></ui-select-no-choice>
+                    </ui-select>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div style="padding-left: 15px;" class="form-group">
+                <label>Entidad</label>
+                <ui-select ng-model="currentUser.entidad" theme="select2" style="width: 95%;">
+                  <ui-select-match placeholder="Entidad"> <img ng-src="{{perfilPath + $select.selected.logo_nombre}}" style="width:25px; height:25px;"><small ng-bind-html="' ' + $select.selected.nombre"></small></ui-select-match>
+                  <ui-select-choices repeat="entidad in entidades"><img ng-src="{{perfilPath + entidad.logo_nombre}}" style="width:25px; height:25px;"><small ng-bind-html="' ' + entidad.nombre | highlight: $select.search"></small></ui-select-choices>
+                </ui-select>
+              </div>
+              <md-select ng-model="currentUser.nivel_id" placeholder="Niveles">
+                <md-option ng-value="nivel.nivel_king_id" ng-repeat="nivel in niveles_king | nivelesTraducidos:$parent.evento_actual.idioma_principal_id">Nivel {{nivel.nombre}}</md-option>
+                <md-option value="-1">Todos</md-option>
+              </md-select>
+              <md-content class="alto-inscribir">
+                <md-list>
+                  <md-subheader class="md-no-sticky">Inscribir en:</md-subheader>
+                  <md-list-item ng-repeat="categoria in categorias_inscripcion | listaCategsDelUsuarioSegunNivel:currentUser.nivel_id ">
+                    <md-checkbox ng-model="categoria.selected" ng-change="cambiaInscripcion(categoria, currentUsers)" aria-label="Categoria" ng-disabled="categoria.cambiando"></md-checkbox>
+                    <p>{{categoria.nombre}}</p>
+                    <div aria-label="Comentario inútil" ng-click="" class="fa fa-comments-o md-secondary"></div>
+                  </md-list-item>
+                </md-list>
+              </md-content>
+            </div>
+          </div>
+          <div class="clearfix right">
+            <md-button type="button" ng-click="eliminarUsuario()" ng-disabled="eliminando" class="md-warn">Eliminar</md-button>
+            <md-button type="submit" ng-disabled="guardando" class="md-primary">Guardar</md-button>
+            <md-button type="button" ng-click="cancelarEdicion()" class="md-default">Cancelar</md-button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-sm-12 col-md-12 mr--15-sm ml--15-sm">
+    <grid-usuarios currentusers="currentUsers" nivelesking="niveles_king" usuarios="usuarios" categoriasking="categorias_king2" idioma="$parent.evento_actual.idioma_principal_id"></grid-usuarios>
+  </div>
+</div>

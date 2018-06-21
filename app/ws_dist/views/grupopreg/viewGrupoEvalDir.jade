@@ -1,0 +1,27 @@
+md-whiteframe.md-whiteframe-z2.definicion-frame(layout layout-wrap style="padding: 10px" ng-class-odd="'fondo-gris-odd'")
+
+	span(flex="5" style="font-weight: bold") {{ $parent.$parent.$index+1}}.
+	span(ng-bind-html="grupoking.definicion" flex="95")
+
+
+
+	div.btn-container-edit(layout="row" style="margin-left: -50px; ")
+		
+		md-button.md-icon-button.md-mini(aria-label="Quitar grupo" ng-click="quitarPregunta(grupoking)")
+			md-icon.fa.fa-times
+			md-tooltip Quitar
+
+
+
+	div(ng-repeat="pregunta_agrup in grupoking.pregs_agrupadas" flex="100")
+		div()
+			md-whiteframe.md-whiteframe-z2.definicion-frame(layout style="margin-left: 20px; padding: 10px")
+				span(flex="5") {{$index+1}}.
+				span(ng-bind-html="pregunta_agrup.enunciado" flex="95")
+
+
+	
+
+
+
+

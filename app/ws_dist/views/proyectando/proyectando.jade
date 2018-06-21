@@ -1,0 +1,15 @@
+.container-proyector
+
+	header.hidden-print.proyector-head.site-head#site-head(ng-include=" 'views/panel/header.tpl.html' ")
+		
+
+
+
+	// main-container
+	.main-container.clearfix.nav-expand()
+
+		div.content-container.fixedHeader(style="width: 100%; margin-left: 0px; margin-top: -70px;")
+			.page.page-dashboard(style="padding: 0px; background-color: white; height: 102vh; overflow: auto;")
+
+				.page-wrap.proyectando(ui-view="contenido_panel" style="height: 100%; text-align:center; background-size: 100% 100%; background-position: center; background-size: cover; background-image: url('{{imagesPath + SocketData.config.info_evento.img_name}}');" )
+					h2.txt-borde-blanco(style="padding: 8px; margin-top: 70px" ng-bind-html="SocketData.config.info_evento.msg_teleprompter") 

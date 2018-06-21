@@ -1,0 +1,28 @@
+.row
+	.col-sm-12.col-md-12
+		
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading
+				| Cambiar contraseña
+
+			.panel-body
+
+
+				form(ng-submit="cambiarPass(newpass, newpassverif, passantiguo)")
+					md-input-container.md-block(flex-gt-sm style="margin-bottom: 0px")
+						label Contraseña anterior
+						input(type="text" ng-model="passantiguo")
+						md-tooltip Ingresa tu contraseña anterior
+
+					md-input-container.md-block(flex-gt-sm style="margin-bottom: 0px")
+						label Contraseña
+						input(type="text" ng-model="newpass")
+						md-tooltip Ingresa tu nueva contraseña
+
+					md-input-container.md-block(flex-gt-sm style="margin-bottom: 0px")
+						label Ingrésala otra vez
+						input(type="text" ng-model="newpassverif")
+						md-tooltip Repítela
+
+
+					md-button(type="submit" ng-enabled="!status.passCambiado") Cambiar

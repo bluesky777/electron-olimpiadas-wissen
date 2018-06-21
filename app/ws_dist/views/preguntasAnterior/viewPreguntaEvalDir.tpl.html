@@ -1,0 +1,17 @@
+
+<div ng-repeat="pregunta in preguntaking.preguntas_traducidas | porIdioma:idiomapreg.selected" ng-class-odd="'fondo-gris-odd'">
+  <div ng-show="!preguntaking.editando">
+    <md-whiteframe layout style="padding: 10px" class="md-whiteframe-z2 definicion-frame"><span flex="5">
+         
+        {{indice+1}}.
+        <input type="number" min="1" ng-model="pregunta.orden"></span><span ng-bind-html="pregunta" flex="95"></span>
+      <div ng-show="pregunta.ayuda &amp;&amp; preguntaking.showDetail" ng-click="toggleMostrarAyuda(pregunta)" ng-class="{'ayuda-preg-showed': pregunta.mostrar_ayuda, 'ayuda-preg-hidded':!pregunta.mostrar_ayuda}"><a ng-show="!pregunta.mostrar_ayuda"><i class="fa fa-anchor"></i></a><span ng-show="pregunta.mostrar_ayuda">{{pregunta.ayuda}}</span></div>
+      <div layout="row" style="margin-left: -50px;" class="btn-container-edit">
+        <md-button aria-label="Preview" ng-click="quitarPregunta(preguntaking)" class="md-icon-button md-mini">
+          <md-icon class="fa fa-times"></md-icon>
+          <md-tooltip>Quitar</md-tooltip>
+        </md-button>
+      </div>
+    </md-whiteframe>
+  </div>
+</div>

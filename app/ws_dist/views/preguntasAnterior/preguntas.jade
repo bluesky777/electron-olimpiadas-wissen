@@ -1,0 +1,119 @@
+.row
+	.col-sm-12.col-md-12
+		
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading(layout style="padding: 0; padding-bottom: 5px;")
+
+				md-input-container(layout="row" layout-align="start center" style="padding-bottom: 0px; margin-top: 2px;    margin-bottom: 4px;")
+					md-select(placeholder="Idioma" ng-model="idiomaPreg.selected")
+						md-option(ng-repeat="idioma in evento_actual.idiomas" value="{{idioma.id}}") {{idioma.original}}
+
+
+				md-input-container(layout="row" layout-align="start center" style="padding-bottom: 0px; margin-top: 2px;    margin-bottom: 4px;")
+					md-select.categoria(placeholder="Categoría" ng-model="categoria" ng-change="traerPreguntasYEvaluaciones()")
+						span(ng-repeat="catking in categorias")
+							md-option(ng-repeat="cat_traduc in catking.categorias_traducidas | catsByIdioma:idiomaPreg.selected" 
+								ng-show="cat_traduc.idioma_id==idiomaPreg.selected" value="{{cat_traduc.categoria_id}}") 
+								|  {{cat_traduc.nombre}}
+
+
+				md-input-container(layout="row" layout-align="start center" style="padding-bottom: 0px; margin-top: 2px;    margin-bottom: 4px;")
+					md-select(placeholder="Evaluaciones" ng-model="evaluacion_id" ng-change="traerPreguntasDeEvaluacion()")
+						md-option(ng-repeat="evalu in evaluaciones" value="{{evalu.id}}") 
+							|  {{evalu.id}} - {{evalu.descripcion}}
+
+						md-option(value="0") 
+							|  Todas
+
+						md-option(value="sin_asignar") 
+							|  Sin asignar
+
+				//md-checkbox(ng-model="showDetail" style="display:inline-block") Detalles
+
+				input.form-control.ancho-200(type="text" ng-model="preg_buscar" placeholder="{{ 'BUSCAR_PLACEHOLDER' | translate }}")
+
+			.panel-body(ng-show="evaluacion_id!='sin_asignar'")
+				
+				div(ng-repeat="pregunta_king in preguntas_king | filter:preg_buscar | pregsByCatsAndEvaluacion:categoria:preguntas_evaluacion:evaluacion_id ")
+					div(ng-show="pregunta_king.editando")
+						br
+						br
+					view-pregunta(ng-show="pregunta_king.tipo_pregunta" preguntaking="pregunta_king" 
+						indice="$index" idiomapreg="idiomaPreg" eventoactual="evento_actual" 
+						eventoactualselec="idiomaPreg.selected" evaluaciones="evaluaciones")
+
+
+					view-grupo(ng-show="!pregunta_king.tipo_pregunta" grupoking="pregunta_king" 
+						indice="$index" idiomapreg="idiomaPreg" eventoactual="evento_actual" 
+						idiomaactualselec="idiomaPreg.selected" evaluaciones="evaluaciones")
+							
+							
+				add-pregunta(preguntasking="preguntas_king" categoria="categoria" tipo="king" ng-show="inicializado")
+				add-pregunta(preguntasking="preguntas_king" categoria="categoria" tipo="grupo" ng-show="inicializado")
+
+
+
+			.panel-body(ng-show="evaluacion_id=='sin_asignar'")
+
+				div(ng-repeat="pregunta_king in preguntas_king | filter:preg_buscar | orderBy:'orden' ")
+					div(ng-show="pregunta_king.editando")
+						br
+						br
+					view-pregunta(ng-show="pregunta_king.tipo_pregunta" preguntaking="pregunta_king" 
+						indice="$index" idiomapreg="idiomaPreg" eventoactual="evento_actual" 
+						eventoactualselec="idiomaPreg.selected" evaluaciones="evaluaciones")
+
+
+					view-grupo(ng-show="!pregunta_king.tipo_pregunta" grupoking="pregunta_king" 
+						indice="$index" idiomapreg="idiomaPreg" eventoactual="evento_actual" 
+						idiomaactualselec="idiomaPreg.selected" evaluaciones="evaluaciones")
+					
+
+
+					md-divider
+
+				add-pregunta(preguntasking="preguntas_king" categoria="categoria" tipo="king" ng-show="inicializado")
+				add-pregunta(preguntasking="preguntas_king" categoria="categoria" tipo="grupo" ng-show="inicializado")
+
+
+
+.row
+	.col-sm-12.col-md-4
+		
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading(layout)
+				| Evaluaciones
+
+
+			.panel-body
+
+				md-list-item(ng-repeat="evalu in evaluaciones" ng-click="selectEvaluacion(evalu, $event)" ng-class="{'bg-success': evalu.selected==true}")
+	
+					p  {{evalu.id}} - {{evalu.descripcion}}
+
+
+	.col-sm-12.col-md-8
+		
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading(layout)
+				| Preguntas
+
+
+			.panel-body
+
+				div(ng-repeat="pregunta_king in preguntas_king2 | pregsByCatsAndEvaluacion:categoria:preguntas_evaluacion2:evalu_seleccionada.id | orderBy:'orden' ")
+					
+					view-pregunta-eval(ng-if="pregunta_king.tipo_pregunta" preguntaking="pregunta_king" 
+						indice="$index" idiomapreg="idiomaPreg" eventoactual="evento_actual" 
+						eventoactualselec="idiomaPreg.selected" evaluaciones="evaluaciones"
+						preguntasevaluacion2="preguntas_evaluacion2")
+
+
+					view-grupo-eval(ng-if="!pregunta_king.tipo_pregunta" grupoking="pregunta_king" 
+						indice="$index" idiomapreg="idiomaPreg" eventoactual="evento_actual" 
+						idiomaactualselec="idiomaPreg.selected" evaluaciones="evaluaciones" preguntasevaluacion2="preguntas_evaluacion2")
+							
+
+
+
+

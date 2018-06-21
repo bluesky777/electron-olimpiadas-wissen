@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Olimpiadas</title>
+    <style type="text/css" media="screen">
+      body {
+        background-image: url('./app/images/fondo-olimpiadas2.jpg');
+        background-size:cover;
+        color: #fff;
+      }
+      h1, h2, h3, h4, h5{
+        text-align: center;
+      }
+      a{
+        color: #fff;
+      }
+    </style>
+    
+  </head>
+  <body>
+    
+    <h1>Olimpiadas Wissen</h1>
+    <!-- All of the Node.js APIs are available in this renderer process. -->
+    Este es el servidor para una red local. Si lo cierra, los clientes ya no podrán funcionar.
+    <br>
+    
+    <input type="button" onclick="crearTablas()" value="Crear tablas">
+    <br>
+    
+    <input type="button" onclick="crearDatosIniciales()" value="Crear datos iniciales">
+    
+    <br>
+    <br>
+    <h3>Acceso en las siguientes IP:</h3>
+    <h1 id="contenido-ip"></h1>
+    <h2>
+      <a href="#" onclick="abrirAppEnNavegador()"> ..:: Abrir ::.. </a>
+    </h2>
+    
+    
+    
+    
+    
+    
+    
+
+    <script>
+      (function() {
+        // You can also require other files to run in this process
+        require('./renderer.js')
+        
+        var ip = require('ip');
+        var ip = ip.address();
+        
+        
+        crearTablas = function () {
+          const {shell} = require('electron');
+          shell.openExternal('http://' + ip + ':8787/api/welcome/crear-tablas');
+        }
+        
+        crearDatosIniciales = function () {
+          const {shell} = require('electron');
+          shell.openExternal('http://' + ip + ':8787/api/welcome/crear-datos-iniciales');
+        }
+      
+        abrirAppEnNavegador = function () {
+          const {shell} = require('electron');
+          shell.openExternal('http://' + ip + ':8787');
+        }
+      
+        
+        // Buscamos y mostramos las IPs
+        require('dotenv').config();
+        var os = require('os');
+        var ifaces = os.networkInterfaces();
+        //console.log(ifaces);
+        
+        Object.keys(ifaces).forEach(function (ifname) {
+          var alias = 0;
+
+          ifaces[ifname].forEach(function (iface) {
+            if ('IPv4' !== iface.family || iface.internal !== false) {
+              // skip over internal (i.e. 127.0.0.1) and non-ipv4 addresses
+              return;
+            }
+
+            if (alias >= 1) {
+              // this single interface has multiple ipv4 addresses
+              document.getElementById("contenido-ip").innerHTML += alias + ' ' + iface.address + ':' + process.env.NODE_PORT + '<br>';
+            } else {
+              // this interface has only one ipv4 adress
+              document.getElementById("contenido-ip").innerHTML += iface.address + ':' + process.env.NODE_PORT + '<br>';
+            }
+            ++alias;
+          });
+        });
+
+        
+      })();
+
+      
+      
+      
+
+    </script>
+  </body>
+</html>

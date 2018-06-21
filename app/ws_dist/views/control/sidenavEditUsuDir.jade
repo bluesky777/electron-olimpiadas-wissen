@@ -1,0 +1,77 @@
+md-sidenav.md-sidenav-right.md-whiteframe-4dp(md-component-id="sidenavEditusu" style="width: 600px;")
+	md-toolbar.md-theme-light( style="margin-top: 50px;")
+		h1.md-toolbar-tools Editar usuario
+
+	md-content(layout-padding)
+		
+	
+		form.form-horizontal(ng-submit="guardar()")
+			
+			.row(style="margin-top: 10px")
+				md-input-container.col-sm-6.col-xs-12
+					label Nombre 
+					input(type="text" ng-model="clt_to_edit.nombres" name="nombres" required)
+				md-input-container.col-sm-6.col-xs-12
+					label Apellidos
+					input(type="text" ng-model="clt_to_edit.apellidos")
+			
+			.row
+				md-input-container.col-sm-6.col-xs-12
+					label Username
+					input(type="text" ng-model="clt_to_edit.username" required)
+
+				md-button.md-raised(type="button" ng-click="cambiarPass($event)") Contraseña
+				
+			.row
+				md-input-container.col-sm-4.col-xs-4
+					label Email
+					input(type="text" ng-model="clt_to_edit.email")
+				
+				md-input-container.col-sm-4.col-xs-4
+					label Celular
+					input(type="text" ng-model="clt_to_edit.cell")
+				
+				md-input-container.col-sm-4.col-xs-4
+					label Edad
+					input(ng-model="clt_to_edit.edad" type="text")
+			.row
+				.col-md-12
+					.form-group
+						label.control-label.col-md-2 Sexo
+						.col-md-10
+							md-radio-group(ng-model="clt_to_edit.sexo")
+								md-radio-button.rd-gender(ng-value="avatar.masculino.abrev" aria-label="{{avatar.masculino.def}}")
+									img.img-gender(ng-src="{{avatar.masculino.img}}")
+									md-tooltip Masculino
+							
+								md-radio-button.rd-gender(ng-value="avatar.femenino.abrev" aria-label="{{avatar.femenino.def}}")
+									img.img-gender(ng-src="{{avatar.femenino.img}}")
+									md-tooltip Femenino
+
+				.col-md-12
+					.row
+						.col-sm-6
+							md-select(ng-model="clt_to_edit.entidad_id" placeholder="Entidad")
+								md-option(ng-repeat="entidad in entidades" value="{{entidad.id}}") {{entidad.nombre}}
+						.col-sm-6
+							md-select(ng-model="clt_to_edit.nivel_id" placeholder="Niveles")
+								md-option(ng-value="nivel.nivel_king_id" ng-repeat="nivel in $parent.niveles_king | nivelesTraducidos:$parent.evento_actual.idioma_principal_id") {{nivel.nombre}}
+								md-option(value="") Todos
+
+
+			.row
+				.clearfix.right
+					md-button.md-default.md-raised(type="button" ng-click="cancelar()") Cancelar
+					md-button.md-primary.md-raised(type="submit" ng-disabled="guardando") Guardar
+
+			.row
+				md-content
+					md-list
+						md-subheader.md-no-sticky
+							| Inscribir en:
+
+						md-list-item(ng-repeat="categoria in [clt_to_edit] | categsInscritas:categorias_king1:$parent.evento_actual.idioma_principal_id | filter: { nivel_id: clt_to_edit.nivel_id } ")
+							md-checkbox(ng-model="categoria.selected" ng-change="cambiaInscripcion(categoria, clt_to_edit)" aria-label="Categoria" ng-disabled="categoria.cambiando")
+							p {{categoria.nombre}} 
+
+

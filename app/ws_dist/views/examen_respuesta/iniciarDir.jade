@@ -1,0 +1,86 @@
+.row(ng-if="$state.is('panel')")
+	.col-md-12.pl0-sm.pr0-sm
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-body
+				.titulo-3d(ng-bind-html=" evento_actual.nombre ")
+				div(ng-switch on="evento_actual.gran_final" style="text-align: center;")
+					span(ng-switch-when="1")
+						h3.text-light(ng-bind-html="'GRAN_FINAL' | translate") ¡Gran final!
+						md-whiteframe.md-whiteframe-z2(ng-show="USER.categsel" layout layout-align="center center")
+
+							h2(ng-bind-html="categoriaSelect().categsel_nombre" style="margin-bottom: 20px;")
+					h3.text-light(ng-switch-default ng-bind-html="'ELIMINATORIAS' | translate") Eliminatorias
+
+
+.row(ng-if="hasRoleOrPerm('Pantalla')")
+	.col-md-6.pl0-sm.pr0-sm
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading 
+				| Proyectar
+
+			
+			.panel-body
+				
+				md-button.md-raised.md-primary.col-md-12(ng-click="iniciarProyeccion()" style="width: 100%;")
+					| Iniciar proyección 
+
+
+.row(ng-if="hasRoleOrPerm('Presentador')")
+	.col-md-6.pl0-sm.pr0-sm
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-body
+				
+				#pregunta-en-pantalla
+					// Pregunta que se está mostrando en pantalla
+					pregunta-en-pantalla(ng-show="SocketData.config.pregunta.id")
+
+
+
+
+.row(ng-if="!hasRoleOrPerm('Pantalla') && !hasRoleOrPerm('Presentador')")
+	.col-md-6.pl0-sm.pr0-sm
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading 
+				div(ng-switch on="USER.inscripciones.length > 0") 
+					div(ng-switch-when="true" ng-bind-html="('INSCRITO_EN' | translate)" ) 
+					div(ng-switch-default ng-bind-html="('NO_ESTAS_INSCRITO' | translate)" ) 
+
+			
+			.panel-body
+				md-button.md-raised.col-md-12(ng-click="iniciarExamen(categoriaking)" ng-repeat="categoriaking in USER.inscripciones | categsInscritasDeUsuario:categorias_king:USER.idioma_main_id:categoriaSelect().categsel_id "
+					ng-class="{'md-primary': categoriaking.selected }" style="width: 100%;")
+					| {{categoriaking.nombre}}
+
+
+
+	.col-md-6.pl0-sm.pr0-sm
+		.panel.panel-default.panel-hovered.panel-stacked.mb20
+			.panel-heading 
+
+				div(ng-bind-html="('EXAM_HECHOS' | translate)" ) 
+			
+			.panel-body
+				
+				uib-accordion(close-others="false" ng-repeat="examen in examenes_puntajes | orderBy:'-id'")
+					uib-accordion-group(heading="{{examen.categoria.nombre + ' - (Cod:' + examen.id + ') ' }}" 
+						ng-init="status.open = $first" is-open="status.open"
+						tooltip="{{examen.evaluacion.descripcion}}")
+
+						div 
+							b 
+								span(ng-show="examen.gran_final" style="text-decoration: underline;") GRAN FINAL:    
+								span(ng-hide="examen.gran_final" style="text-decoration: underline;") Eliminatoria:     
+								| {{examen.categoria.nombre}} ({{examen.evaluacion.descripcion}})
+						div() Preguntas: {{examen.cantidad_pregs}} 
+						div() Correctas: {{examen.correctas}} 
+						div() Incorrectas: {{examen.cantidad_pregs-examen.correctas}} 
+						div() Terminado: 
+							span(ng-show="examen.terminado") Si 
+							span(ng-hide="examen.terminado") No 
+						div() Promedio: {{examen.promedio | number:1}}% 
+
+						div(style="text-align:right" ng-hide="examen.terminado")
+							a(ui-sref="panel.examen_respuesta({examen_respuesta_id: examen.id})" href="") Continuar
+						hr
+							
+						
