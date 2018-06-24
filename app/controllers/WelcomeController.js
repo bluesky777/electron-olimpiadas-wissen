@@ -1,6 +1,6 @@
-var express = require('express');
-var router = express.Router();
-db = require('../conexion/connWeb');
+var express     = require('express');
+var router      = express.Router();
+db              = require('../conexion/connWeb');
 
 // Enrutadores
 router.route('/')
@@ -14,18 +14,35 @@ router.route('/crear-datos-iniciales').get(getCrearDatosIniciales);
 
 // Funciones
 function getRouteHandler(req, res) {
-    /*
-    return new Promise(function (resolve, reject){
-        resolve('Suerte');
-    }).then(function(mesn){
-        res.send(mesn);
-    });
-    return;
-    */
+    
     var ip = require('ip');
     var ip = ip.address();
-    respuesta = {nombre: 'Bienvenido', ip: ip};
-    res.json(respuesta);
+    var Eventos = require('../conexion/Models/Evento');
+    
+    Eventos.actual().then(function(result){
+        promesa = new Promise(function(resolve, reject){
+            evento      = result;
+            evento.ip   = ip;
+            
+            if (req.qr == false || !req.qr) {
+                let QrCodes = require('../conexion/Models/QrCode');
+                let numero  = (Math.floor(Math.random() * Math.floor(9999))).toString();
+                
+                QrCodes.crear(numero, 'let_in').then(function(result2){
+                    evento.qr   = numero;
+                    resolve(evento);
+                });
+                
+            }else{
+                resolve(evento);
+            }
+        });
+        return promesa;
+    })
+    .then(function(evento){        
+        res.json(evento);
+    });
+    
 
 }
 

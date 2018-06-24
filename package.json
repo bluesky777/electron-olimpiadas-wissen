@@ -17,6 +17,7 @@
   "author": "GitHub",
   "license": "CC0-1.0",
   "dependencies": {
+    "bcrypt": "^2.0.1",
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "express": "^4.15.2",

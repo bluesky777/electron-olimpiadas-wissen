@@ -9,11 +9,13 @@ const app           = express();
 var cors            = require('cors');
 var http            = require('http').Server(app);
 var io              = require('socket.io')(http);
+var bodyParser      = require('body-parser');
 
 app.use(cors());
-app.use('/api', require('./app/controllers/routes'));
+app.use(bodyParser.json()); // Para recibir json desde Angular
 app.use("/app/ws_dist", express.static(path.join(__dirname, 'app/ws_dist')));
-
+app.use("/images", express.static(path.join(__dirname, 'app/images')));
+app.use('/api', require('./app/controllers/routes'));
 
 
 app.get('/chat', function(req, res){
@@ -28,7 +30,7 @@ app.get('/', function(req, res){
 });
     
 
-
+//console.log(app._router.stack); // Para ver las actuales rutas Routes
 
 
 
@@ -145,10 +147,12 @@ self.io.on('connection', (socket)=> {
         }
         
 
-
-        if (socket.datos.user_data.inscripciones.length > 0) {
-            socket.datos.categsel 	= socket.datos.user_data.inscripciones[0].categoria_id;
+        if (socket.datos.user_data.inscripciones){
+            if (socket.datos.user_data.inscripciones.length > 0) {
+                socket.datos.categsel 	= socket.datos.user_data.inscripciones[0].categoria_id;
+            }
         }
+        
 
         for (var i = 0; i < all_clts.length; i++) {
             if (all_clts[i].resourceId == socket.id) {

@@ -36,7 +36,7 @@ class Database {
                     resolve(items);
                 }, function(tx,error){
                     
-                    console.log("Error", error.message);
+                    console.log("Error", sql);
                     reject(error);
                 })
             })
@@ -45,6 +45,6 @@ class Database {
     }
     
 };
-
+console.log('Nuevo Database');
 module.exports = new Database();
 

@@ -1,16 +1,19 @@
 var express         = require('express');
 var router          = express.Router();
+var db              = require('../conexion/connWeb');
 
 
 
+// Enrutadores
+router.route('/logout').put(putLogout)
+router.route('/login').post(postLogin)
+router.route('/verificar').post(postVerificar);
 
-router.route('/')
-    .put(putLogout)
-    .post(postLogin)
-    .post(postVerificar);
+    
 
+
+// Funciones
 function putLogout(req, res) {
-    var connection 	    = require('../conexion/conn');
     
     consulta 	= `SELECT * FROM ws_idiomas where deleted_at is null`;
     connection.query(consulta, function (error, result) {
@@ -21,7 +24,24 @@ function putLogout(req, res) {
 }
 
 function postLogin(req, res) {
-    //handle POST route here
+    User = require('../conexion/Models/User');
+    
+    User.login(req.body).then((user)=>{
+        
+        return User.datos_usuario_logueado(user);
+        
+    }, (r2)=>{
+        
+        console.log(r2);
+        res.status(400).send({ error: r2 })
+        
+    }).then((user)=>{
+        
+        res.send(user);
+        
+    })
+    
+    
 }
 
 
