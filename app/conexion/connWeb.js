@@ -44,7 +44,27 @@ class Database {
         } );
     }
     
+    find( tabla, id ) {
+
+        let self = this;
+        let promesa = new Promise(function(resolve, reject){
+            
+            let consulta 	= `SELECT *, rowid FROM `+tabla+` WHERE rowid=? AND deleted_at is null`;
+            self.query(consulta, [id]).then(function (result) {
+
+                if( result.length == 0){
+                    resolve({});
+                }else{
+                    resolve(result[0]);
+                }
+                                
+            });
+        })
+        
+        return promesa;
+    }
+    
 };
-console.log('Nuevo Database');
+
 module.exports = new Database();
 

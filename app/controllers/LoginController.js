@@ -1,7 +1,10 @@
 var express         = require('express');
 var router          = express.Router();
+var jwt             = require('jsonwebtoken');
+var User            = require('../conexion/Models/User');
 var db              = require('../conexion/connWeb');
 
+require('dotenv').config();
 
 
 // Enrutadores
@@ -46,7 +49,25 @@ function postLogin(req, res) {
 
 
 function postVerificar(req, res) {
-    //handle POST route here
+    let token = req.headers.authorization.slice(7);
+    
+    jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
+        if (err) {
+            console.log(err);
+            res.status(400).send({'error': 'Al parecer el token expiró'});
+        }
+        
+        User.find(decoded.rowid).then((result)=>{
+            $user = result;
+            User.datos_usuario_logueado($user).then((user)=>{
+                res.send(user);
+            });
+            
+        });
+
+        
+    });
+        
 }
 
 module.exports = router;

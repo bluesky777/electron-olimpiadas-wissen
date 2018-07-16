@@ -21,7 +21,7 @@ class ImagenModel {
             if (imagen_id) {
 
             
-                consulta 	= `SELECT * FROM images WHERE id=? and deleted_at is null`;
+                let consulta 	= `SELECT * FROM images WHERE id=? and deleted_at is null`;
                 db.query(consulta, [imagen_id]).then(function (result) {
     
                     if( result.length > 0 ){
@@ -39,6 +39,40 @@ class ImagenModel {
         
         
     }
+    
+	
+	static ruta_imagen($imagen_id)
+	{
+        return new Promise(function(resolve, reject){
+            if ($imagen_id) {
+
+                db.find('images', $imagen_id).then((result)=>{
+                    $img = result;
+                    if ($img.rowid) {
+    
+                        if ($img.publica) {
+                            //return 'publics/' . $img->nombre; // Falta copiar las imágenes a publics cuando estas son públicas
+                            resolve('perfil/' + $img.nombre);
+                        }else{
+                            resolve('perfil/' + $img.nombre);
+                        }
+    
+                    }else{
+                        resolve('perfil/system/avatars/no-photo.jpg');
+                    }
+    
+                });
+               
+
+            }else{
+
+                resolve('perfil/system/avatars/no-photo.jpg');
+
+            }
+        })
+	}
+
+	
     
     
 	static default_image_id(sexo)

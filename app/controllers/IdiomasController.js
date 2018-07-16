@@ -10,16 +10,6 @@ router.route('/')
     .get(getIndex)
     .post(postRouteHandler);
 
-function getIndexMysql(req, res) {
-    var connection 	    = require('../conexion/conn');
-    
-    consulta 	= `SELECT * FROM ws_idiomas where deleted_at is null`;
-    connection.query(consulta, function (error, result) {
-        
-        res.json( result );
-        
-    });
-}
 
 function getIndex(req, res) {
 

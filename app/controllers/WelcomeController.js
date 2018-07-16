@@ -9,6 +9,7 @@ router.route('/')
 
 router.route('/crear-tablas').get(getCrearTablas);
 router.route('/crear-datos-iniciales').get(getCrearDatosIniciales);
+router.route('/descargar-datos').get(getDescargarDatos);
 
 
 
@@ -58,6 +59,16 @@ function getCrearTablas(req, res) {
 function getCrearDatosIniciales(req, res) {
     require('../conexion/connCrearDatosIniciales')();
     res.send('Datos agregados');
+}
+
+
+function getDescargarDatos(req, res) {
+    require('../conexion/connDescargarDatos')().then(()=>{
+        res.send('Datos descargados');
+    }, (r2)=>{
+        res.send('Hubo un error descargando Datos');
+        console.log(r2)
+    });
 }
 
 module.exports = router;
