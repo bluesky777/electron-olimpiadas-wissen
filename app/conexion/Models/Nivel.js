@@ -21,17 +21,17 @@ class Nivel {
             
             function traducidos($i){
                 
-                $consulta = "SELECT t.id, t.rowid, t.nombre, t.nivel_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma   " +
+                let $consulta = "SELECT t.id, t.rowid, t.nombre, t.nivel_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma   " +
                     "FROM ws_niveles_traduc t, ws_idiomas i " +
                     "where i.id=t.idioma_id and t.nivel_id =:nivel_id and t.deleted_at is null";
 
-                $promise_niv_trads = db.query($consulta, [$niveles_king[$i].rowid] );
+                let $promise_trads = db.query($consulta, [$niveles_king[$i].rowid] );
                 
-                $promise_niv_trads.then((result_niv_trads)=>{
-                    $niveles_king[$i].niveles_traducidos = result_niv_trads;
+                $promise_trads.then((result_trads)=>{
+                    $niveles_king[$i].niveles_traducidos = result_trads;
                 });
 
-                promises.push($promise_niv_trads);
+                promises.push($promise_trads);
             }
             
             Promise.all(promises).then((result)=>{

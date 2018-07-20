@@ -2,11 +2,15 @@ var express         = require('express');
 var User            = require('../conexion/Models/User');
 var Role            = require('../conexion/Models/Role');
 var Inscripcion     = require('../conexion/Models/Inscripcion');
+var ImagenModel     = require('../conexion/Models/ImagenModel');
 var router          = express.Router();
 
-router.route('/')
-    .get(getRouteHandler)
-    .post(postRouteHandler);
+router.route('/').get(getRouteHandler);
+router.route('/store').post(postStore)
+router.route('/cambiar-entidad').put(putCambiarEntidad);
+
+
+
 
 function getRouteHandler(req, res) {
     User.fromToken(req).then(($user)=>{
@@ -32,18 +36,20 @@ function getRouteHandler(req, res) {
             }
             
             function todasLasInscripciones($i){
-                promesa_categs = Inscripcion.todas($usuarios[$i].rowid, $evento_id);
-                promises.push(promesa_categs);    
                 
-                promesa_categs.then(($categs)=>{
-                
-                    $usuarios[$i].inscripciones = $categs;
-
-                    Role.deUsuario($usuarios[$i]).then(($roles)=>{
+                let prome_v = new Promise((resolve, reject)=>{
+                    Inscripcion.todas($usuarios[$i].rowid, $evento_id).then(($categs)=>{
+                    
+                        $usuarios[$i].inscripciones = $categs;
+                        return Role.deUsuario($usuarios[$i])
+                            
+                    }).then(($roles)=>{
                         $usuarios[$i].roles = $roles;
+                        resolve();
                     });
-                        
-                });            
+                })
+                promises.push(prome_v);
+                   
             }
             
             Promise.all(promises).then(()=>{
@@ -56,8 +62,75 @@ function getRouteHandler(req, res) {
     })
 }
 
-function postRouteHandler(req, res) {
-    //handle POST route here
+function postStore(req, res) {
+
+    User.fromToken(req).then(($user)=>{
+        
+		dat 		    = req.body;
+		$evento_id      = $user.evento_selected_id;
+        bcrypt          = require('bcrypt');
+        signed_by       = $user.rowid;
+        entidad_id	    = req.body.entidad.rowid;
+        
+        
+		$nivel_id = req.body.nivel_id;
+		if ($nivel_id == ''){
+			$nivel_id = null;
+		}
+		if ($nivel_id == "-1" || $nivel_id == -1) {
+			$nivel_id = 0;
+		}
+
+        
+        User.create(dat.nombres, dat.apellidos, dat.sexo, dat.username, bcrypt.hashSync(dat.password, 10), 
+            dat.email, 0, dat.cell, dat.edad, entidad_id, $evento_id, $nivel_id, signed_by).then((insert_user)=>{
+
+            return User.find(insert_user)
+            
+        }).then(($usuario)=>{
+
+            $inscripciones_nuevas   = [];
+            $inscripciones          = req.body.inscripciones;
+            let promises            = [];
+            
+            for(let $i=0; $i < $inscripciones.length; $i++){
+                aInscribir($i);
+            }
+            
+            function aInscribir($i){
+                promesa = Inscripcion.inscribir($usuario.rowid, $inscripciones[$i]['categoria_id'], $user.rowid);
+                promises.push(promesa);
+            }
+
+            Promise.all(promises).then(($inscripciones_nuevas)=>{
+                
+                $usuario.inscripciones  = $inscripciones_nuevas;
+
+                ImagenModel.imagen_de_usuario($usuario.sexo, $usuario.imagen_id).then((result_img)=>{
+                    $usuario.imagen_nombre  = result_img;
+                    $usuario.nivel_id       = $nivel_id;
+                    
+                    res.send($usuario);
+                })
+            })
+            
+        })
+        
+    })
+}
+
+
+function putCambiarEntidad(req, res) {
+    User.fromToken(req).then(($user)=>{
+        
+		$user_id 		    = req.body.user_id;
+		$entidad_id 	    = req.body.entidad_id;
+
+		db.query('UPDATE users SET entidad_id=? WHERE rowid=?', [$entidad_id, $user_id]).then(($entidad)=>{
+           res.send([$entidad_id]);
+        })
+        
+    })
 }
 
 module.exports = router;

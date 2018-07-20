@@ -8,39 +8,45 @@ class Categoria {
         return db.query(consulta, [codigo, comando]);
     }
     
+    static all(evento_id) {
+        let consulta 	= `SELECT *, rowid FROM ws_categorias_king WHERE evento_id=? and deleted_at is null`;
+        return db.query(consulta, [evento_id]);
+    }
     
-    static traduc($categoria_king) {
+    
+    
+    static traduc($kings) {
         let promesa = new Promise(function(resolve, reject){
             
             let promises    = [];
-            let $cant_dis   = $categoria_king.length;
 
-            for(let $i=0; $i < $cant_dis; $i++){
+            for(let $i=0; $i < $kings.length; $i++){
                 traducidos($i);
             }
             
             function traducidos($i){
                 
-                $consulta = "SELECT t.id, t.rowid, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma   " +
+                let $consulta = "SELECT t.id, t.rowid, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma " +
                     "FROM ws_categorias_traduc t, ws_idiomas i " +
-                    "where i.id=t.idioma_id and t.categoria_id =? and t.deleted_at is null";
+                    "WHERE i.id=t.idioma_id and t.categoria_id =? and t.deleted_at is null";
 
-                $promise_niv_trads = db.query($consulta, [$categoria_king[$i].rowid] );
+                let $promise_trads = db.query($consulta, [$kings[$i].rowid] );
                 
-                $promise_niv_trads.then((result_cat_trads)=>{
-                    $categoria_king[$i].categorias_traducidas = result_cat_trads;
+                $promise_trads.then((result_trads)=>{
+                    $kings[$i].categorias_traducidas = result_trads;
                 });
 
-                promises.push($promise_niv_trads);
+                promises.push($promise_trads);
             }
             
             Promise.all(promises).then((result)=>{
-                resolve($categoria_king);
+                resolve($kings);
             })
             
         })
         return promesa;
     }
+    
     
 };
 

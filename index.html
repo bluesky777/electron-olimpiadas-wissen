@@ -29,8 +29,11 @@
     <br>
     
     <input type="button" onclick="crearDatosIniciales()" value="Crear datos iniciales">
-    
+    <br>
     <input type="button" onclick="descargarDatos()" value="Descargar datos para la prueba">
+    <br>
+    <br>
+    <input type="button" onclick="borrarDatos()" value="Borrar datos">
     
     <br>
     <br>
@@ -70,6 +73,15 @@
         descargarDatos = function () {
           const {shell} = require('electron');
           shell.openExternal('http://' + ip + ':8787/api/welcome/descargar-datos');
+        }
+      
+        borrarDatos = function () {
+          let resp = confirm('¡Peligro! ¿Seguro que quieres borrar datos?');
+          if (resp) {
+            const {shell} = require('electron');
+            shell.openExternal('http://' + ip + ':8787/api/welcome/borrar-datos');
+          }
+          
         }
       
         abrirAppEnNavegador = function () {

@@ -40,35 +40,75 @@ class Inscripcion {
 	}
 
     
-    static traduc($categoria_king) {
+    static inscribir($user_id, $categoria_id, $yo_id) {
         let promesa = new Promise(function(resolve, reject){
             
-            let promises    = [];
-            let $cant_dis   = $categoria_king.length;
-
-            for(let $i=0; $i < $cant_dis; $i++){
-                traducidos($i);
-            }
-            
-            function traducidos($i){
+            // Traer la inscripción si existe, esté eliminada o activa.
+            Inscripcion.one_uncare($user_id, $categoria_id).then(($inscripcion)=>{
                 
-                $consulta = "SELECT t.id, t.rowid, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma   " +
-                    "FROM ws_categorias_traduc t, ws_idiomas i " +
-                    "where i.id=t.idioma_id and t.categoria_id =? and t.deleted_at is null";
-
-                $promise_niv_trads = db.query($consulta, [$categoria_king[$i].rowid] );
+                let $consulta = '';
                 
-                $promise_niv_trads.then((result_cat_trads)=>{
-                    $categoria_king[$i].categorias_traducidas = result_cat_trads;
+                new Promise(function(resolve_insc, reject){
+                    if ($inscripcion.length > 0 ) {
+
+                        // Si no es null, lo pondremos null para activarlo
+                        if ($inscripcion[0].deleted_at) {
+                            // Ya está inscripto y activo, no hay problema supuestamente
+                            resolve_insc();
+                        }else{
+                            
+                            $consulta = 'UPDATE ws_inscripciones SET deleted_at=NULL WHERE rowid=?';
+                            db.query($consulta, [ $inscripcion[0].rowid ] ).then((result)=>{
+                                resolve_insc();
+                            });
+
+                        }
+                    // Si no encontramos ni uno, debemos crearlo
+                    }else{
+                        let now         = window.fixDate(new Date());
+                        $consulta       = 'INSERT INTO ws_inscripciones(user_id, categoria_id, signed_by, created_at) VALUES(?,?,?,?)';
+                        db.query($consulta, [ $user_id, $categoria_id, $yo_id, now] ).then((insc_id)=>{
+                            resolve_insc();
+                        });
+                    
+                    }
+                    
+                }).then(()=>{
+                    Inscripcion.one($user_id, $categoria_id).then(($inscripcion)=>{
+                        resolve($inscripcion);
+                    });
                 });
+            });
+            
+        })
+        return promesa;
+    }
+    
+    
+    static one_uncare($user_id, $categoria_id) {
+        let $consulta = 'SELECT i.id, i.rowid, i.categoria_id, i.allowed_to_answer, i.deleted_at ' + 
+            'FROM ws_inscripciones i ' + 
+            'where i.user_id=? and i.categoria_id=?';
 
-                promises.push($promise_niv_trads);
-            }
-            
-            Promise.all(promises).then((result)=>{
-                resolve($categoria_king);
-            })
-            
+        return db.query($consulta, [ $user_id, $categoria_id] );
+
+    }
+    
+    
+    static one($user_id, $categoria_id) {
+        let promesa = new Promise(function(resolve, reject){
+            let $consulta = 'SELECT i.id, i.rowid, i.categoria_id, i.user_id, i.allowed_to_answer, i.deleted_at ' +
+                'FROM ws_inscripciones i  ' +
+                'WHERE i.user_id=? and i.categoria_id=? and i.deleted_at is null';
+
+            db.query($consulta, [ $user_id, $categoria_id] ).then(($inscripcion)=>{
+                if ($inscripcion.length > 0){
+                    resolve($inscripcion[0]);
+                }else{
+                    resolve();
+                }
+            });
+
         })
         return promesa;
     }

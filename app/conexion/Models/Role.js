@@ -26,6 +26,20 @@ class Role {
         return promesa;
     }
     
+    static hasRole(roles, role_to_compare){
+        if (roles) {
+            for (let i = 0; i < roles.length; i++) {
+                const rol = roles[i];
+                if(rol.name == role_to_compare){
+                    return true;
+                }
+            }
+            
+        }else{
+            return;
+        }
+    }
+    
 };
 
 module.exports = Role;

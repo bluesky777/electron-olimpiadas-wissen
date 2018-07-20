@@ -20,7 +20,7 @@ sqlPermission_role = "CREATE TABLE IF NOT EXISTS permission_role ( " +
     "`role_id` int(10) DEFAULT NULL)"; 
 
 sqlPermissions = "CREATE TABLE IF NOT EXISTS permissions ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`name` varchar(255) NOT NULL collate nocase, " +
     "`display_name` varchar(255) DEFAULT NULL collate nocase, " +
     "`description` varchar(255) DEFAULT NULL collate nocase, " +
@@ -28,11 +28,11 @@ sqlPermissions = "CREATE TABLE IF NOT EXISTS permissions ( " +
     "`updated_at` timestamp DEFAULT NULL)"; 
 
 sqlPids = "CREATE TABLE IF NOT EXISTS pids ( " +
-    "`id` int(10) NOT NULL, " +
+    "`id` int(10) DEFAULT  NULL, " +
     "`codigo` text NOT NULL collate nocase)"; 
 
 sqlQrcodes = "CREATE TABLE IF NOT EXISTS qrcodes ( " +
-    "  `id` int(10) NULL, " +
+    "  `id` int(10) DEFAULT NULL, " +
     "`codigo` varchar(255) NOT NULL, " +
     "`comando` varchar(255) DEFAULT NULL, " +
     "`parametro` varchar(255) DEFAULT NULL, " +
@@ -53,7 +53,7 @@ sqlRole_user = "CREATE TABLE IF NOT EXISTS role_user ( " +
     "`role_id` int(10) NOT NULL)"; 
 
 sqlUsers = "CREATE TABLE IF NOT EXISTS users ( " +
-    "`id` int(10) NOT NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombres` varchar(255) NOT NULL collate nocase, " +
     "`apellidos` varchar(255) DEFAULT NULL collate nocase, " +
     "`sexo` varchar(255) NOT NULL DEFAULT 'M' collate nocase, " +
@@ -74,7 +74,7 @@ sqlUsers = "CREATE TABLE IF NOT EXISTS users ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_categorias_king = "CREATE TABLE IF NOT EXISTS ws_categorias_king ( " +
-    "`id` int(10) NOT NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombre` varchar(255) DEFAULT NULL collate nocase, " +
     "`nivel_id` int(10) DEFAULT NULL, " +
     "`disciplina_id` int(10) DEFAULT NULL, " +
@@ -85,7 +85,7 @@ sqlWs_categorias_king = "CREATE TABLE IF NOT EXISTS ws_categorias_king ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_categorias_traduc = "CREATE TABLE IF NOT EXISTS ws_categorias_traduc ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombre` varchar(255)  DEFAULT NULL collate nocase, " +
     "`abrev` varchar(255)  DEFAULT NULL collate nocase, " +
     "`categoria_id` int(10) NOT NULL, " +
@@ -98,7 +98,7 @@ sqlWs_categorias_traduc = "CREATE TABLE IF NOT EXISTS ws_categorias_traduc ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_contenido_traduc = "CREATE TABLE IF NOT EXISTS ws_contenido_traduc ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`definicion` text  collate nocase, " +
     "`grupo_pregs_id` int(10) NOT NULL, " +
     "`idioma_id` int(10) NOT NULL, " +
@@ -109,7 +109,7 @@ sqlWs_contenido_traduc = "CREATE TABLE IF NOT EXISTS ws_contenido_traduc ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_disciplinas_king = "CREATE TABLE IF NOT EXISTS ws_disciplinas_king ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombre` varchar(255) DEFAULT NULL collate nocase, " +
     "`evento_id` int(10) NOT NULL, " +
     "`deleted_by` int(10) DEFAULT NULL, " +
@@ -119,7 +119,7 @@ sqlWs_disciplinas_king = "CREATE TABLE IF NOT EXISTS ws_disciplinas_king ( " +
 
 
 sqlWs_disciplinas_traduc = "CREATE TABLE IF NOT EXISTS ws_disciplinas_traduc ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombre` varchar(255) DEFAULT NULL collate nocase, " +
     "`disciplina_id` int(10) NOT NULL, " +
     "`descripcion` varchar(255) DEFAULT NULL collate nocase, " +
@@ -132,7 +132,7 @@ sqlWs_disciplinas_traduc = "CREATE TABLE IF NOT EXISTS ws_disciplinas_traduc ( "
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_entidades = "CREATE TABLE IF NOT EXISTS ws_entidades ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombre` varchar(255) NOT NULL collate nocase, " +
     "`lider_id` int(10) DEFAULT NULL, " +
     "`lider_nombre` varchar(255) DEFAULT NULL collate nocase, " +
@@ -146,7 +146,7 @@ sqlWs_entidades = "CREATE TABLE IF NOT EXISTS ws_entidades ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_evaluaciones = "CREATE TABLE IF NOT EXISTS ws_evaluaciones ( " +
-    "`id` int(10) NOT NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`categoria_id` int(10) DEFAULT NULL, " +
     "`evento_id` int(10) NOT NULL, " +
     "`actual` int(1) DEFAULT '0', " +
@@ -162,7 +162,7 @@ sqlWs_evaluaciones = "CREATE TABLE IF NOT EXISTS ws_evaluaciones ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_eventos = "CREATE TABLE IF NOT EXISTS ws_eventos ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombre` varchar(255) NOT NULL collate nocase, " +
     "`alias` varchar(255) DEFAULT NULL collate nocase, " +
     "`descripcion` varchar(255) DEFAULT NULL collate nocase, " +
@@ -189,7 +189,7 @@ sqlWs_eventos = "CREATE TABLE IF NOT EXISTS ws_eventos ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_examen_respuesta = "CREATE TABLE IF NOT EXISTS ws_examen_respuesta ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`inscripcion_id` int(10) NOT NULL, " +
     "`evaluacion_id` int(10) NOT NULL, " +
     "`idioma_id` int(10) NOT NULL DEFAULT '1', " +
@@ -212,7 +212,7 @@ sqlWs_examen_respuesta = "CREATE TABLE IF NOT EXISTS ws_examen_respuesta ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
     
 sqlWs_grupos_preguntas = "CREATE TABLE IF NOT EXISTS ws_grupos_preguntas ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`descripcion` varchar(255) DEFAULT NULL collate nocase, " +
     "`categoria_id` int(10) NOT NULL, " +
     "`is_cuadricula` int(1) DEFAULT '0', " +
@@ -223,7 +223,7 @@ sqlWs_grupos_preguntas = "CREATE TABLE IF NOT EXISTS ws_grupos_preguntas ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_idiomas = "CREATE TABLE IF NOT EXISTS ws_idiomas ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombre` varchar(255) DEFAULT NULL collate nocase, " +
     "`abrev` varchar(255) DEFAULT NULL collate nocase, " +
     "`original` varchar(255) DEFAULT NULL collate nocase, " +
@@ -233,7 +233,7 @@ sqlWs_idiomas = "CREATE TABLE IF NOT EXISTS ws_idiomas ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_idiomas_registrados = "CREATE TABLE IF NOT EXISTS ws_idiomas_registrados ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`evento_id` int(10) NOT NULL, " +
     "`idioma_id` int(10) NOT NULL, " +
     "`deleted_by` int(10) DEFAULT NULL, " +
@@ -242,7 +242,7 @@ sqlWs_idiomas_registrados = "CREATE TABLE IF NOT EXISTS ws_idiomas_registrados (
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_inscripciones = "CREATE TABLE IF NOT EXISTS ws_inscripciones ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`categoria_id` int(10) NOT NULL, " +
     "`user_id` int(10) NOT NULL, " +
     "`allowed_to_answer` int(1) DEFAULT '1', " +
@@ -252,7 +252,7 @@ sqlWs_inscripciones = "CREATE TABLE IF NOT EXISTS ws_inscripciones ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_niveles_king = "CREATE TABLE IF NOT EXISTS ws_niveles_king ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombre` varchar(255)  DEFAULT NULL collate nocase, " +
     "`evento_id` int(10) NOT NULL, " +
     "`deleted_by` int(10) DEFAULT NULL, " +
@@ -261,7 +261,7 @@ sqlWs_niveles_king = "CREATE TABLE IF NOT EXISTS ws_niveles_king ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_niveles_traduc = "CREATE TABLE IF NOT EXISTS ws_niveles_traduc ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nombre` varchar(255)  DEFAULT NULL collate nocase, " +
     "`nivel_id` int(10) NOT NULL, " +
     "`descripcion` varchar(255) DEFAULT NULL collate nocase, " +
@@ -273,14 +273,14 @@ sqlWs_niveles_traduc = "CREATE TABLE IF NOT EXISTS ws_niveles_traduc ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_nivel_participante = "CREATE TABLE IF NOT EXISTS ws_nivel_participante ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`nivel_id` int(10) NOT NULL, " +
     "`user_id` int(10) NOT NULL, " +
     "`created_at` timestamp NULL DEFAULT NULL, " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_opciones = "CREATE TABLE IF NOT EXISTS ws_opciones ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`definicion` text collate nocase, " +
     "`pregunta_traduc_id` int(10) NOT NULL, " +
     "`image_id` int(10) DEFAULT NULL, " +
@@ -291,7 +291,7 @@ sqlWs_opciones = "CREATE TABLE IF NOT EXISTS ws_opciones ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_opciones_agrupadas = "CREATE TABLE IF NOT EXISTS ws_opciones_agrupadas ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`definicion` varchar(255) DEFAULT NULL collate nocase, " +
     "`preg_agrupada_id` int(10) NOT NULL, " +
     "`orden` int(10) DEFAULT NULL, " +
@@ -301,7 +301,7 @@ sqlWs_opciones_agrupadas = "CREATE TABLE IF NOT EXISTS ws_opciones_agrupadas ( "
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_opciones_cuadricula = "CREATE TABLE IF NOT EXISTS ws_opciones_cuadricula ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`definicion` varchar(255) DEFAULT NULL, " +
     "`contenido_traduc_id` int(10) NOT NULL, " +
     "`icono` varchar(255) DEFAULT NULL, " +
@@ -310,7 +310,7 @@ sqlWs_opciones_cuadricula = "CREATE TABLE IF NOT EXISTS ws_opciones_cuadricula (
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_pregunta_evaluacion = "CREATE TABLE IF NOT EXISTS ws_pregunta_evaluacion ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`evaluacion_id` int(10) DEFAULT NULL, " +
     "`pregunta_id` int(10) DEFAULT NULL, " +
     "`grupo_pregs_id` int(10) DEFAULT NULL, " +
@@ -321,7 +321,7 @@ sqlWs_pregunta_evaluacion = "CREATE TABLE IF NOT EXISTS ws_pregunta_evaluacion (
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_preguntas_agrupadas = "CREATE TABLE IF NOT EXISTS ws_preguntas_agrupadas ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`enunciado` text collate nocase, " +
     "`ayuda` varchar(255) DEFAULT NULL collate nocase, " +
     "`contenido_id` int(10) NOT NULL, " +
@@ -337,7 +337,7 @@ sqlWs_preguntas_agrupadas = "CREATE TABLE IF NOT EXISTS ws_preguntas_agrupadas (
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_preguntas_king = "CREATE TABLE IF NOT EXISTS ws_preguntas_king ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`descripcion` varchar(255) DEFAULT NULL collate nocase, " +
     "`tipo_pregunta` varchar(255) DEFAULT NULL collate nocase, " +
     "`duracion` int(10) DEFAULT NULL, " +
@@ -351,7 +351,7 @@ sqlWs_preguntas_king = "CREATE TABLE IF NOT EXISTS ws_preguntas_king ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_pregunta_traduc = "CREATE TABLE IF NOT EXISTS ws_pregunta_traduc ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`enunciado` text collate nocase, " +
     "`ayuda` varchar(255) DEFAULT NULL collate nocase, " +
     "`pregunta_id` int(10) NOT NULL, " +
@@ -365,7 +365,7 @@ sqlWs_pregunta_traduc = "CREATE TABLE IF NOT EXISTS ws_pregunta_traduc ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_respuestas = "CREATE TABLE IF NOT EXISTS ws_respuestas ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`examen_respuesta_id` int(10) DEFAULT NULL, " +
     "`pregunta_king_id` int(10) DEFAULT NULL, " +
     "`preg_traduc_id` int(10) DEFAULT NULL, " +
@@ -384,7 +384,7 @@ sqlWs_respuestas = "CREATE TABLE IF NOT EXISTS ws_respuestas ( " +
     "`updated_at` timestamp NULL DEFAULT NULL)"; 
 
 sqlWs_user_event = "CREATE TABLE IF NOT EXISTS ws_user_event ( " +
-    "`id` int(10) NULL, " +
+    "`id` int(10) DEFAULT NULL, " +
     "`user_id` int(10) DEFAULT NULL, " +
     "`evento_id` int(10) DEFAULT NULL, " +
     "`nivel_id` int(10) DEFAULT NULL, " +

@@ -12,5 +12,8 @@ router.use('/imagenes', require('./ImagenesController'));
 router.use('/niveles', require('./NivelesController'));
 router.use('/entidades', require('./EntidadesController'));
 router.use('/categorias', require('./CategoriasController'));
+router.use('/disciplinas', require('./DisciplinasController'));
+router.use('/evaluaciones', require('./EvaluacionesController'));
+router.use('/informes', require('./informes/InformesController'));
 
 module.exports = router;

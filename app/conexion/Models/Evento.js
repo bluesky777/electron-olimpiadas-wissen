@@ -26,7 +26,7 @@ class Evento {
     
     static actual() {
         let promesa = new Promise(function(resolve, reject){
-            let consulta 	= `SELECT * FROM ws_eventos WHERE actual=1 and deleted_at is null`;
+            let consulta 	= `SELECT *, rowid FROM ws_eventos WHERE actual=1 and deleted_at is null`;
             db.query(consulta).then(function (result) {
 
                 if( result.length == 0){

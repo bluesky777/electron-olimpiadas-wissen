@@ -37,6 +37,11 @@ app.get('/', function(req, res){
 
 
 
+var User            = require(path.resolve('app/conexion/Models/User'));
+var db              = require(path.resolve('app/conexion/connWeb'));
+
+
+
 self 		= this;
 self.io 	= io;
 
@@ -134,10 +139,17 @@ self.io.on('connection', (socket)=> {
         if(socket.room)
             socket.leave(socket.room);
 
+        
         if (data.usuario.evento_selected_id) {
             socket.room = 'etapa' + data.usuario.evento_selected_id;
         }else{
-            socket.room = 'etapa' + data.usuario.evento_actual.id;
+            if (data.usuario.evento_actual) {
+                socket.room = 'etapa' + data.usuario.evento_actual.id;
+            }else{
+                console.log('No tiene evento actual :( ', data.usuario);
+                socket.room = 'etapa' + 1;
+            }
+            
         }
         socket.join(socket.room);
         
@@ -405,7 +417,7 @@ self.io.on('connection', (socket)=> {
 
     // clean up when a user leaves, and broadcast it to other users
     socket.on('disconnect', function () {
-        
+        //console.log(socket);
         for (var i = 0; i < all_clts.length; i++) {
             if (all_clts[i].resourceId == socket.id) {
                 all_clts.splice(i, 1);
@@ -632,164 +644,152 @@ self.io.on('connection', (socket)=> {
 
 
 function set_param_to_codigo_qr(qr, param) {
-var self = this;
-return new Promise(function(resolve, reject) {
+    var self = this;
+    return new Promise(function(resolve, reject) {
 
-    var connection 	= require('./app/conexion/conn');
+        //var connection 	= require('./app/conexion/conn');
 
-    connection.query('UPDATE qrcodes SET ? WHERE codigo = ?', [{parametro: param}, qr], function (error, results) {
-        if (error) throw error;
-        /*
-        if (results.length > 0) {
-            return results[0];
-        }*/
-        resolve(results.affectedRows);
+        db.query("UPDATE qrcodes SET parametro='"+ param +"' WHERE codigo = ?", [ qr ]).then( function (results) {
+            resolve(results.affectedRows);
+        }, (error)=>{throw error;});
+
     });
-
-});
 }
 
 
 
 
 function get_users(evento_id) {
-var self = this;
-return new Promise(function(resolve, reject) {
+    var self = this;
+    return new Promise(function(resolve, reject) {
 
-    var connection 	= require('./app/conexion/conn');
+        consulta = `SELECT u.id, u.nombres, u.apellidos, u.sexo, u.username, u.email, u.is_superuser, 
+                            u.cell, u.edad, u.idioma_main_id, u.evento_selected_id, 
+                            IFNULL(e.nivel_id, "") as nivel_id, e.pagado, e.pazysalvo, u.entidad_id, 
+                            u.imagen_id, IFNULL(CONCAT("perfil/", i.nombre), IF(u.sexo="F", ?, ?)) as imagen_nombre,
+                            en.nombre as nombre_entidad, en.lider_id, en.lider_nombre, en.logo_id, en.alias  
+                        FROM users u 
+                        inner join ws_user_event e on e.user_id = u.id and e.evento_id = ? 
+                        left join images i on i.id=u.imagen_id and i.deleted_at is null 
+                        left join ws_entidades en on en.id=u.entidad_id and en.deleted_at is null 
+                        where u.deleted_at is null`;
 
-    connection.getConnection(function(err) {
-        if (err) { console.error('error connecting: ' + err.stack); return reject(err); }
+        db.query(consulta, [User.$default_famale, User.$default_male, evento_id]).then( function (results) {
+            resolve(results);
+        }, (error)=>{
+            if (error){
+                console.log('Error al consultar usuarios');
+                reject('Error al consultar usuarios');
+                throw error;
+            } 
+        });
     });
-    default_female 	= 'perfil/system/avatars/female1.png';
-    default_male 	= 'perfil/system/avatars/male1.png';
-
-    consulta = `SELECT u.id, u.nombres, u.apellidos, u.sexo, u.username, u.email, u.is_superuser, 
-                        u.cell, u.edad, u.idioma_main_id, u.evento_selected_id, 
-                        IFNULL(e.nivel_id, "") as nivel_id, e.pagado, e.pazysalvo, u.entidad_id, 
-                        u.imagen_id, IFNULL(CONCAT("perfil/", i.nombre), IF(u.sexo="F", ?, ?)) as imagen_nombre,
-                        en.nombre as nombre_entidad, en.lider_id, en.lider_nombre, en.logo_id, en.alias  
-                    FROM users u 
-                    inner join ws_user_event e on e.user_id = u.id and e.evento_id = ? 
-                    left join images i on i.id=u.imagen_id and i.deleted_at is null 
-                    left join ws_entidades en on en.id=u.entidad_id and en.deleted_at is null 
-                    where u.deleted_at is null`;
-
-    connection.query(consulta, [default_female, default_male, evento_id], function (error, results, fields) {
-        if (error){
-            console.log('Error al consultar usuarios');
-            reject('Error al consultar usuarios');
-            throw error;
-        } 
-        resolve(results);
-    });
-});
 
 }
 
 
 function get_user(usuario_id) {
-var self = this;
-return new Promise(function(resolve, reject) {
+    var self = this;
+    return new Promise(function(resolve, reject) {
 
-    var connection 	= require('./app/conexion/conn');
+        consulta = `SELECT id, nombres, username FROM users WHERE id=?`;
 
-    connection.getConnection(function(err) {
-        if (err) { console.error('error connecting: ' + err.stack); return reject(err); }
+        db.query(consulta, [usuario_id]).then( function (results) {
+            resolve(results[0]);
+        }, (error)=> {if (error) throw error;} );
     });
-    consulta = `SELECT id, nombres, username FROM users WHERE id=?`;
-
-    connection.query(consulta, [usuario_id], function (error, results, fields) {
-        if (error) throw error;
-        resolve(results[0]);
-    });
-});
 
 }
 
 
 function get_qr(qr_codigo) {
-var self = this;
-return new Promise(function(resolve, reject) {
+    var self = this;
+    return new Promise(function(resolve, reject) {
 
-    var connection 	= require('./app/conexion/conn');
+        consulta = `SELECT * FROM qrcodes WHERE codigo=?`;
 
-    connection.getConnection(function(err) {
-        if (err) { console.error('error connecting: ' + err.stack); return reject(err); }
+        db.query(consulta, [qr_codigo]).then( function (results) {
+            resolve(results[0]);
+        }, (error)=> {if (error) throw error;} );
     });
-    consulta = `SELECT * FROM qrcodes WHERE codigo=?`;
-
-    connection.query(consulta, [qr_codigo], function (error, results, fields) {
-        if (error) throw error;
-        resolve(results[0]);
-    });
-});
 
 }
 function delete_qr(qr_codigo) {
-var self = this;
-return new Promise(function(resolve, reject) {
+    var self = this;
+    return new Promise(function(resolve, reject) {
 
-    var connection 	= require('./app/conexion/conn');
+        consulta = `DELETE FROM qrcodes WHERE codigo=?`;
 
-    connection.getConnection(function(err) {
-        if (err) { console.error('error connecting: ' + err.stack); return reject(err); }
+        db.query(consulta, [qr_codigo]).then( function (results) {
+            resolve(results);
+        }, (error)=> {
+            if (error) {
+                console.log(error);
+                reject(error);
+                throw error;
+            }
+        });
     });
-    consulta = `DELETE FROM qrcodes WHERE codigo=?`;
-
-    connection.query(consulta, [qr_codigo], function (error, results) {
-        if (error){
-            console.log(error);
-            reject(error);
-            throw error;	
-        } 
-        resolve(results);
-    });
-});
 
 }
 
 function categorias_king_con_traducciones(evento_id) {
-var self = this;
-return new Promise(function(resolve, reject) {
+    var self = this;
+    return new Promise(function(resolve, reject) {
 
-    var connection 	= require('./app/conexion/conn');
+        consulta 	    = `SELECT rowid FROM ws_eventos where actual=1 and deleted_at is null`;
+        db.query(consulta).then(function (eventoRes) {
+            evento      = eventoRes[0];
 
-    connection.getConnection(function(err) {
-        if (err) { console.error('error connecting: ' + err.stack); return reject(err); }
-    });
+            consulta    = `SELECT * FROM ws_categorias_king where evento_id = ? and deleted_at is null`;
+            db.query(consulta, [evento.id]).then(function (results) {
+                
+                Promise.all(
+                    results.map(function(row) {
+                        var promise = new Promise(function(resolve,reject) {
 
-    consulta 	= `SELECT id FROM ws_eventos where actual=true and deleted_at is null`;
-    connection.query(consulta, function (error, eventoRes) {
-        evento = eventoRes[0];
-
-        consulta 	= `SELECT * FROM ws_categorias_king where evento_id = ? and deleted_at is null`;
-        connection.query(consulta, [evento.id], function (error, results) {
-            
-            Promise.all(
-                results.map(function(row) {
-                    var promise = new Promise(function(resolve,reject) {
-
-                        consulta = `SELECT t.id, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma  
-                                    FROM ws_categorias_traduc t, ws_idiomas i
-                                    where i.id=t.idioma_id and t.categoria_id = ? and t.deleted_at is null`;
-                        connection.query(consulta, [row.id], function (error, results) {
-                            row.categorias_traducidas = results;
-                            resolve(row);
+                            consulta = `SELECT t.id, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma  
+                                        FROM ws_categorias_traduc t, ws_idiomas i
+                                        where i.id=t.idioma_id and t.categoria_id = ? and t.deleted_at is null`;
+                            db.query(consulta, [row.id]).then( function (results) {
+                                row.categorias_traducidas = results;
+                                resolve(row);
+                            });
                         });
-                    });
-                    return promise;
-                })
-            ).then(function() {
-                //console.log(results);
-                resolve(results);
-            });
+                        return promise;
+                    })
+                ).then(function() {
+                    //console.log(results);
+                    resolve(results);
+                });
 
-        
-        });
+            
+            }, (error)=> {if (error) throw error;} );
+        }, (error)=> {if (error) throw error;} );
     });
-});
 
 }
 
 
+
+
+
+// Para las fechas
+window.fixDate = function(fec){
+    dia   = fec.getDate();
+    mes   = (fec.getMonth() + 1 );
+    year  = fec.getFullYear();
+  
+    if (dia < 10) {
+      dia = '0' + dia;
+    }
+  
+    if (mes < 10) {
+      mes = '0' + mes;
+    }
+  
+    fecha   = '' + year + '-' + mes  + '-' + dia;
+  
+    return fecha;
+}
+  

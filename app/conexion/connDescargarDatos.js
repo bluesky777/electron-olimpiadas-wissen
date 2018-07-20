@@ -141,6 +141,21 @@ function descargarDatos() {
                 
                 return Promise.all(promesas_opc);
             }).then((resp)=>{
+                console.log(resp);
+                let promesas_opc = [];
+                for (let i = 0; i < datos.pregunta_evaluacion.length; i++) {
+                    insertPregEv(i);
+                }
+                
+                function insertPregEv(i){
+                    opc         = datos.pregunta_evaluacion[i];
+                    consulta    = 'INSERT INTO ws_pregunta_evaluacion(rowid, id, evaluacion_id, pregunta_id, grupo_pregs_id, orden, aleatorias, added_by) VALUES (?,?,?,?,?,?,?,?)';
+                    let prome   = db.query(consulta, Object.keys(opc).map((clave)=> opc[clave]) );
+                    promesas_opc.push(prome);
+                }
+                
+                return Promise.all(promesas_opc);
+            }).then((resp)=>{
                 resolve('Agregados');
             })
             
