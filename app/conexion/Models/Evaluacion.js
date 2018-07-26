@@ -122,7 +122,6 @@ class Evaluacion {
                     return Promise.all(mapeando_evaluaciones);
                     
                 }).then((arrayOfResults)=>{
-                    console.log(arrayOfResults);
                     resolve(categoria); // Para Promise.all(mapeando_categorias)
                 });
             
@@ -149,6 +148,12 @@ class Evaluacion {
             
         })
         return promesa;
+    }
+    
+    
+    static actual($evento_id, categoria_id) {
+        let $consulta = "SELECT *, rowid FROM ws_evaluaciones WHERE actual=1 and categoria_id=? and evento_id=?";
+        return db.query($consulta, [$evento_id, categoria_id] );
     }
     
 };

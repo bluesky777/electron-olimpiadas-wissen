@@ -41,13 +41,13 @@ class ImagenModel {
     }
     
 	
-	static ruta_imagen($imagen_id)
+	static ruta_imagen($imagen_id)  
 	{
         return new Promise(function(resolve, reject){
             if ($imagen_id) {
 
                 db.find('images', $imagen_id).then((result)=>{
-                    $img = result;
+                    let $img = result;
                     if ($img.rowid) {
     
                         if ($img.publica) {

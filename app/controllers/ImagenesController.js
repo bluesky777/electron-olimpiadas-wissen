@@ -4,11 +4,10 @@ var Evento          = require('../conexion/Models/Evento');
 var User            = require('../conexion/Models/User');
 var db              = require('../conexion/connWeb');
 
-
-
 // Enrutadores
 router.route('/').get(getIndex);
 router.route('/usuarios').get(getUsuarios);
+router.route('/store-intacta').post(postStoreIntacta);
 
     
 
@@ -89,6 +88,31 @@ function getUsuarios(req, res)
             }
             
         });
+    })
+
+
+}
+
+
+
+function postStoreIntacta(req, res)
+{
+    console.log(req);
+    User.fromToken(req).then(($user)=>{
+        $folderName     = 'user_' + $user.rowid;
+        $folder         = 'perfil/'+$folderName;
+        
+        var fs          = require('fs');
+        const path      = require('path');
+        var $folder     = path.join(__dirname, '../images/'+$folder);
+
+        
+        if (!fs.existsSync($folder)){
+            fs.mkdirSync($folder);
+        }
+        
+        
+        
     })
 
 

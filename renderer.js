@@ -208,12 +208,12 @@ self.io.on('connection', (socket)=> {
     });
 
     socket.on('let_him_enter', function(data){
+
         var jwt 		= require('jsonwebtoken');
         var secret 		= process.env.JWT_SECRET;
         var decoded 	= jwt.verify(data.from_token, secret);
-        
-        if (decoded.sub) {
 
+        if (decoded.iat) {
             get_user(data.usuario_id).then(function(usuario){
                 socket.broadcast.to(data.resourceId).emit('enter', {usuario: usuario, from_token: data.from_token}); 
             });
@@ -663,18 +663,18 @@ function get_users(evento_id) {
     var self = this;
     return new Promise(function(resolve, reject) {
 
-        consulta = `SELECT u.id, u.nombres, u.apellidos, u.sexo, u.username, u.email, u.is_superuser, 
+        consulta = `SELECT u.id, u.rowid, u.nombres, u.apellidos, u.sexo, u.username, u.email, u.is_superuser, 
                             u.cell, u.edad, u.idioma_main_id, u.evento_selected_id, 
                             IFNULL(e.nivel_id, "") as nivel_id, e.pagado, e.pazysalvo, u.entidad_id, 
-                            u.imagen_id, IFNULL(CONCAT("perfil/", i.nombre), IF(u.sexo="F", ?, ?)) as imagen_nombre,
+                            u.imagen_id, IFNULL('perfil/' || i.nombre, CASE WHEN u.sexo='F' THEN '`+User.$default_female+`' ELSE '`+User.$default_male+`' END) as imagen_nombre,
                             en.nombre as nombre_entidad, en.lider_id, en.lider_nombre, en.logo_id, en.alias  
                         FROM users u 
-                        inner join ws_user_event e on e.user_id = u.id and e.evento_id = ? 
+                        inner join ws_user_event e on e.user_id = u.rowid and e.evento_id = ? 
                         left join images i on i.id=u.imagen_id and i.deleted_at is null 
                         left join ws_entidades en on en.id=u.entidad_id and en.deleted_at is null 
                         where u.deleted_at is null`;
 
-        db.query(consulta, [User.$default_famale, User.$default_male, evento_id]).then( function (results) {
+        db.query(consulta, [evento_id]).then( function (results) {
             resolve(results);
         }, (error)=>{
             if (error){
@@ -692,7 +692,7 @@ function get_user(usuario_id) {
     var self = this;
     return new Promise(function(resolve, reject) {
 
-        consulta = `SELECT id, nombres, username FROM users WHERE id=?`;
+        consulta = `SELECT id, rowid, nombres, username FROM users WHERE rowid=?`;
 
         db.query(consulta, [usuario_id]).then( function (results) {
             resolve(results[0]);

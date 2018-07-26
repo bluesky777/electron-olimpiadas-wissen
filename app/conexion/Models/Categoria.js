@@ -48,6 +48,26 @@ class Categoria {
     }
     
     
+    
+    static traducciones_single($king) {
+        let promesa = new Promise(function(resolve, reject){
+            
+
+            let $consulta = "SELECT t.id, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma  " +
+                "FROM ws_categorias_traduc t, ws_idiomas i " +
+                "where i.id=t.idioma_id and t.categoria_id =? and t.deleted_at is null";
+
+            db.query($consulta, [$king.rowid] ).then((result_trads)=>{
+                $king.categorias_traducidas = result_trads;
+                resolve($king);
+            });
+            
+        })
+        return promesa;
+    }
+    
+    
+    
 };
 
 module.exports = Categoria;

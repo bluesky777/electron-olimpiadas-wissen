@@ -60,7 +60,7 @@ function crearDatosIniciales() {
                         consulta = "INSERT INTO `ws_eventos` (`id`, `nombre`, `alias`, `descripcion`, `password`, `mostrar_nombre_punto`, `gran_final`, `with_pay`, `por_sumatoria_puntos`, `actual`, `precio1`, `precio2`, `precio3`, `precio4`, `precio5`, `precio6`, `idioma_principal_id`, `es_idioma_unico`, `enable_public_chat`, `enable_private_chat`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES (1, 'Olimpiadas Libertad 2017', 'OAF17', 'Olimpiadas Unión Colombiana del Norte', 'aei', 1, 1, 0, 0, 1, 2000, 3000, 4000, 5000, 5000, 5000, 1, 0, 0, 0, NULL, NULL, '2016-08-11 15:06:02', '2017-09-21 11:39:39'),(2, 'Boom Bíblico Campamento 2017', 'BoomBíblico', NULL, NULL, 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, NULL, NULL, '2017-08-14 19:46:22', '2017-08-14 19:47:00')";
                         db.query(consulta).then(function(res){
                             
-                            consulta = "INSERT INTO `ws_user_event` (`id`, `user_id`, `evento_id`, `nivel_id`, `signed_by`) VALUES (1, 1, 1, 1, 1),(2, 2, 1, 1, 1),(3, 3, 1, 1, 1),(4, 4, 1, 1, 1),(5, 5, 1, 1, 1),(6, 7, 1, 1, 1)";
+                            consulta = "INSERT INTO `ws_user_event` (`id`, `user_id`, `evento_id`, `nivel_id`, `signed_by`) VALUES (1, 1, 1, 1, 1),(2, 2, 1, 1, 1),(3, 3, 1, 1, 1),(4, 4, 1, 1, 1),(5, 5, 1, 1, 1),(6, 6, 1, 1, 1)";
                             db.query(consulta).then(function(res){
                                 resolve2('Eventos Insertados');
                             })

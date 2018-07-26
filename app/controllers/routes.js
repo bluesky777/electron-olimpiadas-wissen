@@ -15,5 +15,9 @@ router.use('/categorias', require('./CategoriasController'));
 router.use('/disciplinas', require('./DisciplinasController'));
 router.use('/evaluaciones', require('./EvaluacionesController'));
 router.use('/informes', require('./informes/InformesController'));
+router.use('/inscripciones', require('./InscripcionesController'));
+router.use('/examenes_respuesta', require('./ExamenesRespuestaController'));
+router.use('/qr', require('./QrController'));
+
 
 module.exports = router;

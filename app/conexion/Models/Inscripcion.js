@@ -11,7 +11,7 @@ class Inscripcion {
 	static todas($user_id, $evento_id)
 	{
         let promesa = new Promise(function(resolve, reject){
-            let $consulta = "SELECT i.id, i.categoria_id, i.allowed_to_answer " +
+            let $consulta = "SELECT i.id, i.rowid, i.categoria_id, i.allowed_to_answer " +
                             "FROM ws_inscripciones i  " +
                             "inner join ws_categorias_king c on c.deleted_at is null and c.id=i.categoria_id and c.evento_id = ? " +
                             "where i.user_id=? and i.deleted_at is null ";
@@ -24,7 +24,7 @@ class Inscripcion {
                 }
                 
                 function inscripciones(i){
-                    promesa_exa = db.query("SELECT *, rowid FROM ws_examen_respuesta WHERE inscripcion_id=? ", [$inscripciones[i].rowid]);
+                    let promesa_exa = db.query("SELECT *, rowid FROM ws_examen_respuesta WHERE inscripcion_id=? ", [$inscripciones[i].rowid]);
                     promises.push(promesa_exa);
                     promesa_exa.then(($examenes)=>{
                         $inscripciones[i].examenes = $examenes;
@@ -79,6 +79,19 @@ class Inscripcion {
                     });
                 });
             });
+            
+        })
+        return promesa;
+    }
+    
+    
+    static desinscribir($user_id, $categoria_id) {
+        let promesa = new Promise(function(resolve, reject){
+            let consulta = 'DELETE FROM ws_inscripciones WHERE user_id=? and categoria_id=?';
+            
+            db.query(consulta, [$user_id, $categoria_id]).then(()=>{
+                resolve();
+            })
             
         })
         return promesa;

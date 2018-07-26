@@ -3,6 +3,37 @@ db = require('../connWeb');
 
 class Evento {
     
+    static create(ev) {
+        let promesa = new Promise(function(resolve, reject){
+            let now         = window.fixDate(new Date());
+            
+            if(ev.es_idioma_unico){
+                ev.es_idioma_unico = 1;
+            }else{
+                ev.es_idioma_unico = 0;
+            }
+            
+            if(ev.actual){
+                ev.actual = 1;
+            }else{
+                ev.actual = 0;
+            }
+            
+            let consulta 	= 'INSERT INTO ws_eventos(nombre, alias, descripcion, idioma_principal_id, es_idioma_unico, enable_public_chat, enable_private_chat, with_pay, actual, precio1, precio2, precio3, precio4, precio5, precio6, created_at)  ' +
+                'VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+            db.query(consulta, [ev.nombre, ev.alias, ev.descripcion, ev.idioma_principal_id, ev.es_idioma_unico, ev.enable_public_chat, ev.enable_private_chat, ev.with_pay, ev.actual, ev.precio1, ev.precio2, ev.precio3, ev.precio4, ev.precio5, ev.precio6, now]).then(function (result) {
+
+                resolve(result.insertId);
+                                
+            });
+        })
+        
+        return promesa;
+        
+        
+    }
+    
+    
     static find(id) {
         let promesa = new Promise(function(resolve, reject){
             let consulta 	= `SELECT *, rowid FROM ws_eventos WHERE rowid=? AND deleted_at is null`;
@@ -33,7 +64,7 @@ class Evento {
                     throw 'No existe un evento actual';
                 }
                 if( result.length > 1){
-                    throw 'Existe más de un evento actual';
+                    console.log('Existe más de un evento actual');
                 }
                 
                 resolve(result[0]);
@@ -100,7 +131,7 @@ class Evento {
             let promesa_evento = new Promise(function(resolve_even, reject_even){
 
                 if (!evento) {
-                    evento = Evento.find(evento_id).then((result)=>{
+                    Evento.find(evento_id).then((result)=>{
                         resolve_even(result);
                     });
                 }else{
@@ -111,27 +142,26 @@ class Evento {
             
             promesa_evento.then((evento)=>{
                 
-
+                let consulta = '';
 
                 if (evento.es_idioma_unico) {
 
-                    let consulta 		= 'SELECT *, rowid FROM ws_idiomas WHERE rowid=? and deleted_at is null';
+                    consulta 	= 'SELECT *, rowid FROM ws_idiomas WHERE rowid=? and deleted_at is null';
                     db.query(consulta, [evento.idioma_principal_id] ).then((result)=>{
                         idiomas_all 	= result;
                         return resolve(idiomas_all);
                     });
 
                 }else{
-                    let consulta = 'SELECT i.id, i.rowid, ir.rowid as idioma_reg_id, i.nombre, i.abrev, i.original, i.used_by_system ' +
+                    consulta    = 'SELECT i.id, i.rowid, ir.rowid as idioma_reg_id, i.nombre, i.abrev, i.original, i.used_by_system ' +
                             'FROM ws_idiomas i, ws_idiomas_registrados ir  ' +
                             'where i.rowid=ir.idioma_id and  ' +
                                 'ir.evento_id =? and  ' +
                                 'ir.deleted_at is null and i.deleted_at is null';
 
                     db.query(consulta, [evento.rowid] ).then((result)=>{
-
-                        idiomas_all     = result;
-                        consulta 		= 'SELECT * FROM ws_idiomas where rowid=? and deleted_at is null';
+                        idiomas_all = result;
+                        consulta    = 'SELECT * FROM ws_idiomas where rowid=? and deleted_at is null';
                         
                         return db.query(consulta, [ evento.idioma_principal_id ] )
                         

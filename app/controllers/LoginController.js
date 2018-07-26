@@ -18,8 +18,8 @@ router.route('/verificar').post(postVerificar);
 // Funciones
 function putLogout(req, res) {
     
-    consulta 	= `SELECT * FROM ws_idiomas where deleted_at is null`;
-    connection.query(consulta, function (error, result) {
+    let consulta 	= `SELECT * FROM ws_idiomas where deleted_at is null`;
+    db.query(consulta).then(function (error, result) {
         
         res.json( result );
         

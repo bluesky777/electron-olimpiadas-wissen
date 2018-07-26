@@ -5,14 +5,16 @@ var Inscripcion     = require('../conexion/Models/Inscripcion');
 var ImagenModel     = require('../conexion/Models/ImagenModel');
 var router          = express.Router();
 
-router.route('/').get(getRouteHandler);
-router.route('/store').post(postStore)
+router.route('/').get(getIndex);
+router.route('/store').post(postStore);
 router.route('/cambiar-entidad').put(putCambiarEntidad);
+router.route('/update').put(putUpdate);
+router.route('/destroy').delete(deleteDestroy);
 
 
 
 
-function getRouteHandler(req, res) {
+function getIndex(req, res) {
     User.fromToken(req).then(($user)=>{
 
         $evento_id  = $user.evento_selected_id;
@@ -70,7 +72,7 @@ function postStore(req, res) {
 		$evento_id      = $user.evento_selected_id;
         bcrypt          = require('bcrypt');
         signed_by       = $user.rowid;
-        entidad_id	    = req.body.entidad.rowid;
+        entidad_id	    = null;
         
         
 		$nivel_id = req.body.nivel_id;
@@ -79,7 +81,13 @@ function postStore(req, res) {
 		}
 		if ($nivel_id == "-1" || $nivel_id == -1) {
 			$nivel_id = 0;
-		}
+        }
+        
+        if (req.body.entidad) {
+            if (req.body.entidad.rowid) {
+                entidad_id = req.body.entidad.rowid;                
+            }
+        }
 
         
         User.create(dat.nombres, dat.apellidos, dat.sexo, dat.username, bcrypt.hashSync(dat.password, 10), 
@@ -132,5 +140,39 @@ function putCambiarEntidad(req, res) {
         
     })
 }
+
+
+
+function putUpdate(req, res) {
+    User.fromToken(req).then(($user)=>{
+        
+		$user_id 		    = req.body.rowid;
+		$imgUsuario 	    = req.body.imgUsuario;
+        
+        db.find('users', $user_id).then(($usuario)=>{
+            User.update(req.body, $usuario, $user.evento_selected_id).then(()=>{
+                res.send(req.body);
+            });
+        });
+        
+    })
+}
+
+
+
+
+function deleteDestroy(req, res) {
+    User.fromToken(req).then(($user)=>{
+        
+		$user_id 		    = req.body.rowid;
+        
+        db.query('DELETE FROM users WHERE rowid=?', [$user_id]).then(($usuario)=>{
+            res.send($usuario);
+        });
+        
+    })
+}
+
+
 
 module.exports = router;

@@ -4,8 +4,9 @@ var db              = require('../connWeb');
 var bcrypt          = require('bcrypt');
 var jwt             = require('jsonwebtoken');
 var Role            = require('./Role');
-
-
+var Evento          = require('./Evento');
+var Inscripcion     = require('./Inscripcion');
+var Categoria       = require('./Categoria');
 var ImagenModel     = require('./ImagenModel');
 
 
@@ -79,11 +80,75 @@ class User {
         
     }
     
-    static fromToken(req) {
+    
+    static update($usuario_new, $usuario_old, $evento_id) {
+        let promesa = new Promise(function(resolve, reject){
+            let now         = window.fixDate(new Date());
+            
+            
+            if ($usuario_new.imgUsuario) {
+                $usuario_new.imagen_id 	= $usuario_new.imgUsuario['rowid'];
+            }
+        
+            
+            let nombres         = $usuario_new.nombres       || $usuario_old.nombres;
+            let apellidos       = $usuario_new.apellidos     || $usuario_old.apellidos;
+            let sexo            = $usuario_new.sexo          || $usuario_old.sexo;
+            let username        = $usuario_new.username      || $usuario_old.username;
+            let email           = $usuario_new.email         || $usuario_old.email;
+            let is_superuser    = $usuario_new.is_superuser  || $usuario_old.is_superuser;
+            let cell            = $usuario_new.cell          || $usuario_old.cell;
+            let edad            = $usuario_new.edad          || $usuario_old.edad;
+            let entidad_id      = $usuario_new.entidad_id    || $usuario_old.entidad_id;
+            let password        = '';
+            let nivel_id        = parseInt($usuario_new.nivel_id);
+            
+            let $pass = $usuario_new.password;
+            if ($pass) {
+                password = bcrypt.hashSync($pass, 10);
+            }else{
+                password = $usuario_old.entidad_id;
+            }
+            
+            
+            if ($usuario_new.entidad) {
+                entidad_id = $usuario_new.entidad.rowid;
+            }
+            
+            let consulta 	= 'UPDATE users SET nombres=?, apellidos=?, sexo=?, username=?, password=?, email=?, is_superuser=?, cell=?, edad=?, entidad_id=?, updated_at=? ' +
+                'WHERE rowid=?';
+            db.query(consulta, [nombres, apellidos, sexo, username, password, email, is_superuser, cell, edad, entidad_id, now, $usuario_new.rowid])
+            .then(function (result_event) {
+                if (nivel_id>0) {
+                    consulta = 'UPDATE ws_user_event SET nivel_id='+nivel_id+' WHERE user_id=? and evento_id=? ';
+                }else{
+                    consulta = 'UPDATE ws_user_event SET nivel_id=NULL WHERE user_id=? and evento_id=? ';
+                }
+                
+                return db.query(consulta, [$usuario_new.rowid, $evento_id])
+            }).then((user_event)=>{
+                resolve($usuario_new);
+            });
+        })
+        
+        return promesa;
+        
+        
+    }
+    
+    static fromToken(req, token_auth) {
         let promesa = new Promise(function(resolve, reject){
             
+            let token   = '';
+            
+            if (token_auth) {
+                token   = token_auth;
+            }else{
+                token   = req.headers.authorization.slice(7);
+            }
+            
             let $user 	= {};
-            let token   = req.headers.authorization.slice(7);
+            
             
             jwt.verify(token, process.env.JWT_SECRET, function(err, decoded) {
                 if (err) {
@@ -248,10 +313,11 @@ class User {
                     // Verifico si está registrado en este evento actual. Si no, traemos el evento al que realmente pertenece
                     if ( !Role.hasRole(user.roles, 'Admin') && !Role.hasRole(user.roles, 'Invitado') && !Role.hasRole(user.roles, 'Pantalla') ) {   // Estos 3 roles interactuan en cualquier evento
                         
-                        consulta = 'SELECT * FROM ws_user_event ue WHERE ue.user_id=? ';
-                        db.query($consulta, [ user.id ] ).then(($eventos_registrados)=>{
+                        let consulta = 'SELECT * FROM ws_user_event ue WHERE ue.user_id=? ';
+                        db.query(consulta, [ user.rowid ] ).then(($eventos_registrados)=>{
                             
-                            $registrado_en_actual   = false;
+                            console.log($eventos_registrados);
+                            let $registrado_en_actual   = false;
                             
                             for (let i = 0; i < $eventos_registrados.length; i++) {
                                 const regist = $eventos_registrados[i];
@@ -267,8 +333,8 @@ class User {
                                 if ($registrado_en_actual) {
                                     resolve_ult();
                                 }else{
-                                    let $ultimo = $eventos_resgistrados.length-1;
-                                    db.find('ws_eventos', $eventos_resgistrados[ $ultimo ].evento_id).then((ult_evento)=>{
+                                    let $ultimo = $eventos_registrados.length-1;
+                                    db.find('ws_eventos', $eventos_registrados[ $ultimo ].evento_id).then((ult_evento)=>{
                                         user.evento_actual = ult_evento; // que trabaje en el último evento al que se inscribió
                                         resolve_ult();
                                     })                                
