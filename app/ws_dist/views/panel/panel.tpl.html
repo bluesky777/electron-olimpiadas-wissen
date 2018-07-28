@@ -1,19 +1,4 @@
-
-<header id="site-head" ng-class="{'fixedHeader': fixedHeader}" ng-include=" 'views/panel/header.tpl.html' " style="z-index: 90" class="hidden-print site-head fixedHeader"></header>
-<!-- main-container-->
-<div ng-class="{'nav-expand': navFull, 'nav-horizontal': navHorizontal}" class="main-container clearfix nav-expand">
-  <aside id="site-nav" ng-class="{'nav-expand': navFull, 'nav-offcanvas': navOffCanvas}" custom-scrollbar="" ng-include=" 'views/panel/nav.tpl.html' " style="overflow-y: scroll;" class="hidden-print nav-wrap ps-container nav-expand ps-active-y">
-    <div class="nav-head"></div>
-  </aside>
-  <div ng-class="{'nav-expand': navFull, 'fixedHeader': fixedHeader}" id="content" class="content-container fixedHeader">
-    <div class="page page-dashboard">
-      <div ui-view="contenido_panel" class="page-wrap">
-        <iniciar-dir></iniciar-dir>
-        <chat-container-dir></chat-container-dir>
-      </div>
-    </div>
-  </div><!-- settings -->
-  <!--.site-settings.clearfix.hidden-xs(ng-class="{'open': isSettingsOpen}")
+ <header id="site-head" ng-class="{'fixedHeader': fixedHeader}" ng-include=" 'views/panel/header.tpl.html' " style="z-index: 90" class="hidden-print site-head fixedHeader"></header> <!-- main-container--> <div ng-class="{'nav-expand': navFull, 'nav-horizontal': navHorizontal}" class="main-container clearfix nav-expand"> <aside id="site-nav" ng-class="{'nav-expand': navFull, 'nav-offcanvas': navOffCanvas}" custom-scrollbar="" ng-include=" 'views/panel/nav.tpl.html' " style="overflow-y: scroll;" class="hidden-print nav-wrap ps-container nav-expand ps-active-y"> <div class="nav-head"></div> </aside> <div ng-class="{'nav-expand': navFull, 'fixedHeader': fixedHeader}" id="content" class="content-container fixedHeader"> <div class="page page-dashboard"> <div ui-view="contenido_panel" class="page-wrap"> <iniciar-dir></iniciar-dir> <chat-container-dir></chat-container-dir> </div> </div> </div><!-- settings --> <!--.site-settings.clearfix.hidden-xs(ng-class="{'open': isSettingsOpen}")
   .settings.clearfix
   	.trigger.ion.ion-settings.left(ng-click="toggleSettingsBox()" role="button" tabindex="0")
   	.wrapper.left
@@ -29,5 +14,4 @@
   		hr
   		ul.themes.list-unstyled
   			li(ng-class="{active: theme-zero}" ng-model="themeModel" btn-radio="'theme-zero'" ng-change="onThemeChange(themeModel)" tabindex="0" aria-invalid="false")
-  -->
-</div>
+  --> </div>

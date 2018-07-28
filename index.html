@@ -61,32 +61,32 @@
         
         crearTablas = function () {
           const {shell} = require('electron');
-          shell.openExternal('http://' + ip + ':8787/api/welcome/crear-tablas');
+          shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/crear-tablas');
         }
         
         crearDatosIniciales = function () {
           const {shell} = require('electron');
-          shell.openExternal('http://' + ip + ':8787/api/welcome/crear-datos-iniciales');
+          shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/crear-datos-iniciales');
         }
       
         
         descargarDatos = function () {
           const {shell} = require('electron');
-          shell.openExternal('http://' + ip + ':8787/api/welcome/descargar-datos');
+          shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/descargar-datos');
         }
       
         borrarDatos = function () {
           let resp = confirm('¡Peligro! ¿Seguro que quieres borrar datos?');
           if (resp) {
             const {shell} = require('electron');
-            shell.openExternal('http://' + ip + ':8787/api/welcome/borrar-datos');
+            shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/borrar-datos');
           }
           
         }
       
         abrirAppEnNavegador = function () {
           const {shell} = require('electron');
-          shell.openExternal('http://' + ip + ':8787');
+          shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT);
         }
       
         

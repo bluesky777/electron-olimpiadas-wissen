@@ -1,17 +1,1 @@
-
-<div class="modal-header">
-  <h3 class="modal-title">¿Seguro que deseas eliminar?</h3>
-</div>
-<div class="modal-body">
-  <div class="row">
-    <div class="col-lg-12 col-xs-12">
-      <h4 ng-bind-html="elemento.descripcion + ' ' + elemento.apellidos" flex="90"></h4>
-      <div ng-bind-html="'Entidad: ' + (elemento.entidad_id|nombreEntidad:entidades)" flex="90"></div>
-      <h5>Id: {{elemento.id}}</h5>
-    </div>
-  </div>
-</div>
-<div class="modal-footer">
-  <button ng-click="ok()" class="btn btn-labeled btn-danger">Eliminar<i class="btn-label fa fa-times"></i></button>
-  <button ng-click="cancel()" class="btn btn-yellow">Cancelar</button>
-</div>
+ <div class="modal-header"> <h3 class="modal-title">¿Seguro que deseas eliminar?</h3> </div> <div class="modal-body"> <div class="row"> <div class="col-lg-12 col-xs-12"> <h4 ng-bind-html="elemento.descripcion + ' ' + elemento.apellidos" flex="90"></h4> <div ng-bind-html="'Entidad: ' + (elemento.entidad_id|nombreEntidad:entidades)" flex="90"></div> <h5>Id: {{elemento.id}}</h5> </div> </div> </div> <div class="modal-footer"> <button ng-click="ok()" class="btn btn-labeled btn-danger">Eliminar<i class="btn-label fa fa-times"></i></button> <button ng-click="cancel()" class="btn btn-yellow">Cancelar</button> </div>

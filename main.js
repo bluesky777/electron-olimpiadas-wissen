@@ -1,10 +1,15 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
+require('dotenv').config();
 
 
 
 // Enable live reload for all the files inside your project directory
-require('electron-reload')(__dirname);
+var isDev = process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false;
+
+if (isDev) {
+    require('electron-reload')(__dirname);
+}
 
 
 // Keep a global reference of the window object, if you don't, the window will

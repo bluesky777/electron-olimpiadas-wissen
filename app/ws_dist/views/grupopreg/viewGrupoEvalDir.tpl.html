@@ -1,14 +1,1 @@
-
-<md-whiteframe layout layout-wrap style="padding: 10px" ng-class-odd="'fondo-gris-odd'" class="md-whiteframe-z2 definicion-frame"><span flex="5" style="font-weight: bold">{{ $parent.$parent.$index+1}}.</span><span ng-bind-html="grupoking.definicion" flex="95"></span>
-  <div layout="row" style="margin-left: -50px; " class="btn-container-edit">
-    <md-button aria-label="Quitar grupo" ng-click="quitarPregunta(grupoking)" class="md-icon-button md-mini">
-      <md-icon class="fa fa-times"></md-icon>
-      <md-tooltip>Quitar</md-tooltip>
-    </md-button>
-  </div>
-  <div ng-repeat="pregunta_agrup in grupoking.pregs_agrupadas" flex="100">
-    <div>
-      <md-whiteframe layout style="margin-left: 20px; padding: 10px" class="md-whiteframe-z2 definicion-frame"><span flex="5">{{$index+1}}.</span><span ng-bind-html="pregunta_agrup.enunciado" flex="95"></span></md-whiteframe>
-    </div>
-  </div>
-</md-whiteframe>
+ <md-whiteframe layout layout-wrap style="padding: 10px" ng-class-odd="'fondo-gris-odd'" class="md-whiteframe-z2 definicion-frame"><span flex="5" style="font-weight: bold">{{ $parent.$parent.$index+1}}.</span><span ng-bind-html="grupoking.definicion" flex="95"></span> <div layout="row" style="margin-left: -50px;" class="btn-container-edit"> <md-button aria-label="Quitar grupo" ng-click="quitarPregunta(grupoking)" class="md-icon-button md-mini"> <md-icon class="fa fa-times"></md-icon> <md-tooltip>Quitar</md-tooltip> </md-button> </div> <div ng-repeat="pregunta_agrup in grupoking.pregs_agrupadas" flex="100"> <div> <md-whiteframe layout style="margin-left: 20px; padding: 10px" class="md-whiteframe-z2 definicion-frame"><span flex="5">{{$index+1}}.</span><span ng-bind-html="pregunta_agrup.enunciado" flex="95"></span></md-whiteframe> </div> </div> </md-whiteframe>

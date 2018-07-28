@@ -4,18 +4,49 @@
   "description": "A minimal Electron application",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "APP_DEV=true electron .",
+    "pack": "build --dir",
+    "dist": "build",
+    "postinstall": "install-app-deps"
   },
   "repository": "https://github.com/electron/electron-quick-start",
   "keywords": [
     "Electron",
-    "quick",
-    "start",
-    "tutorial",
-    "demo"
+    "Olimpiadas",
+    "wissen"
   ],
-  "author": "GitHub",
+  "author": "Joseth Guerrero",
   "license": "CC0-1.0",
+  "build": {
+    "appId": "olimpiadasWissen",
+    "mac": {
+      "category": "com.education.olimpiadas.wissen"
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": "squirrel",
+      "icon": "build/icon.ico"
+    }
+  },
   "dependencies": {
     "axios": "^0.18.0",
     "bcrypt": "^3.0.0",
@@ -30,6 +61,7 @@
   "devDependencies": {
     "@angular/cli": "^6.0.5",
     "electron": "^2.0.0",
+    "electron-builder": "^20.26.0",
     "electron-reload": "^1.2.2"
   }
 }

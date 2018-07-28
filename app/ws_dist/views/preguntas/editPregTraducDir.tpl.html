@@ -1,34 +1,4 @@
-<a md-ink-ripple ng-if="!pregunta_traduc.is_preg" class="btn-tag btn-tag-info">Pregunta en {{pregunta_traduc.idioma}}</a>
-<div class="definicion-preg">
-  <button type="button" ng-click="misImagenes()" style="float: right;" class="btn btn-primary fa fa-image btn-xs"> Imágenes...</button>
-  <text-angular-toolbar name="mytoolbar" ta-toolbar-group-class="btn-group btn-group-xs"></text-angular-toolbar>
-  <text-angular ng-model="pregunta_traduc.enunciado" ta-target-toolbars="mytoolbar" ta-show-html="true"></text-angular>
-  <!--div(text-angular ta-toolbar-group-class="btn-group btn-group-xs" ng-model="pregunta_traduc.enunciado")-->
-  <div ng-show="!pregunta_traduc.mostrar_ayuda"><a ng-click="pregunta_traduc.mostrar_ayuda=true" class="pointer"><i class="fa fa-anchor"></i>
-      <md-tooltip>Mostrar ayuda</md-tooltip></a></div>
-  <div layout layout-sm="column" ng-show="pregunta_traduc.mostrar_ayuda">
-    <md-input-container flex class="txtayuda">
-      <label>Texto ayuda</label>
-      <input type="text" ng-model="pregunta_traduc.ayuda">
-    </md-input-container>
-  </div>
-  <div ui-sortable="sortableOptions" ng-model="pregunta_traduc.opciones" class="opcionesedit">
-    <md-input-container flex ng-repeat="opcion in pregunta_traduc.opciones | orderBy:'orden'" class="input-group margintb0 paddingtb0">
-      <label ng-show="!opcion.nueva"><i class="fa fa-sort"> </i> Opción {{$index+1}}:</label>
-      <!--input.form-control(type="text" ng-model="opcion.definicion" ng-class="{ 'textblue':opcion.is_correct, 'add-opcion':opcion.nueva }" 
+<a md-ink-ripple ng-if="!pregunta_traduc.is_preg" class="btn-tag btn-tag-info">Pregunta en {{pregunta_traduc.idioma}}</a> <div class="definicion-preg"> <button type="button" ng-click="misImagenes()" style="float: right;" class="btn btn-primary fa fa-image btn-xs"> Imágenes...</button> <text-angular-toolbar name="mytoolbar" ta-toolbar-group-class="btn-group btn-group-xs"></text-angular-toolbar> <text-angular ng-model="pregunta_traduc.enunciado" ta-target-toolbars="mytoolbar" ta-show-html="true"></text-angular> <!--div(text-angular ta-toolbar-group-class="btn-group btn-group-xs" ng-model="pregunta_traduc.enunciado")--> <div ng-show="!pregunta_traduc.mostrar_ayuda"><a ng-click="pregunta_traduc.mostrar_ayuda=true" class="pointer"><i class="fa fa-anchor"></i> <md-tooltip>Mostrar ayuda</md-tooltip></a></div> <div layout layout-sm="column" ng-show="pregunta_traduc.mostrar_ayuda"> <md-input-container flex class="txtayuda"> <label>Texto ayuda</label> <input type="text" ng-model="pregunta_traduc.ayuda"> </md-input-container> </div> <div ui-sortable="sortableOptions" ng-model="pregunta_traduc.opciones" class="opcionesedit"> <md-input-container flex ng-repeat="opcion in pregunta_traduc.opciones | orderBy:'orden'" class="input-group margintb0 paddingtb0"> <label ng-show="!opcion.nueva"><i class="fa fa-sort"> </i> Opción {{$index+1}}:</label> <!--input.form-control(type="text" ng-model="opcion.definicion" ng-class="{ 'textblue':opcion.is_correct, 'add-opcion':opcion.nueva }" 
       ng-focus="addButtonNewOpcion(pregunta_traduc, opcion)" ng-disable="opcion.creando")
       
-      -->
-      <text-angular ng-model="opcion.definicion" ta-show-html="true" ng-if="!opcion.nueva" ta-target-toolbars="mytoolbar" ng-class="{ 'textblue':opcion.is_correct }" ng-focus="addButtonNewOpcion(pregunta_traduc, opcion)" ta-text-editor-class="form-control editor-height" ta-html-editor-class="form-control editor-height" ng-disable="opcion.creando"></text-angular>
-      <text-angular ng-model="opcion.definicion" ta-show-html="false" ng-if="opcion.nueva" ta-target-toolbars="mytoolbar" ng-focus="addButtonNewOpcion(pregunta_traduc, opcion)" ta-text-editor-class="form-control editor-height add-opcion" ta-html-editor-class="form-control editor-height add-opcion" ng-disable="opcion.creando"></text-angular><span ng-show="!opcion.nueva" class="input-group-btn">
-        <md-button type="button" aria-label="Quitar" ng-click="deleteOption(pregunta_traduc, opcion)" class="md-icon-button md-warn">
-          <md-icon class="fa fa-times"></md-icon>
-          <md-tooltip>Quitar opción</md-tooltip>
-        </md-button>
-        <md-button type="button" ng-class="{ 1:'md-mini md-fab md-primary', 0:''}[opcion.is_correct]" aria-label="Correcta" ng-click="setAsCorrect(pregunta_traduc, opcion)" class="md-icon-button">
-          <md-icon class="fa fa-check"></md-icon>
-          <md-tooltip>Respuesta correcta</md-tooltip>
-        </md-button></span>
-    </md-input-container>
-  </div>
-</div>
+      --> <text-angular ng-model="opcion.definicion" ta-show-html="true" ng-if="!opcion.nueva" ta-target-toolbars="mytoolbar" ng-class="{ 'textblue':opcion.is_correct }" ng-focus="addButtonNewOpcion(pregunta_traduc, opcion)" ta-text-editor-class="form-control editor-height" ta-html-editor-class="form-control editor-height" ng-disable="opcion.creando"></text-angular> <text-angular ng-model="opcion.definicion" ta-show-html="false" ng-if="opcion.nueva" ta-target-toolbars="mytoolbar" ng-focus="addButtonNewOpcion(pregunta_traduc, opcion)" ta-text-editor-class="form-control editor-height add-opcion" ta-html-editor-class="form-control editor-height add-opcion" ng-disable="opcion.creando"></text-angular><span ng-show="!opcion.nueva" class="input-group-btn"> <md-button type="button" aria-label="Quitar" ng-click="deleteOption(pregunta_traduc, opcion)" class="md-icon-button md-warn"> <md-icon class="fa fa-times"></md-icon> <md-tooltip>Quitar opción</md-tooltip> </md-button> <md-button type="button" ng-class="{ 1:'md-mini md-fab md-primary', 0:''}[opcion.is_correct]" aria-label="Correcta" ng-click="setAsCorrect(pregunta_traduc, opcion)" class="md-icon-button"> <md-icon class="fa fa-check"></md-icon> <md-tooltip>Respuesta correcta</md-tooltip> </md-button></span> </md-input-container> </div> </div>

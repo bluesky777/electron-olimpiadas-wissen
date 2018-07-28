@@ -1,14 +1,1 @@
-
-<div class="container-proyector">
-  <header id="site-head" ng-include=" 'views/panel/header.tpl.html' " class="hidden-print proyector-head site-head"></header>
-  <!-- main-container-->
-  <div class="main-container clearfix nav-expand">
-    <div style="width: 100%; margin-left: 0px; margin-top: -70px;" class="content-container fixedHeader">
-      <div style="padding: 0px; background-color: white; height: 102vh; overflow: auto;" class="page page-dashboard">
-        <div ui-view="contenido_panel" style="height: 100%; text-align:center; background-size: 100% 100%; background-position: center; background-size: cover; background-image: url('{{imagesPath + SocketData.config.info_evento.img_name}}');" class="page-wrap proyectando">
-          <h2 style="padding: 8px; margin-top: 70px" ng-bind-html="SocketData.config.info_evento.msg_teleprompter" class="txt-borde-blanco"> </h2>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+ <div class="container-proyector"> <header id="site-head" ng-include=" 'views/panel/header.tpl.html' " class="hidden-print proyector-head site-head"></header> <!-- main-container--> <div class="main-container clearfix nav-expand"> <div style="width: 100%; margin-left: 0px; margin-top: -70px;" class="content-container fixedHeader"> <div style="padding: 0px; background-color: white; height: 102vh; overflow: auto;" class="page page-dashboard"> <div ui-view="contenido_panel" style="height: 100%; text-align:center; background-size: 100% 100%; background-position: center; background-size: cover; background-image: url('{{imagesPath + SocketData.config.info_evento.img_name}}');" class="page-wrap proyectando"> <h2 style="padding: 8px; margin-top: 70px" ng-bind-html="SocketData.config.info_evento.msg_teleprompter" class="txt-borde-blanco"> </h2> </div> </div> </div> </div> </div>
