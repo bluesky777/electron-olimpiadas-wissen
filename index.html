@@ -36,6 +36,9 @@
     <input type="button" onclick="borrarDatos()" value="Borrar datos">
     
     <br>
+    <input type="button" onclick="descargarExcel()" value="Descargar Excel">
+    
+    <br>
     <br>
     <h3>Acceso en las siguientes IP:</h3>
     <h1 id="contenido-ip"></h1>
@@ -73,6 +76,11 @@
         descargarDatos = function () {
           const {shell} = require('electron');
           shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/descargar-datos');
+        }
+      
+        descargarExcel = function () {
+          const {shell} = require('electron');
+          shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/descargar-excel');
         }
       
         borrarDatos = function () {
