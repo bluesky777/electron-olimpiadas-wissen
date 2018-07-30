@@ -2,7 +2,6 @@ var express         = require('express');
 var router          = express.Router();
 var Evento          = require('../conexion/Models/Evento');
 var Idioma          = require('../conexion/Models/Idioma');
-var User            = require('../conexion/Models/User');
 var db              = require('../conexion/connWeb');
 
 
@@ -12,7 +11,6 @@ router.route('/').get(getIndex);
 router.route('/update').put(putUpdate);
 router.route('/store').post(postStore);
 router.route('/set-actual').put(putSetActual);
-router.route('/set-gran-final').put(putSetGranFinal);
 
     
 
@@ -49,7 +47,7 @@ function getIndex(req, res) {
 
 
 function postStore(req, res) {
-
+    console.log(req);
     $event = {};
 
     $event.nombre 					= req.body.nombre               || 'Evento default';
@@ -143,20 +141,6 @@ function putSetActual(req, res){
         
         db.query(consulta, [req.body.rowid]).then(()=>{
             res.send('Actualizado');
-        })
-    })
-}
-
-
-
-function putSetGranFinal(req, res){
-    User.fromToken(req).then(($user)=>{
-        let consulta = 'UPDATE ws_eventos SET gran_final=? WHERE rowid=?';
-        
-        db.query(consulta, [req.body.gran_final, req.body.id]).then(()=>{
-            
-            res.send('Actualizado');
-
         })
     })
 }

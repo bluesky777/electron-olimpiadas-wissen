@@ -81,6 +81,7 @@ function getCategoriasConPreguntas(req, res) {
         }).then(($categorias)=>{
             return Evaluacion.categoriasConPreguntas($categorias);
         }).then(($categorias)=>{
+            console.log($categorias);
             res.send($categorias);
         })
 		

@@ -152,7 +152,7 @@ class Evaluacion {
     
     
     static actual($evento_id, categoria_id) {
-        let $consulta = "SELECT *, rowid FROM ws_evaluaciones WHERE actual=1 and evento_id=? and categoria_id=?";
+        let $consulta = "SELECT *, rowid FROM ws_evaluaciones WHERE actual=1 and categoria_id=? and evento_id=?";
         return db.query($consulta, [$evento_id, categoria_id] );
     }
     
