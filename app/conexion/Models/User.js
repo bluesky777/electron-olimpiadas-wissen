@@ -316,7 +316,6 @@ class User {
                         let consulta = 'SELECT * FROM ws_user_event ue WHERE ue.user_id=? ';
                         db.query(consulta, [ user.rowid ] ).then(($eventos_registrados)=>{
                             
-                            console.log($eventos_registrados);
                             let $registrado_en_actual   = false;
                             
                             for (let i = 0; i < $eventos_registrados.length; i++) {

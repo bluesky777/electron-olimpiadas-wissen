@@ -22,7 +22,7 @@ function descargarDatos() {
             }).catch(error => {
                 console.log('NO HAY LOCALHOST');
                 
-                axios.get('https://ws.micolevirtual.com/wissenLaravel/public/api/datos-laravel/descargar').then(response => {
+                axios.get('https://ws.micolevirtual.com/public/api/datos-laravel/descargar').then(response => {
                     resolve_http(response.data);
                     
                 }).catch(error => {

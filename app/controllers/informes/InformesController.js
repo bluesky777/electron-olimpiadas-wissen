@@ -26,21 +26,31 @@ function getMisExamenes(req, res) {
 			
 		db.query($consulta, [$user.idioma_main_id, $user.rowid]).then(($inscripciones)=>{
 			let mapeando = $inscripciones.map(($inscripcion, $key)=>{
-				return db.query('SELECT *, rowid FROM ws_examen_respuesta WHERE inscripcion_id=?', [$inscripcion.rowid]);
+				
+				$consulta = 'SELECT e.rowid as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
+						'e.terminado, e.timeout, e.res_by_promedio, e.created_at as examen_at, i.user_id, i.allowed_to_answer, i.signed_by, i.created_at as inscrito_at, ' +
+						'ct.nombre as nombre_categ, ct.abrev as abrev_categ, ct.descripcion as descripcion_categ, ct.idioma_id, ct.traducido ' +
+					'FROM ws_examen_respuesta e ' +
+					'inner join ws_inscripciones i on i.rowid=e.inscripcion_id and i.rowid=? and i.deleted_at is null ' +
+					'inner join ws_categorias_king ck on ck.rowid=i.categoria_id and ck.deleted_at is null ' +
+					'left join ws_categorias_traduc ct on ck.id=ct.categoria_id and ct.idioma_id=e.idioma_id and ct.deleted_at is null ' +
+					'where e.deleted_at is null ';
+				
+				return db.query($consulta, [$inscripcion.rowid]);
 			})
 			return Promise.all(mapeando);
 		}).then(($examenes_all)=>{
-			//console.log($examenes_all);
-			let mapeando = $examenes_all.map(($examen, $key)=>{
-				return ExamenRespuesta.calcularExamen($examen.rowid);
+			let mapeando = $examenes_all[0].map(($examen, $key)=>{
+				return ExamenRespuesta.calcular($examen);
 			})
 			return Promise.all(mapeando);
 		
 		}).then(($examenes_puntajes)=>{
+			console.log($examenes_puntajes);
 			if ($examenes_puntajes)
 				res.send($examenes_puntajes);
 			else
-			res.send();
+				res.send([]);
 		});
 
 		
