@@ -68,7 +68,7 @@ function putDatos(req, res) {
             
             Promise.all(mapeando).then((eventos)=>{
                 
-                res.send($events);
+                res.send({eventos: $events});
             
             });
 

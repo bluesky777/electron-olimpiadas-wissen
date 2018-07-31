@@ -16,6 +16,7 @@ router.use('/disciplinas', require('./DisciplinasController'));
 router.use('/evaluaciones', require('./EvaluacionesController'));
 router.use('/informes', require('./informes/InformesController'));
 router.use('/informes-infor', require('./informes/DatosController'));
+router.use('/puestos', require('./informes/PuestosController'));
 router.use('/inscripciones', require('./InscripcionesController'));
 router.use('/examenes_respuesta', require('./ExamenesRespuestaController'));
 router.use('/qr', require('./QrController'));
