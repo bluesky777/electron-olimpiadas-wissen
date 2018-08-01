@@ -73,9 +73,20 @@
         }
       
         
-        descargarDatos = function () {
+        descargarDatos_original = function () {
           const {shell} = require('electron');
           shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/descargar-datos');
+        }
+        
+        descargarDatos = function () {
+          const path          = require('path');
+          
+          require(path.join(__dirname, 'app/conexion/connDescargarDatos'))().then(()=>{
+            console.log('Datos descargados');
+            alert('Datos descargados y agregados');
+          }, (r2)=>{
+            console.log('Hubo un error descargando Datos', r2);
+          })
         }
       
         descargarExcel = function () {

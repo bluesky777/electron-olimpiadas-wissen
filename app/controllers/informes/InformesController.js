@@ -41,7 +41,7 @@ function getMisExamenes(req, res) {
 			})
 			return Promise.all(mapeando);
 		}).then(($examenes_all)=>{
-			let mapeando = $examenes_all[0].map(($examen, $key)=>{
+			let mapeando = $examenes_all.map(($examen, $key)=>{
 				return ExamenRespuesta.calcular($examen);
 			})
 			return Promise.all(mapeando);
