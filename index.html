@@ -28,8 +28,6 @@
     <input type="button" onclick="crearTablas()" value="Crear tablas">
     <br>
     
-    <input type="button" onclick="crearDatosIniciales()" value="Crear datos iniciales">
-    <br>
     <input type="button" onclick="descargarDatos()" value="Descargar datos para la prueba">
     <br>
     <br>
@@ -67,11 +65,6 @@
           shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/crear-tablas');
         }
         
-        crearDatosIniciales = function () {
-          const {shell} = require('electron');
-          shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/crear-datos-iniciales');
-        }
-      
         
         descargarDatos_original = function () {
           const {shell} = require('electron');

@@ -504,6 +504,7 @@ function createTable() {
         }).then(function(res){
             console.log('tabla user_event creada');
             console.log('TODAS LAS TABLAS CREADAS');
+            resolve()
         })
         
     });

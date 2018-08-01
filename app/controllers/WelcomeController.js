@@ -8,7 +8,6 @@ router.route('/')
     .post(postRouteHandler);
 
 router.route('/crear-tablas').get(getCrearTablas);
-router.route('/crear-datos-iniciales').get(getCrearDatosIniciales);
 router.route('/descargar-datos').get(getDescargarDatos);
 router.route('/borrar-datos').get(getBorrarDatos);
 router.route('/descargar-excel').get(getDescargarExcel);
@@ -54,14 +53,13 @@ function postRouteHandler(req, res) {
 }
 
 function getCrearTablas(req, res) {
-    crear = require('../conexion/connCrearTablas')();
-    res.send('Tablas Creadas');
+    crear = require('../conexion/connCrearTablas')().then(()=>{
+        require('../conexion/connCrearDatosIniciales')().then(()=>{
+            res.send('Tablas Creadas y datos iniciales agregados');
+        });
+    });
 }
 
-function getCrearDatosIniciales(req, res) {
-    require('../conexion/connCrearDatosIniciales')();
-    res.send('Datos agregados');
-}
 
 
 function getDescargarDatos(req, res) {
