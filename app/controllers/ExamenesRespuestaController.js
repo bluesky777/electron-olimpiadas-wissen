@@ -35,9 +35,10 @@ function postIniciar(req, res) {
 		terminado 			= 0;
 		gran_final          = $user.evento_actual.gran_final;
 		res_by_promedio 	= $evaluacion.puntaje_por_promedio;
+		let now 			= window.fixDate(new Date());
 		
-		consulta = 'INSERT INTO ws_examen_respuesta(inscripcion_id, evaluacion_id, idioma_id, categoria_id, terminado, gran_final, res_by_promedio) VALUES(?,?,?,?,?,?,?)';
-		return db.query(consulta, [inscripcion_id, evaluacion_id, idioma_id, categoria_id, terminado, gran_final, res_by_promedio])
+		consulta = 'INSERT INTO ws_examen_respuesta(inscripcion_id, evaluacion_id, idioma_id, categoria_id, terminado, gran_final, res_by_promedio, created_at, updated_at) VALUES(?,?,?,?,?,?,?,?,?)';
+		return db.query(consulta, [inscripcion_id, evaluacion_id, idioma_id, categoria_id, terminado, gran_final, res_by_promedio, now, now])
 	}).then((result_insert)=>{
 		$evaluacion.examen_id       = result_insert.insertId;
 		return Pregunta.deEvaluacion($evaluacion.rowid);
@@ -93,8 +94,10 @@ function putResponderPregunta(req, res) {
 			}	
 		}
 		
+		tiempo_aprox = req.body.tiempo_aproximado || null;
+		
 		consulta = 'INSERT INTO ws_respuestas(examen_respuesta_id, pregunta_king_id, tiempo, tiempo_aproximado, preg_traduc_id, idioma_id, tipo_pregunta, puntos_maximos, puntos_adquiridos, opcion_id) VALUES(?,?,?,?,?,?,?,?,?,?)';
-		return db.query(consulta, [$examen_actual_id, $preg_king_id, req.body.tiempo, req.body.tiempo_aproximado, $preg_traduc_id, req.body.idioma_id, req.body.tipo_pregunta, $puntos, (req.body.puntos_adquiridos||null), $opcion_id]);
+		return db.query(consulta, [$examen_actual_id, $preg_king_id, req.body.tiempo, tiempo_aprox, $preg_traduc_id, req.body.idioma_id, req.body.tipo_pregunta, $puntos, (req.body.puntos_adquiridos||null), $opcion_id]);
 
 	}).then(()=>{
 		res.send('Respuesta guardada.');

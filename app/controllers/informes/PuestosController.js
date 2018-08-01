@@ -21,7 +21,7 @@ function putCalcularResultados(req, res) {
 		$evento_id = $user.evento_selected_id;
 		let perfil_path = User.$perfil_path;
 		
-		$consulta = 'SELECT e.id as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
+		$consulta = 'SELECT e.rowid as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
                 'e.terminado, e.timeout, e.res_by_promedio, e.created_at as examen_at, i.user_id, i.allowed_to_answer, i.signed_by, i.created_at as inscrito_at, ' +
                 'u.nombres, u.apellidos, u.sexo, u.username, u.entidad_id, ' +
                 'u.imagen_id, IFNULL("' + perfil_path + '" || im.nombre, CASE WHEN u.sexo="F" THEN "' + User.$default_female + '" ELSE "' + User.$default_male + '" END ) as imagen_nombre, ' +
@@ -29,17 +29,18 @@ function putCalcularResultados(req, res) {
                 'en.logo_id, IFNULL("' + perfil_path + '" || im.nombre, "perfil/system/avatars/no-photo.jpg") as logo_nombre, ' +
                 'ct.nombre as nombre_categ, ct.abrev as abrev_categ, ct.descripcion as descripcion_categ, ct.idioma_id, ct.traducido ' +
             'FROM ws_examen_respuesta e ' +
-            'inner join ws_inscripciones i on i.id=e.inscripcion_id and i.deleted_at is null ' +
-            'inner join users u on u.id=i.user_id and u.deleted_at is null ' +
-            'inner join ws_categorias_king ck on ck.id=i.categoria_id and ck.deleted_at is null ' +
-            'inner join ws_user_event ue on ue.user_id=u.id and ue.evento_id=:evento_id ' +
-            'inner join ws_entidades en on en.id=u.entidad_id and en.deleted_at is null  ' +
-            'left join ws_categorias_traduc ct on ck.id=ct.categoria_id and ct.idioma_id=e.idioma_id and ct.deleted_at is null ' +
-            'left join images im on im.id=u.imagen_id and im.deleted_at is null  ' +
-            'left join images im2 on im2.id=en.logo_id and im2.deleted_at is null ' +
+            'inner join ws_inscripciones i on i.rowid=e.inscripcion_id and i.deleted_at is null ' +
+            'inner join users u on u.rowid=i.user_id and u.deleted_at is null ' +
+            'inner join ws_categorias_king ck on ck.rowid=i.categoria_id and ck.deleted_at is null ' +
+            'inner join ws_user_event ue on ue.user_id=u.rowid and ue.evento_id=? ' +
+            'inner join ws_entidades en on en.rowid=u.entidad_id and en.deleted_at is null  ' +
+            'left join ws_categorias_traduc ct on ck.rowid=ct.categoria_id and ct.idioma_id=e.idioma_id and ct.deleted_at is null ' +
+            'left join images im on im.rowid=u.imagen_id and im.deleted_at is null  ' +
+            'left join images im2 on im2.rowid=en.logo_id and im2.deleted_at is null ' +
             'where e.deleted_at is null ';
 			
 		db.query($consulta, [$evento_id]).then(($examenes)=>{
+            
 			let mapeando = $examenes.map(($examen, $key)=>{
 				
 				return ExamenRespuesta.calcular($examen);
@@ -48,10 +49,9 @@ function putCalcularResultados(req, res) {
 			return Promise.all(mapeando);
 		}).then(($examenes_all)=>{
             console.log($examenes_all);
-            
             let mapeando = $examenes_all.map(($examen, $key)=>{
-				let consulta = 'UPDATE ws_examen_respuesta SET res_correctas=?, res_incorrectas=?, res_by_promedio=?, res_promedio=?, res_puntos=?, res_cant_pregs=?, res_tiempo=?, res_tiempo_format=? WHERE id=?';
-				return dba.query(consulta, [$examen.correctas, $examen.incorrec_reales, $examen.por_promedio, $examen.promedio, $examen.puntos, $examen.cantidad_pregs, $examen.tiempo, $examen.tiempo_format, $examen.examen_id]);
+				let consulta = 'UPDATE ws_examen_respuesta SET res_correctas=?, res_incorrectas=?, res_by_promedio=?, res_promedio=?, res_puntos=?, res_cant_pregs=?, res_tiempo=?, res_tiempo_format=? WHERE rowid=?';
+				return db.query(consulta, [$examen.correctas, $examen.incorrec_reales, $examen.por_promedio, $examen.promedio, $examen.puntos, $examen.cantidad_pregs, $examen.tiempo, $examen.tiempo_format, $examen.examen_id]);
 				
 			})
 			return Promise.all(mapeando);

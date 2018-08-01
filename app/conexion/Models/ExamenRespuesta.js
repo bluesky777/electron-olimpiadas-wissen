@@ -129,7 +129,7 @@ class ExamenRespuesta {
 
                 $res.tiempo_format      = ExamenRespuesta.formatMilliseconds($res.tiempo);
 
-                var result = Object.assign({},$res, $examen);
+                var result = Object.assign({}, $examen, $res);
                 resolve(result);
             })
             
