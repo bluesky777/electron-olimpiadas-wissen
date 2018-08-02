@@ -41,12 +41,19 @@ function getMisExamenes(req, res) {
 			})
 			return Promise.all(mapeando);
 		}).then(($examenes_all)=>{
-			$examenes_all = $examenes_all[0];
-			let mapeando = $examenes_all.map(($examen, $key)=>{
-				return ExamenRespuesta.calcular($examen);
-			})
-			return Promise.all(mapeando);
-		
+			return new Promise((resolve, reject)=>{
+				if($examenes_all.length > 0){
+					$examenes_all = $examenes_all[0];
+					let mapeando = $examenes_all.map(($examen, $key)=>{
+						return ExamenRespuesta.calcular($examen);
+					})
+					Promise.all(mapeando).then(($examenes_puntajes)=>{
+						resolve($examenes_puntajes);
+					});
+				}else{
+					resolve();
+				}
+			});
 		}).then(($examenes_puntajes)=>{
 
 			if ($examenes_puntajes)

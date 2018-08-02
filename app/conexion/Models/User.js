@@ -293,23 +293,26 @@ class User {
             }).then(()=>{
                 
                 // Si es Pantalla, mandamos las categorías del evento
-                new Promise((resolve_ev, reject_ev)=>{
+                return new Promise((resolve_categs, reject_ev)=>{
                     
                     if(Role.hasRole(user.roles, 'Pantalla') ){
                         consulta = 'SELECT *, rowid FROM ws_categorias_king WHERE evento_id=?';
                         db.query(consulta, [$evento_id]).then(($categorias_evento)=>{
                             
                             Categoria.traduc($categorias_evento).then((result_categorias)=>{ // Paso por referencia las categorias_king
-                                user.categorias_evento = $categorias_evento;
-                                resolve_ev();      
+                                user.categorias_evento = result_categorias;
+                                resolve_categs();
                             });
                             
                         })
+                    }else{
+                        resolve_categs();
                     }
 
                 })
             }).then(()=>{
-                return new Promise((resolve_ev, reject_ev)=>{
+
+                return new Promise((resolve_user_eve, reject_ev)=>{
                     // Verifico si está registrado en este evento actual. Si no, traemos el evento al que realmente pertenece
                     if ( !Role.hasRole(user.roles, 'Admin') && !Role.hasRole(user.roles, 'Invitado') && !Role.hasRole(user.roles, 'Pantalla') ) {   // Estos 3 roles interactuan en cualquier evento
                         
@@ -341,10 +344,10 @@ class User {
                             });
                             
                         }).then(()=>{
-                            resolve_ev();
+                            resolve_user_eve();
                         });
                     }else{
-                        resolve_ev();
+                        resolve_user_eve();
                     }
                 });
             }).then(()=>{

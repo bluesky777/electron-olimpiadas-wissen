@@ -14,33 +14,12 @@ router.route('/store-intacta').post(postStoreIntacta);
 
 // Funciones
 function getIndex(req, res) {
-    
-        
-        
-    Evento.todos().then((result)=>{
-        
-        let eventos     = result;
-        let promises    = [];
-        
-        for (i=0; i < eventos.length; i++) { 
-            idiomas_all(i);
-        }
-        
-        function idiomas_all(i){
-            let idioma_promise = Evento.idiomas_all(eventos[i].rowid, eventos[i]);
-            promises.push(idioma_promise);
-            
-            idioma_promise.then((idiomas)=>{
-                eventos[i].idiomas = idiomas;
-            });
-        }
-        
-        
-        Promise.all(promises).then(function(values) {
-            res.json( eventos );
+    User.fromToken(req).then((result_user)=>{
+        consulta = 'SELECT *, rowid FROM images WHERE user_id=?';
+        db.query(consulta, [req.body.id]).then((result)=>{
+            res.send(result);
         });
     });
-
 }
 
 
