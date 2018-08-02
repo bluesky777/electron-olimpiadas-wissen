@@ -1,15 +1,16 @@
 {
   "name": "electron-olimpiadas-wissen",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "version": "1.0.1",
+  "description": "Aplicación para trabajar las olimpiadas sin necesidad de internet ni engorrosas instalaciones",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
     "pack": "build --dir",
-    "dist": "build",
+    "dist": "build -p always",
+    "publish": "build --mac --win -p always",
     "postinstall": "install-app-deps"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "repository": "https://github.com/bluesky777/electron-olimpiadas-wissen.git",
   "keywords": [
     "Electron",
     "Olimpiadas",
@@ -52,6 +53,7 @@
     "bcrypt": "^3.0.0",
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
+    "electron-updater": "^3.0.3",
     "express": "^4.15.2",
     "ip": "^1.1.5",
     "jsonwebtoken": "^8.3.0",

@@ -1,6 +1,7 @@
 // Modules to control application life and create native browser window
 const {app, BrowserWindow} = require('electron')
 require('dotenv').config();
+const {autoUpdater} = require("electron-updater");
 
 
 
@@ -12,6 +13,59 @@ if (isDev) {
 }
 
 
+//-------------------------------------------------------------------
+// Open a window that displays the version
+//
+// THIS SECTION IS NOT REQUIRED
+//
+// This isn't required for auto-updates to work, but it's easier
+// for the app to show a window than to have to click "About" to see
+// that updates are working.
+//-------------------------------------------------------------------
+let win;
+
+function sendStatusToWindow(text) {
+  win.webContents.send('message', text);
+}
+function createDefaultWindow() {
+  win = new BrowserWindow({width: 1200, height: 600});
+  win.webContents.openDevTools();
+  win.on('closed', () => {
+    win = null;
+  });
+  win.loadURL(`file://${__dirname}/index.html#v${app.getVersion()}`);
+  return win;
+}
+autoUpdater.on('checking-for-update', () => {
+  console.log('Disque a buscar actualizaciones');
+  sendStatusToWindow('Checking for update...');
+})
+autoUpdater.on('update-available', (info) => {
+  sendStatusToWindow('Update available.');
+})
+autoUpdater.on('update-not-available', (info) => {
+  sendStatusToWindow('Update not available.');
+})
+autoUpdater.on('error', (err) => {
+  sendStatusToWindow('Error in auto-updater. ' + err);
+})
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = "Download speed: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  sendStatusToWindow(log_message);
+})
+autoUpdater.on('update-downloaded', (info) => {
+  sendStatusToWindow('Update downloaded');
+  autoUpdater.quitAndInstall();
+});
+
+
+
+
+
+
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
@@ -19,18 +73,9 @@ let mainWindow
 function createWindow () {
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 1200, height: 600})
-
-  // and load the index.html of the app.
   mainWindow.loadFile('index.html')
-
-  // Open the DevTools.
   mainWindow.webContents.openDevTools()
-
-  // Emitted when the window is closed.
   mainWindow.on('closed', function () {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element.
     mainWindow = null
   })
 }
@@ -38,7 +83,15 @@ function createWindow () {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+//app.on('ready', createWindow)
+app.on('ready', ()=>{
+  
+  if (!isDev) {
+    autoUpdater.checkForUpdates();
+  }
+  
+  createDefaultWindow();
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
