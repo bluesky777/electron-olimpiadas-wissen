@@ -40,30 +40,25 @@ function createDefaultWindow() {
   return win;
 }
 autoUpdater.on('checking-for-update', () => {
-  console.log('Disque a buscar actualizaciones');
-  sendStatusToWindow('Checking for update...');
+  sendStatusToWindow('Verificando si hay actualizaciones...');
 })
 autoUpdater.on('update-available', (info) => {
-  console.log('----- Update available -----');
-  sendStatusToWindow('Update available.');
+  sendStatusToWindow('Actualización disponible. Se descargará y reiniciará el programa.');
 })
 autoUpdater.on('update-not-available', (info) => {
-  sendStatusToWindow('Update not available.');
+  sendStatusToWindow('Esta es la última versión.');
 })
 autoUpdater.on('error', (err) => {
-  console.log('Error in auto-updater. ' + err);
-  sendStatusToWindow('Error in auto-updater. ' + err);
+  sendStatusToWindow('Error en el auto-updater. ' + err);
 })
 autoUpdater.on('download-progress', (progressObj) => {
-  let log_message = "Download speed: " + progressObj.bytesPerSecond;
-  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  let log_message = "Velocidad de descarga: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Descargado ' + progressObj.percent + '%';
   log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
-  console.log(log_message);
   sendStatusToWindow(log_message);
 })
 autoUpdater.on('update-downloaded', (info) => {
-  console.log('Update downloaded');
-  sendStatusToWindow('Update downloaded');
+  sendStatusToWindow('Actualización descargada.');
   autoUpdater.quitAndInstall();
 });
 
