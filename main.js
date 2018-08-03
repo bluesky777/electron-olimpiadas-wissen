@@ -85,10 +85,7 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 //app.on('ready', createWindow)
 app.on('ready', ()=>{
-  
-  if (!isDev) {
-    autoUpdater.checkForUpdates();
-  }
+  autoUpdater.checkForUpdates();
   
   createDefaultWindow();
 })
