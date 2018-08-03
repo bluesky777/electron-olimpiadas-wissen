@@ -1,6 +1,6 @@
 {
   "name": "electron-olimpiadas-wissen",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Aplicación para trabajar las olimpiadas sin necesidad de internet ni engorrosas instalaciones",
   "main": "main.js",
   "scripts": {
@@ -53,6 +53,8 @@
     "bcrypt": "^3.0.0",
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
+    "electron-is-dev": "^0.3.0",
+    "electron-log": "^2.2.16",
     "electron-updater": "^3.0.3",
     "express": "^4.15.2",
     "ip": "^1.1.5",

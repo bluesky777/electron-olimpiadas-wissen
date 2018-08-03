@@ -1,12 +1,15 @@
 // Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron')
 require('dotenv').config();
-const {autoUpdater} = require("electron-updater");
+const {app, BrowserWindow}  = require('electron')
+const {autoUpdater}         = require("electron-updater");
+const isDev                 = require('electron-is-dev');
+autoUpdater.logger          = require('electron-log');
 
+autoUpdater.logger.transports.file.level = 'info';
 
 
 // Enable live reload for all the files inside your project directory
-var isDev = process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false;
+//var isDev = process.env.APP_DEV ? (process.env.APP_DEV.trim() == "true") : false;
 
 if (isDev) {
     require('electron-reload')(__dirname);
@@ -41,21 +44,25 @@ autoUpdater.on('checking-for-update', () => {
   sendStatusToWindow('Checking for update...');
 })
 autoUpdater.on('update-available', (info) => {
+  console.log('----- Update available -----');
   sendStatusToWindow('Update available.');
 })
 autoUpdater.on('update-not-available', (info) => {
   sendStatusToWindow('Update not available.');
 })
 autoUpdater.on('error', (err) => {
+  console.log('Error in auto-updater. ' + err);
   sendStatusToWindow('Error in auto-updater. ' + err);
 })
 autoUpdater.on('download-progress', (progressObj) => {
   let log_message = "Download speed: " + progressObj.bytesPerSecond;
   log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
   log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  console.log(log_message);
   sendStatusToWindow(log_message);
 })
 autoUpdater.on('update-downloaded', (info) => {
+  console.log('Update downloaded');
   sendStatusToWindow('Update downloaded');
   autoUpdater.quitAndInstall();
 });
@@ -85,7 +92,9 @@ function createWindow () {
 // Some APIs can only be used after this event occurs.
 //app.on('ready', createWindow)
 app.on('ready', ()=>{
-  autoUpdater.checkForUpdates();
+  if (!isDev) {
+    autoUpdater.checkForUpdates();
+  }
   
   createDefaultWindow();
 })
