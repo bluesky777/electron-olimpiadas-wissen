@@ -11,6 +11,7 @@ var db              = require('../conexion/connWeb');
 router.route('/').get(getIndex)
 router.route('/store').post(postStore);
 router.route('/destroy').put(putDestroy);
+router.route('/update').put(putUpdate);
 
 
 function getIndex(req, res) {
@@ -36,6 +37,31 @@ function postStore(req, res) {
                 res.send($entidad);
             });
         })
+    })
+}
+    
+ 
+
+function putUpdate(req, res) {
+    User.fromToken(req).then(($user)=>{
+        let now     = window.fixDate(new Date());
+        
+        db.find('ws_entidades', req.body.rowid).then(($entidad)=>{
+            
+            evento_id      = req.body.evento_id   || $user.evento_selected_id;
+            alias           = req.body.alias        || $entidad.alias;
+            lider_id        = req.body.lider_id     || $entidad.lider_id;
+            lider_nombre    = req.body.lider_nombre || $entidad.lider_nombre;
+            logo_id         = req.body.logo_id      || $entidad.logo_id;
+            nombre          = req.body.nombre       || $entidad.nombre;
+            telefono        = req.body.telefono     || $entidad.telefono;
+            
+            
+            consulta    = 'UPDATE ws_entidades SET alias=?, evento_id=?, lider_id=?, lider_nombre=?, logo_id=?, nombre=?, telefono=?, updated_at=? WHERE rowid=?';
+            db.query(consulta, [alias, evento_id, lider_id, lider_nombre, logo_id, nombre, telefono, now, req.body.rowid]).then(()=>{
+                res.send(req.body);
+            });
+        });
     })
 }
     

@@ -1,2 +1,4 @@
 node_modules
 dist
+app/images/perfil
+!app/images/perfil/system

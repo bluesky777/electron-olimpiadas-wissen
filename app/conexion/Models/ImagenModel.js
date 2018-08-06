@@ -14,6 +14,26 @@ class ImagenModel {
     static get perfil_path() { return _perfil_path; }
     
     
+    static insert(nombre, user_id, publica) {
+        
+        return new Promise(function(resolve, reject){
+            let now         = window.fixDate(new Date());
+            let consulta    = 'INSERT INTO images(nombre, user_id, publica, created_at, updated_at) VALUES(?,?,?,?,?)'
+            
+            db.query(consulta, [nombre, user_id, publica, now, now]).then((result)=>{
+                consulta = 'SELECT *, rowid FROM images WHERE rowid=?';
+                db.query(consulta, [result.insertId]).then((imagen)=>{
+                    resolve(imagen[0]);
+                })
+            })
+            
+        })
+        
+    }
+    
+    
+        
+    
     static imagen_de_usuario(sexo, imagen_id) {
         
         return new Promise(function(resolve, reject){
@@ -21,7 +41,7 @@ class ImagenModel {
             if (imagen_id) {
 
             
-                let consulta 	= `SELECT * FROM images WHERE id=? and deleted_at is null`;
+                let consulta 	= `SELECT *, rowid FROM images WHERE rowid=? and deleted_at is null`;
                 db.query(consulta, [imagen_id]).then(function (result) {
     
                     if( result.length > 0 ){
