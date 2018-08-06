@@ -16,6 +16,17 @@ if (isDev) {
 }
 
 
+
+// PARA LAS IMÁGENES
+var fs          	= require('fs');
+var img_folder    = require('os').homedir();
+
+if (!fs.existsSync(img_folder + '/images_olimpiadas_wissen')){
+  fs.mkdirSync(img_folder + '/images_olimpiadas_wissen');
+}
+
+
+
 //-------------------------------------------------------------------
 // Open a window that displays the version
 //

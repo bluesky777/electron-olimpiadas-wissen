@@ -11,6 +11,10 @@ var http            = require('http').Server(app);
 var io              = require('socket.io')(http);
 var bodyParser      = require('body-parser');
 const fileUpload 	= require('express-fileupload');
+var img_folder    	= require('os').homedir();
+
+
+
 
 
 process.env.JWT_SECRET = 'FB2ywB21v60UosPDYcO7HiVQkQZcFhbQ';
@@ -20,11 +24,13 @@ if (!process.env.NODE_PORT) {
 }
 
 
+
 app.use(cors());
 app.use(fileUpload({ limits: { fileSize: 50 * 1024 * 1024 } }));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use("/app/ws_dist", express.static(path.join(__dirname, 'app/ws_dist')));
 app.use("/images", express.static(path.join(__dirname, 'app/images')));
+app.use("/images", express.static(path.join(img_folder + '/images_olimpiadas_wissen')));
 app.use('/api', require('./app/controllers/routes'));
 
 

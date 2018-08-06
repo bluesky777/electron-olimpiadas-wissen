@@ -197,23 +197,28 @@ function guardar_imagen_tomada($user, foto, publica, res) {
 function guardar_image($user, files, publica, res) {
     return new Promise((resolve, reject)=>{
 
+        var homedir     = require('os').homedir();
+        
         $folderName     = 'user_' + $user.rowid;
         $folder         = 'perfil/'+$folderName;
         
         var fs          = require('fs');
         const path      = require('path');
-        var $folder     = path.join(__dirname, '../images/'+$folder+'/');
+        var $folder     = path.join(homedir, 'images_olimpiadas_wissen/'+$folder+'/');
 
-        
+        console.log(path.join(homedir, 'images_olimpiadas_wissen/perfil/'));
+        if (!fs.existsSync(path.join(homedir, 'images_olimpiadas_wissen/perfil/'))){
+            fs.mkdirSync(path.join(homedir, 'images_olimpiadas_wissen/perfil/'));
+        }
         if (!fs.existsSync($folder)){
             fs.mkdirSync($folder);
         }
-        
+        console.log('Sale');
         let archivo     = files.file;
         let nombre      = archivo.name;
         let solo        = archivo.name.split('.');
 
-        
+        console.log($folder);
         //mientras el nombre exista iteramos y aumentamos i
         $i = 0;
         while(fs.existsSync($folder + nombre)){
