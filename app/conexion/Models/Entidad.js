@@ -9,7 +9,7 @@ class Entidad {
         dat.logo_id         = dat.logo_id       || null;
         dat.telefono        = dat.telefono      || null;
         dat.alias           = dat.alias         || null;
-        let now             = window.fixDate(new Date());
+        let now             = window.fixDate(new Date(), true);
         
         let consulta 	= `INSERT INTO ws_entidades(nombre, evento_id, lider_id, lider_nombre, logo_id, telefono, alias, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?)`;
         return db.query(consulta, [dat.nombre, dat.evento_id, dat.lider_id, dat.lider_nombre, dat.logo_id, dat.telefono, dat.alias, now, now]);

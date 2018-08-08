@@ -136,7 +136,7 @@ class Evaluacion {
     static updateTraduc(rowid, nombre, descripcion, traducido) {
         let promesa = new Promise(function(resolve, reject){
             
-            let now = window.fixDate(new Date());
+            let now = window.fixDate(new Date(), true);
             let $consulta = "UPDATE ws_disciplinas_traduc SET nombre=?, descripcion=?, traducido=?, updated_at=? WHERE rowid=?";
 
             db.query($consulta, [nombre, descripcion, traducido, now, rowid] )

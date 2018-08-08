@@ -50,11 +50,11 @@ class Pregunta {
 					let $promesa_pregs_evaluaciones = new Promise(function(resolve_opciones, reject_opciones){
 						
 						
-						consulta = 'SELECT o.id, o.rowid, o.definicion, o.orden, o.pregunta_traduc_id, o.is_correct ' + 
+						$consulta = 'SELECT o.id, o.rowid, o.definicion, o.orden, o.pregunta_traduc_id, o.is_correct ' + 
 								'FROM ws_opciones o ' + 
 								'WHERE o.pregunta_traduc_id =?';
 
-						db.query(consulta, [pregunta_traducida.rowid] ).then((opciones)=>{
+						db.query($consulta, [pregunta_traducida.rowid] ).then((opciones)=>{
 							pregunta_traducida.opciones = opciones;
 							
 							if ($exa_resp_id) {
@@ -63,10 +63,10 @@ class Pregunta {
 									let $promesa_opciones = new Promise(function(resolve_respuesta, reject_respuesta){
 										
 										
-										consulta = 'SELECT r.*, r.rowid FROM ws_respuestas r ' + 
+										$consulta = 'SELECT r.*, r.rowid FROM ws_respuestas r ' + 
 												'WHERE r.opcion_id=? and r.examen_respuesta_id=? and pregunta_agrupada_id is null';
 
-										db.query(consulta, [opcion.rowid, $exa_resp_id] ).then(($respuesta)=>{
+										db.query($consulta, [opcion.rowid, $exa_resp_id] ).then(($respuesta)=>{
 											
 											if ($respuesta.length > 0) {
 												opcion.elegida       = true;

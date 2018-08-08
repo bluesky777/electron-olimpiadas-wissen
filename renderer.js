@@ -791,7 +791,7 @@ function categorias_king_con_traducciones(evento_id) {
 
 
 // Para las fechas
-window.fixDate = function(fec){
+window.fixDate = function(fec, con_hora){
 	dia   = fec.getDate();
 	mes   = (fec.getMonth() + 1 );
 	year  = fec.getFullYear();
@@ -805,7 +805,17 @@ window.fixDate = function(fec){
 	}
   
 	fecha   = '' + year + '-' + mes  + '-' + dia;
-  
+	
+	if (con_hora){
+		hora 	= fec.getHours();
+		if (hora<10) { hora = '0' + hora; };
+		min 	= fec.getMinutes();
+		if (min<10) { min = '0' + min; };
+		sec 	= fec.getSeconds();
+		if (sec<10) { sec = '0' + sec; };
+		fecha 	= fecha + ' ' + hora + ':' + min + ':' + sec
+	}
+	
 	return fecha;
 }
   

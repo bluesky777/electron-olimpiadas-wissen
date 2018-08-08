@@ -8,7 +8,37 @@ var router          = express.Router();
 
 router.route('/inscribir-varios').put(putInscribirVarios);
 router.route('/desinscribir-varios').put(putDesinscribirVarios);
+router.route('/inscribir').put(putInscribir);
+router.route('/desinscribir').put(putDesinscribir);
 
+
+
+
+
+function putInscribir(req, res) {
+    User.fromToken(req).then(($user)=>{
+        
+		$usuario_id         = req.body.usuario_id;
+        $categoria_id       = req.body.categoria_id;
+        
+        Inscripcion.inscribir($usuario_id, $categoria_id).then(($inscrip)=>{
+            res.send($inscrip);
+        });
+    })
+}
+
+
+function putDesinscribir(req, res) {
+    User.fromToken(req).then(($user)=>{
+        
+		$usuario_id         = req.body.usuario_id;
+        $categoria_id       = req.body.categoria_id;
+        
+        Inscripcion.desinscribir($usuario_id, $categoria_id).then(($inscrip)=>{
+            res.send({'usuario_id': $usuario_id, 'categoria_id': $categoria_id});
+        });
+    })
+}
 
 
 

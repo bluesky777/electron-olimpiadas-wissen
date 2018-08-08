@@ -65,7 +65,7 @@ class Inscripcion {
                         }
                     // Si no encontramos ni uno, debemos crearlo
                     }else{
-                        let now         = window.fixDate(new Date());
+                        let now         = window.fixDate(new Date(), true);
                         $consulta       = 'INSERT INTO ws_inscripciones(user_id, categoria_id, signed_by, created_at) VALUES(?,?,?,?)';
                         db.query($consulta, [ $user_id, $categoria_id, $yo_id, now] ).then((insc_id)=>{
                             resolve_insc();

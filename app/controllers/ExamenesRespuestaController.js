@@ -7,6 +7,7 @@ var Categoria 			= require('../conexion/Models/Categoria');
 var router              = express.Router();
 
 router.route('/iniciar').post(postIniciar);
+router.route('/continuar').put(putContinuar);
 router.route('/responder-pregunta').put(putResponderPregunta);
 router.route('/set-terminado').put(putSetTerminado);
 
@@ -35,7 +36,7 @@ function postIniciar(req, res) {
 		terminado 			= 0;
 		gran_final          = $user.evento_actual.gran_final;
 		res_by_promedio 	= $evaluacion.puntaje_por_promedio;
-		let now 			= window.fixDate(new Date());
+		let now 			= window.fixDate(new Date(), true);
 		
 		consulta = 'INSERT INTO ws_examen_respuesta(inscripcion_id, evaluacion_id, idioma_id, categoria_id, terminado, gran_final, res_by_promedio, created_at, updated_at) VALUES(?,?,?,?,?,?,?,?,?)';
 		return db.query(consulta, [inscripcion_id, evaluacion_id, idioma_id, categoria_id, terminado, gran_final, res_by_promedio, now, now])
@@ -56,6 +57,44 @@ function postIniciar(req, res) {
 		res.send($evaluacion);
 	});
 }
+
+
+function putContinuar(req, res) {
+	let $user           = {};
+	let $exa_resp_id 	= req.body.exa_resp_id;
+	let $preguntas 		= [];
+	let $evaluacion 	= {};
+	let $examen 	= {};
+	
+	User.fromToken(req).then((user)=>{
+		$user = user;
+		return db.find('ws_examen_respuesta', $exa_resp_id);
+	}).then((examen)=>{
+		$examen = examen;
+		return Pregunta.deEvaluacion(examen.evaluacion_id, $exa_resp_id);
+	}).then((preguntas)=>{
+		$preguntas = preguntas;
+		return db.find('ws_evaluaciones', $examen.evaluacion_id);
+	}).then((evaluacion)=>{
+		$evaluacion = evaluacion;
+		$evaluacion.preguntas = $preguntas;
+		
+		$evaluacion.examen_id 			= $examen.rowid;
+		$evaluacion.id 					= $evaluacion.examen_id;
+		$evaluacion.rowid 				= $evaluacion.examen_id;
+		$evaluacion.evaluacion_id 		= $evaluacion.rowid;
+
+		return db.find('ws_categorias_king', req.body.categoria_id);
+		
+	}).then(($categoria)=>{
+		return Categoria.traducciones_single($categoria); 
+	}).then(($categoria)=>{
+		$evaluacion.categoria = $categoria; 
+		res.send($evaluacion);
+	});
+}
+
+
 
 
 function putResponderPregunta(req, res) {
@@ -94,10 +133,11 @@ function putResponderPregunta(req, res) {
 			}	
 		}
 		
-		tiempo_aprox = req.body.tiempo_aproximado || null;
+		tiempo_aprox 	= req.body.tiempo_aproximado || null;
+		let now         = window.fixDate(new Date(), true);
+		consulta 		= 'INSERT INTO ws_respuestas(examen_respuesta_id, pregunta_king_id, tiempo, tiempo_aproximado, preg_traduc_id, idioma_id, tipo_pregunta, puntos_maximos, puntos_adquiridos, opcion_id, created_at, updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)';
 		
-		consulta = 'INSERT INTO ws_respuestas(examen_respuesta_id, pregunta_king_id, tiempo, tiempo_aproximado, preg_traduc_id, idioma_id, tipo_pregunta, puntos_maximos, puntos_adquiridos, opcion_id) VALUES(?,?,?,?,?,?,?,?,?,?)';
-		return db.query(consulta, [$examen_actual_id, $preg_king_id, req.body.tiempo, tiempo_aprox, $preg_traduc_id, req.body.idioma_id, req.body.tipo_pregunta, $puntos, (req.body.puntos_adquiridos||null), $opcion_id]);
+		return db.query(consulta, [$examen_actual_id, $preg_king_id, req.body.tiempo, tiempo_aprox, $preg_traduc_id, req.body.idioma_id, req.body.tipo_pregunta, $puntos, (req.body.puntos_adquiridos||null), $opcion_id, now, now]);
 
 	}).then(()=>{
 		res.send('Respuesta guardada.');

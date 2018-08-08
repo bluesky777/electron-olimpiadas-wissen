@@ -12,6 +12,7 @@ router.route('/').get(getIndex)
 router.route('/store').post(postStore);
 router.route('/destroy').put(putDestroy);
 router.route('/update').put(putUpdate);
+router.route('/cambiar-logo').put(putCambiarLogo);
 
 
 function getIndex(req, res) {
@@ -44,7 +45,7 @@ function postStore(req, res) {
 
 function putUpdate(req, res) {
     User.fromToken(req).then(($user)=>{
-        let now     = window.fixDate(new Date());
+        let now     = window.fixDate(new Date(), true);
         
         db.find('ws_entidades', req.body.rowid).then(($entidad)=>{
             
@@ -66,10 +67,25 @@ function putUpdate(req, res) {
 }
     
  
+ 
+
+function putCambiarLogo(req, res) {
+    User.fromToken(req).then(($user)=>{
+        let now     = window.fixDate(new Date(), true);
+            
+        consulta    = 'UPDATE ws_entidades SET logo_id=?, updated_at=? WHERE rowid=?';
+        db.query(consulta, [req.body.img_id, now, req.body.ent_id]).then(()=>{
+            res.send({img_id: req.body.img_id, ent_id: req.body.ent_id});
+        });
+
+    })
+}
+    
+ 
 
 function putDestroy(req, res) {
     User.fromToken(req).then(($user)=>{
-        let now     = window.fixDate(new Date());
+        let now     = window.fixDate(new Date(), true);
         consulta    = 'UPDATE ws_entidades SET deleted_at=? WHERE rowid=?';
 		db.query(consulta, [now, req.body.rowid]).then(()=>{
             res.send(req.body);

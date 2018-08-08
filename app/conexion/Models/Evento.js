@@ -5,7 +5,7 @@ class Evento {
     
     static create(ev) {
         let promesa = new Promise(function(resolve, reject){
-            let now         = window.fixDate(new Date());
+            let now         = window.fixDate(new Date(), true);
             
             if(ev.es_idioma_unico){
                 ev.es_idioma_unico = 1;

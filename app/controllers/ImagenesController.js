@@ -10,6 +10,8 @@ router.route('/usuarios').get(getUsuarios);
 router.route('/store').post(postStore);
 router.route('/store-intacta').post(postStoreIntacta);
 router.route('/cambiar-img-usuario').put(putCambiarImgUsuario);
+router.route('/cambiar-imagen-perfil').put(putCambiarImagenPerfil);
+router.route('/cambiar-logo').put(putCambiarLogo);
 router.route('/destroy').put(putDestroy);
 
     
@@ -84,6 +86,26 @@ function putCambiarImgUsuario(req, res)
         db.query(consulta, [req.body.imgUsuario, req.body.usu_id]).then((result)=>{
             res.send({ rowid: req.body.usu_id, imagen_id: req.body.imgUsuario });
         })
+    })
+}
+
+
+
+function putCambiarImagenPerfil(req, res)
+{
+    User.fromToken(req).then(($user)=>{
+        let consulta = 'UPDATE users SET imagen_id=? WHERE rowid=?';
+        db.query(consulta, [req.body.imagen_id, req.body.usu_id]).then((result)=>{
+            res.send({ rowid: req.body.usu_id, imagen_id: req.body.imagen_id });
+        })
+    })
+}
+
+
+function putCambiarLogo(req, res)
+{
+    User.fromToken(req).then(($user)=>{
+        res.status(500).send('Aún no se puede');
     })
 }
 

@@ -17,7 +17,7 @@ class ImagenModel {
     static insert(nombre, user_id, publica) {
         
         return new Promise(function(resolve, reject){
-            let now         = window.fixDate(new Date());
+            let now         = window.fixDate(new Date(), true);
             let consulta    = 'INSERT INTO images(nombre, user_id, publica, created_at, updated_at) VALUES(?,?,?,?,?)'
             
             db.query(consulta, [nombre, user_id, publica, now, now]).then((result)=>{

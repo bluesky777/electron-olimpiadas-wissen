@@ -9,7 +9,7 @@ router.route('/').get(getIndex);
 router.route('/store').post(postStore);
 router.route('/cambiar-entidad').put(putCambiarEntidad);
 router.route('/update').put(putUpdate);
-router.route('/destroy').delete(deleteDestroy);
+router.route('/destroy').put(putDestroy);
 
 
 
@@ -161,13 +161,14 @@ function putUpdate(req, res) {
 
 
 
-function deleteDestroy(req, res) {
+function putDestroy(req, res) {
     User.fromToken(req).then(($user)=>{
         
-		$user_id 		    = req.body.rowid;
-        
-        db.query('DELETE FROM users WHERE rowid=?', [$user_id]).then(($usuario)=>{
-            res.send($usuario);
+		$user_id 		= req.body.user_id;
+        let now         = window.fixDate(new Date(), true);
+        console.log([now, $user.rowid, $user_id]);
+        db.query('UPDATE users SET deleted_at=?, deleted_by=? WHERE rowid=?', [now, $user.rowid, $user_id]).then(($usuario)=>{
+            res.send({deleted_at: now, rowid: $user_id, deleted_by: $user.rowid});
         });
         
     })

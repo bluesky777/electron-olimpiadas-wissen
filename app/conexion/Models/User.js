@@ -53,7 +53,7 @@ class User {
     
     static create(nombres, apellidos, sexo, username, password, email, is_superuser, cell, edad, entidad_id, evento_selected_id, nivel_id, signed_by) {
         let promesa = new Promise(function(resolve, reject){
-            let now         = window.fixDate(new Date());
+            let now         = window.fixDate(new Date(), true);
             let user_id     = -1;
             
             email           = email         || null;
@@ -83,7 +83,7 @@ class User {
     
     static update($usuario_new, $usuario_old, $evento_id) {
         let promesa = new Promise(function(resolve, reject){
-            let now         = window.fixDate(new Date());
+            let now         = window.fixDate(new Date(), true);
             
             
             if ($usuario_new.imgUsuario) {
