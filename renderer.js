@@ -31,6 +31,7 @@ app.use(bodyParser.json({limit: '50mb'}));
 app.use("/app/ws_dist", express.static(path.join(__dirname, 'app/ws_dist')));
 app.use("/images", express.static(path.join(__dirname, 'app/images')));
 app.use("/images", express.static(path.join(img_folder + '/images_olimpiadas_wissen')));
+app.use("/sounds", express.static(path.join(img_folder + '/sounds_olimpiadas')));
 app.use('/api', require('./app/controllers/routes'));
 
 
@@ -44,6 +45,7 @@ app.get('/', function(req, res){
 	);
 	res.end();
 });
+
 	
 
 //console.log(app._router.stack); // Para ver las actuales rutas Routes
@@ -81,8 +83,6 @@ http.listen(process.env.NODE_PORT, function(){
 
 
 self.io.on('connection', (socket)=> {
-	console.log('New connection: '+socket.id);
-
 
 	count_clients++;
 
@@ -100,8 +100,12 @@ self.io.on('connection', (socket)=> {
 
 	all_clts.push(socket.datos);
 
-	socket.emit('te_conectaste', {datos: socket.datos});
-	socket.broadcast.emit('conectado:alguien', {clt: socket.datos} );
+
+	console.log('New connection: ', socket.id);
+	setTimeout(function(){
+		socket.emit('te_conectaste', { datos: socket.datos });
+		socket.broadcast.emit('conectado:alguien', {clt: socket.datos} );
+    }, 1000);
 
 
 	socket.on('reconocer:punto:registered', (data)=>{

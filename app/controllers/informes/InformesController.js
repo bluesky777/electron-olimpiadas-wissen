@@ -21,11 +21,12 @@ function getMisExamenes(req, res) {
 		
 		$consulta = 'SELECT i.*, i.rowid, ct.categoria_id, ct.nombre, ct.abrev, ct.descripcion, ct.idioma_id, ct.traducido ' +
 			'FROM ws_inscripciones i  ' +
-			'inner join ws_categorias_king c on c.id=i.categoria_id and c.deleted_at is null  ' +
-			'inner join ws_categorias_traduc ct on ct.categoria_id=c.id and ct.idioma_id=? and ct.deleted_at is null  ' +
+			'inner join ws_categorias_king c on c.rowid=i.categoria_id and c.deleted_at is null  ' +
+			'inner join ws_categorias_traduc ct on ct.categoria_id=c.rowid and ct.idioma_id=? and ct.deleted_at is null  ' +
 			'where i.user_id=? and i.deleted_at is null';
 			
 		db.query($consulta, [$user.idioma_main_id, $user.rowid]).then(($inscripciones)=>{
+
 			let mapeando = $inscripciones.map(($inscripcion, $key)=>{
 				
 				$consulta = 'SELECT e.rowid as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
@@ -34,16 +35,34 @@ function getMisExamenes(req, res) {
 					'FROM ws_examen_respuesta e ' +
 					'inner join ws_inscripciones i on i.rowid=e.inscripcion_id and i.rowid=? and i.deleted_at is null ' +
 					'inner join ws_categorias_king ck on ck.rowid=i.categoria_id and ck.deleted_at is null ' +
-					'left join ws_categorias_traduc ct on ck.id=ct.categoria_id and ct.idioma_id=e.idioma_id and ct.deleted_at is null ' +
+					'left join ws_categorias_traduc ct on ck.rowid=ct.categoria_id and ct.idioma_id=e.idioma_id and ct.deleted_at is null ' +
 					'where e.deleted_at is null ';
 				
 				return db.query($consulta, [$inscripcion.rowid]);
 			})
 			return Promise.all(mapeando);
-		}).then(($examenes_all)=>{
+		}).then((examenes_all)=>{			
+			
+			
 			return new Promise((resolve, reject)=>{
-				if($examenes_all.length > 0){
-					$examenes_all = $examenes_all[0];
+				if(examenes_all.length > 0){
+					
+					let $examenes_all = [];
+					
+					for (let i = 0; i < examenes_all.length; i++) {
+						const element = examenes_all[i];
+						if (element instanceof Array) {
+							
+							for (let k = 0; k < element.length; k++) {
+								const elem = element[k];
+								$examenes_all.push(elem);
+							}
+							
+						}else{
+							$examenes_all.push(element);
+						}
+					}
+					
 					let mapeando = $examenes_all.map(($examen, $key)=>{
 						return ExamenRespuesta.calcular($examen);
 					})
@@ -70,6 +89,7 @@ function getMisExamenes(req, res) {
 	
 
 
+
 function getTodosLosExamenes(req, res) {
 	User.fromToken(req).then(($user)=>{
 		
@@ -79,7 +99,7 @@ function getTodosLosExamenes(req, res) {
 		let perfil_path = User.$perfil_path;
 
 		
-		$consulta = 'SELECT e.id as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
+		$consulta = 'SELECT e.rowid as examen_id, e.rowid, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
 				'e.terminado, e.timeout, e.res_by_promedio, e.created_at as examen_at, i.user_id, i.allowed_to_answer, i.signed_by, i.created_at as inscrito_at, ' +
 				'e.res_correctas, e.res_incorrectas, e.res_promedio, e.res_puntos, e.res_cant_pregs, e.res_tiempo, e.res_tiempo_format, ' +
 				'u.nombres, u.apellidos, u.sexo, u.username, u.entidad_id, ' +

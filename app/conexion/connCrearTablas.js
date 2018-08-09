@@ -197,7 +197,7 @@ sqlWs_examen_respuesta = "CREATE TABLE IF NOT EXISTS ws_examen_respuesta ( " +
     "`active` int(1) NOT NULL DEFAULT '1', " +
     "`gran_final` int(1) NOT NULL DEFAULT '0', " +
     "`terminado` int(1) NOT NULL DEFAULT '0', " +
-    "`timeout` int(1) NOT NULL DEFAULT '1', " +
+    "`timeout` int(1) NOT NULL DEFAULT '0', " +
     "`res_correctas` int(11) DEFAULT NULL, " +
     "`res_incorrectas` int(11) DEFAULT NULL, " +
     "`res_by_promedio` int(1) DEFAULT '1', " +

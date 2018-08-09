@@ -1,6 +1,6 @@
 {
   "name": "electron-olimpiadas-wissen",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Aplicación para trabajar las olimpiadas sin necesidad de internet ni engorrosas instalaciones",
   "main": "main.js",
   "scripts": {
@@ -63,7 +63,7 @@
     "jsonwebtoken": "^8.3.0",
     "mysql": "^2.15.0",
     "node-excel-export": "^1.4.4",
-    "socket.io": "^2.1.0"
+    "socket.io": "^2.1.1"
   },
   "devDependencies": {
     "@angular/cli": "^6.0.5",

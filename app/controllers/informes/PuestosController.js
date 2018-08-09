@@ -11,6 +11,7 @@ var db              = require('../../conexion/connWeb');
 
 router.route('/calcular-resultados').put(putCalcularResultados);
 router.route('/todos-examenes-ent').put(putTodosExamenesEnt);
+router.route('/examenes-ent-categ').put(putExamenesEntCateg);
 router.route('/examenes-ejecutandose').put(putExamenesEjecutandose);
 
 
@@ -21,7 +22,7 @@ function putCalcularResultados(req, res) {
 		$evento_id = $user.evento_selected_id;
 		let perfil_path = User.$perfil_path;
 		
-		$consulta = 'SELECT e.rowid as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
+		$consulta = 'SELECT e.rowid as examen_id, e.rowid, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
                 'e.terminado, e.timeout, e.res_by_promedio, e.created_at as examen_at, i.user_id, i.allowed_to_answer, i.signed_by, i.created_at as inscrito_at, ' +
                 'u.nombres, u.apellidos, u.sexo, u.username, u.entidad_id, ' +
                 'u.imagen_id, IFNULL("' + perfil_path + '" || im.nombre, CASE WHEN u.sexo="F" THEN "' + User.$default_female + '" ELSE "' + User.$default_male + '" END ) as imagen_nombre, ' +
@@ -46,7 +47,7 @@ function putCalcularResultados(req, res) {
 			})
 			return Promise.all(mapeando);
 		}).then(($examenes_all)=>{
-            console.log($examenes_all);
+
             let mapeando = $examenes_all.map(($examen, $key)=>{
 				let consulta = 'UPDATE ws_examen_respuesta SET res_correctas=?, res_incorrectas=?, res_by_promedio=?, res_promedio=?, res_puntos=?, res_cant_pregs=?, res_tiempo=?, res_tiempo_format=? WHERE rowid=?';
 				return db.query(consulta, [$examen.correctas, $examen.incorrec_reales, $examen.por_promedio, $examen.promedio, $examen.puntos, $examen.cantidad_pregs, $examen.tiempo, $examen.tiempo_format, $examen.examen_id]);
@@ -91,26 +92,22 @@ function putTodosExamenesEnt(req, res) {
             // Si hay entidades especificadas en el pedido...
             if ($requested_entidades) {
                 // Eliminamos las entidades NO pedidas
-
                 $entidades_f.map(($entidad, $key)=>{
-				
                     $hay = $requested_entidades.indexOf($entidad.entidad_id);
-                    console.log('$hay', $hay, $entidad.entidad_id, $requested_entidades, $entidades_f)
+                    
                     if ($hay) {
                         $entidades.push($entidad);
                     }
-                    
                 })
 
             }else{
                 $entidades = $entidades_f;
             }
             
-            console.log('A mapear. Debe ir al final de todos los hay, sincrónico');
             
             let mapeando = $entidades.map(($entidad, $key)=>{
                 return new Promise((resolve, reject)=>{
-                    $consulta_ex = 'SELECT e.rowid as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
+                    $consulta_ex = 'SELECT e.rowid as examen_id, e.rowid, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
                             'e.terminado, e.timeout, e.res_by_promedio, e.created_at as examen_at, i.user_id, i.allowed_to_answer, i.signed_by, i.created_at as inscrito_at, ' +
                             'e.res_correctas, e.res_incorrectas, e.res_promedio, e.res_puntos, e.res_cant_pregs, e.res_tiempo, e.res_tiempo_format, ' +
                             'u.nombres, u.apellidos, u.sexo, u.username, u.entidad_id, ' +
@@ -141,6 +138,150 @@ function putTodosExamenesEnt(req, res) {
 	})
 		
 }
+
+
+
+
+
+
+
+function putExamenesEntCateg(req, res) {
+	User.fromToken(req).then(($user)=>{
+		
+        $evento_id              = req.body.evento_id || $user.evento_selected_id;
+        $gran_final             = req.body.gran_final || 0;
+        let perfil_path         = User.$perfil_path;
+        $idioma_id              = req.body.idioma_id || $user.idioma_main_id;
+        $requested_entidades    = req.body.requested_entidades || undefined;
+        $entidades              = [];
+        $requested_categorias   = req.body.requested_categorias || undefined;
+        $categorias             = [];
+        
+        $consulta = 'SELECT distinct en.rowid as entidad_id, en.nombre as nombre_entidad, en.alias as alias_entidad, en.lider_id, en.lider_nombre, en.alias, ' +
+                'en.logo_id, IFNULL("' + perfil_path + '" || im2.nombre, "perfil/system/avatars/no-photo.jpg") as logo_nombre ' +
+            'FROM  ws_entidades en  ' +
+            'inner join users u on en.rowid=u.entidad_id and en.deleted_at is null and u.deleted_at is null ' +
+            'left join images im2 on im2.rowid=en.logo_id and im2.deleted_at is null ' +
+            'where en.deleted_at is null and en.evento_id=? ';
+                    
+            
+		db.query($consulta, [$evento_id]).then(($entidades_f)=>{
+
+		
+            // Si hay entidades especificadas en el pedido...
+            if ($requested_entidades) {
+                // Eliminamos las entidades NO pedidas
+                $entidades_f.map(($entidad, $key)=>{
+                    $hay = $requested_entidades.indexOf($entidad.entidad_id);
+                    
+                    if ($hay) {
+                        $entidades.push($entidad);
+                    }
+                })
+
+            }else{
+                $entidades = $entidades_f;
+            }
+            
+            
+            return new Promise((resolve, reject)=>{
+                // Si hay categorías especificadas ...
+                if ($requested_categorias) {
+                    let promesas = $requested_categorias.map(($categoria, $key)=>{
+                        
+                        $consulta_categ = 'SELECT distinct ck.rowid as categoria_id, ct.rowid as categ_traduc_id, ct.nombre as nombre_categ, ct.abrev as abrev_categ, ct.descripcion as descripcion_categ, ' + 
+                                    'ct.idioma_id, ct.traducido ' + 
+                                'FROM ws_categorias_king ck ' + 
+                                'LEFT JOIN ws_categorias_traduc ct on ck.rowid=ct.categoria_id and ct.idioma_id=? and ct.deleted_at is null ' + 
+                                'WHERE ck.deleted_at is null and ck.evento_id=? and ck.rowid=?';
+
+                        return db.query($consulta_categ, [$idioma_id, $evento_id, $categoria ] ).then(($categorias_f)=>{
+                                
+                            if ($categorias_f.length > 0) {
+                                $categorias.push($categorias_f[0]);
+                                return $categorias_f[0];
+                            }
+                        });
+                    })
+                    Promise.all(promesas).then((result)=>{
+                        resolve(result);
+                    })
+                }else{
+                    $consulta_categ = 'SELECT distinct ck.rowid as categoria_id, ct.rowid as categ_traduc_id, ct.nombre as nombre_categ, ct.abrev as abrev_categ, ct.descripcion as descripcion_categ,  ' + 
+                            'ct.idioma_id, ct.traducido ' + 
+                        'FROM ws_categorias_king ck ' + 
+                        'LEFT JOIN ws_categorias_traduc ct on ck.rowid=ct.categoria_id and ct.idioma_id=? and ct.deleted_at is null ' + 
+                        'WHERE ck.deleted_at is null and ck.evento_id=?';
+
+                    db.query($consulta_categ, [$idioma_id, $evento_id] ).then((categorias)=>{
+                        $categorias = categorias;
+                        resolve($categorias);
+                    });
+                    
+                }
+            })
+
+            
+            
+        }).then((result)=>{
+
+            let promesas = [];
+            
+            $cant_ent = $entidades.length;
+            for ($j=0; $j < $cant_ent; $j++) {
+                
+                $entidad_id 					= $entidades[$j].entidad_id;
+                $entidades[$j].categorias 		= [];
+                $cant_categ 					= $categorias.length;
+
+                for ($m=0; $m < $cant_categ; $m++) { 
+                    $entidades[$j].categorias.push(Object.assign({}, $categorias[$m]));
+                }
+
+                for ($k=0; $k < $cant_categ; $k++) { 
+                    asignar($j, $k);
+                }
+                
+
+            }
+            
+            function asignar($j, $k) {
+                    
+                $consulta_ex = 'SELECT e.rowid as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
+                                'e.terminado, e.timeout, e.res_by_promedio, e.created_at as examen_at, i.user_id, i.allowed_to_answer, i.signed_by, i.created_at as inscrito_at, ' +
+                                'e.res_correctas, e.res_incorrectas, e.res_promedio, e.res_puntos, e.res_cant_pregs, e.res_tiempo, e.res_tiempo_format, ' +
+                                'u.nombres, u.apellidos, u.sexo, u.username, u.entidad_id, ' +
+                                'u.imagen_id, IFNULL("' + perfil_path + '" || im.nombre, CASE WHEN u.sexo="F" THEN "' + User.$default_female + '" ELSE "' + User.$default_male + '" END ) as imagen_nombre, ' +
+                                'ct.nombre as nombre_categ, ct.abrev as abrev_categ, ct.descripcion as descripcion_categ, ct.idioma_id, ct.traducido ' +
+                            'FROM ws_examen_respuesta e ' +
+                            'inner join ws_inscripciones i on i.rowid=e.inscripcion_id and i.deleted_at is null ' +
+                            'inner join ws_evaluaciones ev on ev.rowid=e.evaluacion_id and ev.actual=1 and e.deleted_at is null ' +
+                            'inner join users u on u.rowid=i.user_id and u.deleted_at is null ' +
+                            'inner join ws_categorias_king ck on ck.rowid=i.categoria_id and ck.rowid=? and ck.deleted_at is null ' +
+                            'left join ws_categorias_traduc ct on ck.rowid=ct.categoria_id and ct.idioma_id=e.idioma_id and ct.deleted_at is null ' +
+                            'left join images im on im.rowid=u.imagen_id and im.deleted_at is null ' +
+                            'where e.deleted_at is null and u.entidad_id=? and e.gran_final='+$gran_final;
+
+                $examenesProm = db.query($consulta_ex, [ $entidades[$j].categorias[$k].categoria_id, $entidad_id ] ).then(($examenes)=>{
+                    $entidades[$j].categorias[$k].examenes = $examenes;
+                });
+                promesas.push($examenesProm);
+                
+            }
+            
+            return Promise.all(promesas)
+
+            
+        }).then((result)=>{
+            
+            res.send($entidades);
+            
+        })
+    })
+	
+}
+            
+            
 	
 
 
@@ -160,7 +301,7 @@ function putExamenesEjecutandose(req, res) {
         }
         
 		$condicionales = '';
-        console.log(req.body.ids);
+
 		for ($i=0; $i < $ids_participantes.length; $i++) {
 			if ($i == 0) {
 				$condicionales = 'e.rowid=' + $ids_participantes[$i];
@@ -171,7 +312,7 @@ function putExamenesEjecutandose(req, res) {
         
         let perfil_path = User.$perfil_path;
         
-		$consulta_ex = 'SELECT e.rowid as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
+		$consulta_ex = 'SELECT e.rowid as examen_id, e.rowid, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
                 'e.terminado, e.timeout, e.res_by_promedio, e.created_at as examen_at, i.user_id, i.allowed_to_answer, i.signed_by, i.created_at as inscrito_at, ' +
                 'e.res_correctas, e.res_incorrectas, e.res_promedio, e.res_puntos, e.res_cant_pregs, e.res_tiempo, e.res_tiempo_format, ' +
                 'en.nombre as nombre_entidad, en.alias as alias_entidad, en.lider_id, en.lider_nombre, en.alias, ' +

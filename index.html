@@ -84,19 +84,16 @@
         }
         
         
-        descargarDatos_original = function () {
-          const {shell} = require('electron');
-          shell.openExternal('http://' + ip + ':' + process.env.NODE_PORT + '/api/welcome/descargar-datos');
-        }
         
-        descargarDatos = function () {
+        window.descargarDatos = function (evento_id) {
+          if (!evento_id){ evento_id = 1 };
           let btn       = document.getElementById('btn-descargar');
           btn.value     = 'Descargando, espere...';
           btn.disabled  = true;
           
           const path    = require('path');
           
-          require(path.join(__dirname, 'app/conexion/connDescargarDatos'))().then(()=>{
+          require(path.join(__dirname, 'app/conexion/connDescargarDatos'))(evento_id).then(()=>{
             console.log('Datos descargados');
             alert('Datos descargados y agregados');
           }, (r2)=>{

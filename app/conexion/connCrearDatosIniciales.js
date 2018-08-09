@@ -18,7 +18,18 @@ function crearDatosIniciales() {
                     resolve2('Idiomas ya estaban Insertados');
                 }else{
                     
-                    consulta = "INSERT INTO `ws_idiomas` VALUES (1,'Español','ES','Español',1,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(2,'Inglés','EN','English',1,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(3,'Portugués','PT','Português',1,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(4,'Francés','FR','Français',1,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(5,'Chino','ZH','中文',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(6,'Árabe','AR','العربية',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(7,'Ruso','RU','Русский',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(8,'Alemán','DE','Deutsch',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(9,'Hindi','HI','हिन्दी',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(10,'Japonés','JA','日本語',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(11,'Coreano','KO','한국어',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),(12,'Italiano','IT','Italiano',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02')";
+                    consulta = "INSERT INTO `ws_idiomas` VALUES (1,'Español','ES','Español',1,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " + 
+                        " (2,'Inglés','EN','English',1,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " + 
+                        " (3,'Portugués','PT','Português',1,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " + 
+                        " (4,'Francés','FR','Français',1,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " +
+                        " (5,'Chino','ZH','中文',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " +
+                        " (6,'Árabe','AR','العربية',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " +
+                        " (7,'Ruso','RU','Русский',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " +
+                        " (8,'Alemán','DE','Deutsch',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " +
+                        " (9,'Hindi','HI','हिन्दी',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " +
+                        " (10,'Japonés','JA','日本語',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'), " +
+                        " (11,'Coreano','KO','한국어',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02'),  " +
+                        " (12,'Italiano','IT','Italiano',0,NULL,'2016-08-11 19:06:02','2016-08-11 19:06:02')";
                     db.query(consulta).then(function(res){
                         resolve2('Idiomas Insertados');
                     })
@@ -58,7 +69,11 @@ function crearDatosIniciales() {
                         resolve2('Usuarios ya estaban Insertados');
                     }else{
                         
-                        consulta = "INSERT INTO `ws_eventos` (`id`, `nombre`, `alias`, `descripcion`, `password`, `mostrar_nombre_punto`, `gran_final`, `with_pay`, `por_sumatoria_puntos`, `actual`, `precio1`, `precio2`, `precio3`, `precio4`, `precio5`, `precio6`, `idioma_principal_id`, `es_idioma_unico`, `enable_public_chat`, `enable_private_chat`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES (1, 'Olimpiadas Libertad 2018', 'OAF18', 'Olimpiadas Unión Colombiana del Norte', 'aei', 1, 0, 0, 0, 1, 2000, 3000, 4000, 5000, 5000, 5000, 1, 0, 0, 0, NULL, NULL, '2018-08-11 15:06:02', '2018-09-21 11:39:39'),(2, 'Boom Bíblico Campamento 2018', 'BoomBíblico', NULL, NULL, 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, NULL, NULL, '2018-08-14 19:46:22', '2018-08-14 19:47:00')";
+                        consulta = "INSERT INTO `ws_eventos` (`id`, `nombre`, `alias`, `descripcion`, `password`, `mostrar_nombre_punto`, `gran_final`, `with_pay`, `por_sumatoria_puntos`, `actual`, `precio1`, `precio2`, `precio3`, `precio4`, `precio5`, `precio6`, `idioma_principal_id`, `es_idioma_unico`, `enable_public_chat`, `enable_private_chat`, `deleted_by`, `deleted_at`, `created_at`, `updated_at`) VALUES  " +
+                            " (1, 'Olimpiadas Libertad 2018', 'OAF18', 'Olimpiadas Unión Colombiana del Norte', 'aei', 1, 0, 0, 0, 1, 2000, 3000, 4000, 5000, 5000, 5000, 1, 0, 0, 0, NULL, NULL, '2018-08-11 15:06:02', '2018-09-21 11:39:39'), " +
+                            " (2, 'Boom Bíblico Campamento 2017', 'BoomBíblico7', NULL, NULL, 1, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, 1, 1, 0, 0, NULL, NULL, '2018-08-14 19:46:22', '2018-08-14 19:47:00'), " + 
+                            " (3, 'JESÚS el único superhéroe', 'Jesús-Super', 'Concurso infantil.', 'aei', 1, 0, 0, 0, 1, 2000, 3000, 4000, 5000, 5000, 5000, 1, 0, 0, 0, NULL, NULL, '2018-08-11 15:06:02', '2018-09-21 11:39:39'), " +
+                            " (4, 'Boom Bíblico Campamento 2018', 'OAF18', 'CAMPAMENTO', 'aei', 1, 0, 0, 0, 1, 2000, 3000, 4000, 5000, 5000, 5000, 1, 0, 0, 0, NULL, NULL, '2018-08-11 15:06:02', '2018-09-21 11:39:39')";
                         db.query(consulta).then(function(res){
                             
                             consulta = "INSERT INTO `ws_user_event` (`id`, `user_id`, `evento_id`, `nivel_id`, `signed_by`) VALUES (1, 1, 1, 1, 1),(2, 2, 1, 1, 1),(3, 3, 1, 1, 1),(4, 4, 1, 1, 1),(5, 5, 1, 1, 1),(6, 6, 1, 1, 1)";

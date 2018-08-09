@@ -10,6 +10,7 @@ router.route('/iniciar').post(postIniciar);
 router.route('/continuar').put(putContinuar);
 router.route('/responder-pregunta').put(putResponderPregunta);
 router.route('/set-terminado').put(putSetTerminado);
+router.route('/destroy').put(putDestroy);
 
 
 
@@ -27,8 +28,9 @@ function postIniciar(req, res) {
 		let $evento_id          = $user.evento_actual.rowid;
 		return Evaluacion.actual($evento_id, req.body.categoria_id);
 	}).then((eval_actual)=>{
+		console.log(eval_actual, $user.evento_actual, req.body);
 		$evaluacion         = eval_actual[0]; 
-
+		
 		inscripcion_id      = req.body.inscripcion_id;
 		evaluacion_id       = $evaluacion.rowid;
 		idioma_id           = $user.idioma_main_id;
@@ -122,7 +124,7 @@ function putResponderPregunta(req, res) {
 		return db.query(consulta, [$examen_actual_id, $preg_traduc_id]);
 	}).then(($respuesta)=>{
 		if ($respuesta.length > 0) {
-			res.send('Ya respondida');
+			return res.send('Ya respondida');
 		}
 		
 		if ($pregunta_king.tipo_pregunta == 'Test') { // Solo una opción es correcta
@@ -137,10 +139,10 @@ function putResponderPregunta(req, res) {
 		let now         = window.fixDate(new Date(), true);
 		consulta 		= 'INSERT INTO ws_respuestas(examen_respuesta_id, pregunta_king_id, tiempo, tiempo_aproximado, preg_traduc_id, idioma_id, tipo_pregunta, puntos_maximos, puntos_adquiridos, opcion_id, created_at, updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?)';
 		
-		return db.query(consulta, [$examen_actual_id, $preg_king_id, req.body.tiempo, tiempo_aprox, $preg_traduc_id, req.body.idioma_id, req.body.tipo_pregunta, $puntos, (req.body.puntos_adquiridos||null), $opcion_id, now, now]);
-
-	}).then(()=>{
-		res.send('Respuesta guardada.');
+		db.query(consulta, [$examen_actual_id, $preg_king_id, req.body.tiempo, tiempo_aprox, $preg_traduc_id, req.body.idioma_id, req.body.tipo_pregunta, $puntos, (req.body.puntos_adquiridos||null), $opcion_id, now, now])
+		.then(()=>{
+			res.send('Respuesta guardada.');
+		})
 	})
 }
 
@@ -148,9 +150,27 @@ function putSetTerminado(req, res) {
 
 	User.fromToken(req).then((user)=>{
 		$user = user;
-		return db.query('UPDATE ws_examen_respuesta SET terminado=1 WHERE rowid=?', [req.body.exa_id]);
+		if (req.body.timeout) {
+			return db.query('UPDATE ws_examen_respuesta SET terminado=1, timeout=? WHERE rowid=?', [req.body.exa_id, req.body.timeout]);
+		}else{
+			return db.query('UPDATE ws_examen_respuesta SET terminado=1 WHERE rowid=?', [req.body.exa_id]);
+		}
+
 	}).then(()=>{
 		res.send('Terminado con éxito');
+	})
+
+}
+
+
+function putDestroy(req, res) {
+
+	let now = window.fixDate(new Date(), true);
+	
+	User.fromToken(req).then((user)=>{
+		return db.query('UPDATE ws_examen_respuesta SET deleted_at=?, deleted_by=? WHERE rowid=?', [now, user.rowid, req.body.examen_id] );
+	}).then(($examen)=>{
+		res.send({ rowid: req.body.examen_id, deleted_at: now });
 	})
 
 }
