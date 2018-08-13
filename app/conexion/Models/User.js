@@ -51,7 +51,7 @@ class User {
     }
     
     
-    static create(nombres, apellidos, sexo, username, password, email, is_superuser, cell, edad, entidad_id, evento_selected_id, nivel_id, signed_by) {
+    static create(nombres, apellidos, sexo, username, password, email, is_superuser, cell, edad, entidad_id, evento_selected_id, nivel_id, signed_by, idioma_main_id) {
         let promesa = new Promise(function(resolve, reject){
             let now         = window.fixDate(new Date(), true);
             let user_id     = -1;
@@ -61,10 +61,11 @@ class User {
             cell            = cell          || null;
             edad            = edad          || null;
             entidad_id      = entidad_id    || null;
+            idioma_main_id  = idioma_main_id || 1;
             
             let consulta 	= 'INSERT INTO users(nombres, apellidos, sexo, username, password, email, is_superuser, cell, edad, entidad_id, idioma_main_id, evento_selected_id, created_at)  ' +
-                'VALUES(?,?,?,?,?,?,?,?,?,?,1,?,?)';
-            db.query(consulta, [nombres, apellidos, sexo, username, password, email, is_superuser, cell, edad, entidad_id, evento_selected_id, now])
+                'VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)';
+            db.query(consulta, [nombres, apellidos, sexo, username, password, email, is_superuser, cell, edad, entidad_id, idioma_main_id, evento_selected_id, now])
             .then(function (result) {
                 user_id = result.insertId;
                 return db.query('INSERT INTO role_user(user_id, role_id) VALUES(?,5)', [user_id])

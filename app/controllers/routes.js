@@ -20,6 +20,7 @@ router.use('/puestos', require('./informes/PuestosController'));
 router.use('/inscripciones', require('./InscripcionesController'));
 router.use('/examenes_respuesta', require('./ExamenesRespuestaController'));
 router.use('/qr', require('./QrController'));
+router.use('/exportar-importar', require('./ExportarImportar/ExportarImportarController'));
 
 
 module.exports = router;

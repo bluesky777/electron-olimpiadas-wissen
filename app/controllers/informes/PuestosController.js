@@ -12,6 +12,7 @@ var db              = require('../../conexion/connWeb');
 router.route('/calcular-resultados').put(putCalcularResultados);
 router.route('/todos-examenes-ent').put(putTodosExamenesEnt);
 router.route('/examenes-ent-categ').put(putExamenesEntCateg);
+router.route('/examenes-categorias').put(putExamenesCategorias);
 router.route('/examenes-ejecutandose').put(putExamenesEjecutandose);
 
 
@@ -247,7 +248,7 @@ function putExamenesEntCateg(req, res) {
             
             function asignar($j, $k) {
                     
-                $consulta_ex = 'SELECT e.rowid as examen_id, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
+                $consulta_ex = 'SELECT e.rowid as examen_id, e.rowid, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' +
                                 'e.terminado, e.timeout, e.res_by_promedio, e.created_at as examen_at, i.user_id, i.allowed_to_answer, i.signed_by, i.created_at as inscrito_at, ' +
                                 'e.res_correctas, e.res_incorrectas, e.res_promedio, e.res_puntos, e.res_cant_pregs, e.res_tiempo, e.res_tiempo_format, ' +
                                 'u.nombres, u.apellidos, u.sexo, u.username, u.entidad_id, ' +
@@ -275,6 +276,73 @@ function putExamenesEntCateg(req, res) {
         }).then((result)=>{
             
             res.send($entidades);
+            
+        })
+    })
+	
+}
+            
+            
+	
+
+
+function putExamenesCategorias(req, res) {
+	User.fromToken(req).then(($user)=>{
+		
+        $evento_id              = req.body.evento_id || $user.evento_selected_id;
+        $gran_final             = req.body.gran_final || 0;
+        let perfil_path         = User.$perfil_path;
+        $categorias             = [];
+        
+        $consulta = 'SELECT distinct ck.rowid as categoria_id, ct.rowid as categ_traduc_id, ct.nombre as nombre_categ, ct.abrev as abrev_categ, ct.descripcion as descripcion_categ, ' + 
+                'ct.idioma_id, ct.traducido ' + 
+            'FROM ws_categorias_king ck ' + 
+            'INNER JOIN ws_inscripciones i on i.categoria_id=ck.rowid and i.deleted_at is null ' + 
+            'INNER JOIN ws_examen_respuesta e ON i.rowid=e.inscripcion_id AND e.deleted_at is null ' + 
+            'INNER JOIN users u on u.rowid=i.user_id and u.deleted_at is null  ' + 
+            'INNER JOIN ws_user_event ue on ue.user_id=u.rowid and ue.evento_id=? ' + 
+            'LEFT JOIN ws_categorias_traduc ct on ck.rowid=ct.categoria_id and ct.idioma_id=e.idioma_id and ct.deleted_at is null ' + 
+            'WHERE ck.deleted_at is null and ck.evento_id=? and e.gran_final='+$gran_final;
+                    
+            
+		db.query($consulta, [$evento_id, $evento_id]).then((categorias)=>{
+            
+            $categorias = categorias;
+
+            let promesas = $categorias.map((categ, i)=>{
+                return new Promise((resolve, reject)=>{
+                    $consulta_ex = 'SELECT e.rowid as examen_id, e.rowid, e.inscripcion_id, e.evaluacion_id, i.categoria_id, e.active, ' + 
+                        'e.terminado, e.timeout, e.res_by_promedio, e.created_at as examen_at, i.user_id, i.allowed_to_answer, i.signed_by, i.created_at as inscrito_at, ' + 
+                        'e.res_correctas, e.res_incorrectas, e.res_promedio, e.res_puntos, e.res_cant_pregs, e.res_tiempo, e.res_tiempo_format, ' + 
+                        'u.nombres, u.apellidos, u.sexo, u.username, u.entidad_id, ' + 
+                        'u.imagen_id, IFNULL("' + perfil_path + '" || im.nombre, CASE WHEN u.sexo="F" THEN "' + User.$default_female + '" ELSE "' + User.$default_male + '" END ) as imagen_nombre, ' + 
+                        'en.nombre as nombre_entidad, en.alias as alias_entidad, en.lider_id, en.lider_nombre, en.alias, ' + 
+                        'en.logo_id, IFNULL("' + perfil_path + '" || im.nombre, "perfil/system/avatars/no-photo.jpg") as logo_nombre, ' + 
+                        'ct.nombre as nombre_categ, ct.abrev as abrev_categ, ct.descripcion as descripcion_categ, ct.idioma_id, ct.traducido ' + 
+                    'FROM ws_examen_respuesta e ' + 
+                    'INNER JOIN ws_inscripciones i on i.rowid=e.inscripcion_id and i.deleted_at is null ' + 
+                    'INNER JOIN users u on u.rowid=i.user_id and u.deleted_at is null ' + 
+                    'INNER JOIN ws_categorias_king ck on ck.rowid=i.categoria_id and ck.deleted_at is null and ck.rowid=? ' + 
+                    'INNER JOIN ws_user_event ue on ue.user_id=u.rowid and ue.evento_id=? ' + 
+                    'INNER JOIN ws_entidades en on en.rowid=u.entidad_id and en.deleted_at is null  ' + 
+                    'LEFT JOIN ws_categorias_traduc ct on ck.rowid=ct.categoria_id and ct.idioma_id=e.idioma_id and ct.deleted_at is null ' + 
+                    'LEFT JOIN images im on im.rowid=u.imagen_id and im.deleted_at is null  ' + 
+                    'LEFT JOIN images im2 on im2.rowid=en.logo_id and im2.deleted_at is null  ' + 
+                    'WHERE e.deleted_at is null  and e.gran_final='+$gran_final;
+
+                    db.query($consulta_ex, [categ.categoria_id, $evento_id ] ).then(($examenes)=>{
+                        categ.examenes = $examenes;
+                        resolve();
+                    })
+                })
+                    
+            })
+            
+            return Promise.all(promesas)
+              
+        }).then(()=>{
+            
+            res.send($categorias);
             
         })
     })

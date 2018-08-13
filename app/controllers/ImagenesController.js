@@ -47,29 +47,32 @@ function getUsuarios(req, res)
             // Todos los usuarios
             if ($user['is_superuser']) {
                 $cons = "SELECT u.*, u.rowid, i.nombre as imagen_nombre, " +
-                        "u.imagen_id, IFNULL('" + perfil_path + "' || i.nombre, CASE WHEN u.sexo='F' THEN '" + User.$default_female + "' ELSE '" + User.$default_male + "' END ) as imagen_nombre   " +
-                        "FROM users u   " +
-                        "LEFT JOIN images i on i.rowid=u.imagen_id and i.deleted_at is null " +
-                        "WHERE u.deleted_at is null order by u.rowid DESC;";
-
+                    "u.imagen_id, IFNULL('" + perfil_path + "' || i.nombre, CASE WHEN u.sexo='F' THEN '" + User.$default_female + "' ELSE '" + User.$default_male + "' END ) as imagen_nombre   " +
+                    "FROM users u   " +
+                    "LEFT JOIN images i on i.rowid=u.imagen_id and i.deleted_at is null " +
+                    "WHERE u.deleted_at is null order by u.rowid DESC;";
+             
                 db.query($cons).then((result2)=>{
-
                     $respuesta['usuarios'] = result2;
-                    if($user.roles[0].name = 'Asesor'){
-            
-                        $cons = 'SELECT u.*, u.rowid, i.nombre as imagen_nombre,  ' +
-                                'u.imagen_id, IFNULL("' + perfil_path + '" || i.nombre, CASE WHEN u.sexo="F" THEN "' + User.$default_female + '" ELSE "' + User.$default_male + '" END ) as imagen_nombre   ' +
-                                'FROM users u   ' +
-                                'LEFT JOIN images i on i.rowid=u.imagen_id and i.deleted_at is null ' +
-                                'WHERE u.is_superuser = 0 and u.deleted_at is null order by u.rowid DESC;';
-                        db.query($cons).then((result_usuarios)=>{
-                            $respuesta['usuarios'] = result_usuarios;
-                            res.send($respuesta);
-                        });
-                    }
-
+                    res.send($respuesta);
                 });
+            }else if($user.roles[0].name == 'Asesor' || $user.roles[0].name == 'Ejecutor'){
+            
+                $cons = 'SELECT u.*, u.rowid, i.nombre as imagen_nombre,  ' +
+                    'u.imagen_id, IFNULL("' + perfil_path + '" || i.nombre, CASE WHEN u.sexo="F" THEN "' + User.$default_female + '" ELSE "' + User.$default_male + '" END ) as imagen_nombre   ' +
+                    'FROM users u   ' +
+                    'LEFT JOIN images i on i.rowid=u.imagen_id and i.deleted_at is null ' +
+                    'WHERE u.is_superuser = 0 and u.deleted_at is null order by u.rowid DESC;';
+                
+                db.query($cons).then((result_usuarios)=>{
+                    $respuesta['usuarios'] = result_usuarios;
+                    res.send($respuesta);
+                });
+            
+            }else{
+                res.send($respuesta);
             }
+
             
         });
     })
