@@ -369,7 +369,7 @@ self.io.on('connection', (socket)=> {
 								if (all_clts[i].resourceId == qr.parametro.resourceId || all_clts[i].resourceId == parseInt(qr.parametro.resourceId) ) {
 									indice = i; // si no hago esto, i llega a ser el total porque es llamado después de la promesa (me robó 3 horas de mi precioso tiempo)
 									if (data.usuario_id) {
-										socket.broadcast.to(all_clts[i].resourceId).emit('got_your_qr', {codigo: qr.codigo, usuario_id: user.id, from_token: data.from_token} );
+										socket.broadcast.to(all_clts[i].resourceId).emit('got_your_qr', {codigo: qr.codigo, usuario_id: data.usuario_id, from_token: data.from_token} );
 									}else{
 										get_users(socket.datos.user_data.evento_selected_id).then(function(usuarios) {
 											socket.broadcast.to(all_clts[indice].resourceId).emit('got_your_qr', {codigo: qr.codigo, seleccionar: true, usuarios: usuarios, from_token: data.from_token } );
@@ -690,8 +690,8 @@ function get_users(evento_id) {
 							en.nombre as nombre_entidad, en.lider_id, en.lider_nombre, en.logo_id, en.alias  
 						FROM users u 
 						inner join ws_user_event e on e.user_id = u.rowid and e.evento_id = ? 
-						left join images i on i.id=u.imagen_id and i.deleted_at is null 
-						left join ws_entidades en on en.id=u.entidad_id and en.deleted_at is null 
+						left join images i on i.rowid=u.imagen_id and i.deleted_at is null 
+						left join ws_entidades en on en.rowid=u.entidad_id and en.deleted_at is null 
 						where u.deleted_at is null`;
 
 		db.query(consulta, [evento_id]).then( function (results) {
@@ -761,17 +761,20 @@ function categorias_king_con_traducciones(evento_id) {
 		db.query(consulta).then(function (eventoRes) {
 			evento      = eventoRes[0];
 
-			consulta    = `SELECT * FROM ws_categorias_king where evento_id = ? and deleted_at is null`;
-			db.query(consulta, [evento.id]).then(function (results) {
+			consulta    = `SELECT *, rowid FROM ws_categorias_king where evento_id = ? and deleted_at is null`;
+			event_id 	= evento.id;
+			if(evento.rowid) event_id = evento.rowid;
+			
+			db.query(consulta, [event_id]).then(function (results) {
 				
 				Promise.all(
 					results.map(function(row) {
 						var promise = new Promise(function(resolve,reject) {
 
-							consulta = `SELECT t.id, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma  
+							consulta = `SELECT t.rowid, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma  
 										FROM ws_categorias_traduc t, ws_idiomas i
-										where i.id=t.idioma_id and t.categoria_id = ? and t.deleted_at is null`;
-							db.query(consulta, [row.id]).then( function (results) {
+										where i.rowid=t.idioma_id and t.categoria_id = ? and t.deleted_at is null`;
+							db.query(consulta, [row.rowid]).then( function (results) {
 								row.categorias_traducidas = results;
 								resolve(row);
 							});

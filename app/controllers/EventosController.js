@@ -11,7 +11,8 @@ var db              = require('../conexion/connWeb');
 router.route('/').get(getIndex);
 router.route('/update').put(putUpdate);
 router.route('/store').post(postStore);
-router.route('/set-actual').put(putSetActual);
+router.route('/set-evento-actual').put(putSetActual);
+router.route('/set-user-event').put(putSetUserEvent);
 router.route('/set-gran-final').put(putSetGranFinal);
 
     
@@ -141,8 +142,19 @@ function putSetActual(req, res){
         
         let consulta = 'UPDATE ws_eventos SET actual=1 WHERE rowid=?';
         
-        db.query(consulta, [req.body.rowid]).then(()=>{
+        db.query(consulta, [req.body.id]).then(()=>{
             res.send('Actualizado');
+        })
+    })
+}
+
+
+
+function putSetUserEvent(req, res){
+    User.fromToken(req).then(($user)=>{
+        let consulta = 'UPDATE users set evento_selected_id=? where rowid=? and deleted_at is null';
+        db.query(consulta, [req.body.evento_id, $user.rowid]).then(()=>{
+            res.send('Evento del usuario establecido');
         })
     })
 }
