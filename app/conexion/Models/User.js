@@ -274,7 +274,7 @@ class User {
                 return new Promise((resolve_ev, reject_ev)=>{
                     
 
-                    if(Role.hasRole(user.roles, 'Admin') || Role.hasRole(user.roles, 'Asesor')){
+                    if(Role.hasRole(user.roles, 'Admin') || Role.hasRole(user.roles, 'Asesor') || Role.hasRole(user.roles, 'Ejecutor') || Role.hasRole(user.roles, 'Profesor') || Role.hasRole(user.roles, 'Presentador')){
                         Evento.todos().then((eventos)=>{
                             user.eventos    = eventos;
                             $evento_id      = user.evento_selected_id;

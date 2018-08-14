@@ -81,38 +81,46 @@ class Evento {
     static todos() {
         let promesa = new Promise(function(resolve, reject){
             let consulta 	= `SELECT *, rowid FROM ws_eventos where deleted_at is null`;
-            db.query(consulta).then(function (result) {
+            db.query(consulta).then(function (eventos) {
 
-                if( result.length == 0){
+                if( eventos.length == 0){
                     throw 'No existen eventos';
                     reject('No existen eventos')
                 }
                 
                 let promises    = [];
                 
-                for(let i=0; i < result.length; i++){
-                    selectIdiomas(i)
+                for(let i=0; i < eventos.length; i++){
+                    selectIdiomasExtras(i);
+                    selectIdiomas(i, eventos[i].rowid, eventos[i]);
                 }
                 
-                function selectIdiomas(i){
+                function selectIdiomasExtras(i){
                     
                     consulta = 'SELECT i.id, ir.id as idioma_reg_id, i.nombre, i.abrev, i.original, i.used_by_system ' +
                         ' FROM ws_idiomas i, ws_idiomas_registrados ir ' + 
                         ' WHERE i.id=ir.idioma_id and ir.evento_id =? and ir.deleted_at is null';
                     
-                    let idioma_promise = db.query(consulta, [result[i].rowid] );
+                    let idioma_promise = db.query(consulta, [eventos[i].rowid] );
                     promises.push(idioma_promise);
                     
                     idioma_promise.then(function(idiomas){
-                        result[i].idiomas_extras   = idiomas;
+                        eventos[i].idiomas_extras   = idiomas;
                     })
                        
                 }
                 
-                Promise.all(promises).then(function(values) {
-                    resolve(result);
-                });
+                function selectIdiomas(i, $evento_id, $evento){
+                    let promiIdiomas = Evento.idiomas_all($evento_id, $evento);
+                    promiIdiomas.then((idiomas_all)=>{
+                        $evento.idiomas = idiomas_all;
+                    })
+                    promises.push(promiIdiomas);
+                }
                 
+                Promise.all(promises).then(()=>{
+                    resolve(eventos);
+                });
                 
             });
         })
@@ -141,7 +149,7 @@ class Evento {
             });
             
             promesa_evento.then((evento)=>{
-                
+
                 let consulta = '';
 
                 if (evento.es_idioma_unico) {
@@ -161,12 +169,10 @@ class Evento {
 
                     db.query(consulta, [evento.rowid] ).then((result)=>{
                         idiomas_all = result;
-                        consulta    = 'SELECT * FROM ws_idiomas where rowid=? and deleted_at is null';
+                        consulta    = 'SELECT *, rowid FROM ws_idiomas where rowid=? and deleted_at is null';
                         
                         return db.query(consulta, [ evento.idioma_principal_id ] )
-                        
                     }).then((result)=>{
-                            
                         idiomas_all.unshift(result[0]);
                         resolve(idiomas_all);
                     });
@@ -174,7 +180,6 @@ class Evento {
                 }
                     
             })
-            
             
         })
         return promesa;
@@ -185,3 +190,47 @@ class Evento {
 
 module.exports = Evento;
 
+/*
+let promeIdio = {};
+                        
+                        if (!$evento) {
+                            promeIdio = db.find($evento_id);
+                        }else{
+                            promeIdio = new Promise((resolveDumb)=> resolveDumb() );
+                        }
+                        
+                        promeIdio.then(()=>{
+                            
+                            let $idiomas_all = [];
+
+
+                            if ($evento.es_idioma_unico) {
+
+                                consulta 		= 'SELECT *, rowid FROM ws_idiomas WHERE rowid=? and deleted_at is null';
+                                db.query(consulta, [$evento.idioma_principal_id] ).then((idiomas_all)=>{
+                                    eventos[i].idiomas   = idiomas_all;
+                                    resolveIdioma();
+                                });
+                                
+                            }else{
+                                consulta = 'SELECT i.rowid, ir.rowid as idioma_reg_id, i.nombre, i.abrev, i.original, i.used_by_system  ' + 
+                                    'FROM ws_idiomas i, ws_idiomas_registrados ir  ' + 
+                                    'WHERE i.rowid=ir.idioma_id and ' + 
+                                        'ir.evento_id =? and  ' + 
+                                        'ir.deleted_at is null and i.deleted_at is null';
+
+                                db.query(consulta, [$evento.rowid] ).then((idiomas_all)=>{
+                                    $idiomas_all = idiomas_all;
+                                    
+                                    consulta 		= 'SELECT *, rowid FROM ws_idiomas where id=? and deleted_at is null';
+                                    db.query(consulta, [$evento.idioma_principal_id] ).then(($idioma_prin)=>{
+                                        $idioma_prin = $idioma_prin[0];
+                                        $idiomas_all.unshift($idioma_prin);
+                                        eventos[i].idiomas   = $idiomas_all;
+                                        resolveIdioma();
+                                    });
+                                });
+
+                            }
+                        })
+*/

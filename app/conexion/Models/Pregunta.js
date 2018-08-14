@@ -101,6 +101,37 @@ class Pregunta {
 	}
 	
 	
+
+	static unaPGPregunta($idioma_id, $pg_id) {
+		let promesa = new Promise(function(resolve, reject){
+			
+			let $pg_pregunta = {};
+			
+			// Traemos la pregunta creada con sus datos traducidos
+			let $consulta = 'SELECT pk.rowid as pg_id, 1 as is_preg, pk.descripcion, pk.tipo_pregunta, pk.duracion, pk.categoria_id, pk.puntos, pk.aleatorias, pk.added_by, pk.created_at as gp_created_at, pk.updated_at as gp_updated_at,  ' +
+					'pt.rowid as pg_traduc_id, pt.enunciado, NULL as definicion, pt.ayuda, pt.idioma_id, pt.texto_arriba, pt.texto_abajo, pt.traducido, pt.updated_at as pgt_updated_at ' +
+				'FROM ws_preguntas_king pk ' +
+				'INNER JOIN ws_pregunta_traduc pt on pt.pregunta_id=pk.rowid and pt.idioma_id=? and pt.deleted_at is null ' +
+				'WHERE pk.rowid=?';
+
+			db.query($consulta, [$idioma_id, $pg_id] ).then((pg_pregunta)=>{
+				$pg_pregunta = pg_pregunta[0];
+				// Le traemos las opciones
+				$consulta = 'SELECT o.rowid, o.definicion, o.orden, o.pregunta_traduc_id, o.is_correct, o.added_by, o.created_at, o.updated_at  ' +
+						'FROM ws_opciones o ' +
+						'WHERE o.pregunta_traduc_id=?';
+
+				return db.query($consulta, [$pg_pregunta.pg_traduc_id] );
+				
+			}).then(($opciones)=>{
+				$pg_pregunta.opciones = $opciones;
+				resolve($pg_pregunta);
+			})
+		})
+		return promesa;
+	}
+	
+	
 	
 };
 

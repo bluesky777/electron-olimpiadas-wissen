@@ -13,7 +13,7 @@ router.route('/')
 
 function getIndex(req, res) {
 
-    consulta 	= 'SELECT * FROM ws_idiomas where deleted_at is null';
+    consulta 	= 'SELECT *, rowid FROM ws_idiomas where deleted_at is null';
     
     db.query(consulta).then(function(result){
         res.json( result );
