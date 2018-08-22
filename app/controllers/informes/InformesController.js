@@ -11,6 +11,11 @@ var db              = require('../../conexion/connWeb');
 router.route('/mis-examenes').get(getMisExamenes)
 router.route('/todos-los-examenes').get(getTodosLosExamenes)
 
+// A ver si trae la función de puestos
+router.route('/examenes-entidades').get(require('./PuestosController').putTodosExamenesEnt);
+router.route('/examenes-entidades-categorias').get(require('./PuestosController').putExamenesEntCateg);
+router.route('/examenes-categorias').get(require('./PuestosController').putExamenesCategorias);
+
 
 
 function getMisExamenes(req, res) {
@@ -93,9 +98,9 @@ function getMisExamenes(req, res) {
 function getTodosLosExamenes(req, res) {
 	User.fromToken(req).then(($user)=>{
 		
-		$evento_id 		= $user.evento_selected_id;
+		$evento_id 		= req.query.evento_id || $user.evento_selected_id;
 		$idioma_id 		= req.query.idioma_id || $user.idioma_main_id;
-		$gran_final 	= req.query.gran_final || 0;
+		$gran_final     = (req.query.gran_final == 0 || req.query.gran_final == 'false' || req.query.gran_final == false) ? 0 : 1;
 		let perfil_path = User.$perfil_path;
 
 		
