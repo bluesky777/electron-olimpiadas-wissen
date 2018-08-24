@@ -2,12 +2,7 @@ db = require('../connWeb');
 
 
 class Nivel {
-    
-    static crear(codigo, comando) {
-        let consulta 	= `INSERT INTO ws_entidades(codigo, comando) VALUES (?,?)`;
-        return db.query(consulta, [codigo, comando]);
-    }
-    
+        
     
     static traduc($niveles_king) {
         let promesa = new Promise(function(resolve, reject){
@@ -41,6 +36,42 @@ class Nivel {
         })
         return promesa;
     }
+    
+    
+    static traducciones_single($king) {
+        let promesa = new Promise(function(resolve, reject){
+
+            let $consulta = "SELECT t.id, t.rowid, t.nombre, t.nivel_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma   " +
+                "FROM ws_niveles_traduc t, ws_idiomas i " +
+                "where i.id=t.idioma_id and t.nivel_id =? and t.deleted_at is null";
+
+            db.query($consulta, [$king.rowid]).then((result_trads)=>{
+                $king.niveles_traducidas = result_trads;
+                resolve($king);
+            });
+            
+        })
+        return promesa;
+    }
+    
+    
+    static updateTraduc(rowid, nombre, descripcion, traducido) {
+        let promesa = new Promise(function(resolve, reject){
+            
+            let now = window.fixDate(new Date(), true);
+            let $consulta = "UPDATE ws_niveles_traduc SET nombre=?, descripcion=?, traducido=?, updated_at=? WHERE rowid=?";
+
+            db.query($consulta, [nombre, descripcion, traducido, now, rowid] )
+            
+            .then((result_trads)=>{
+                resolve('Guardado');
+            });
+            
+            
+        })
+        return promesa;
+    }
+    
     
 };
 

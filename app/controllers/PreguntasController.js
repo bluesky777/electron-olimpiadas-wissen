@@ -13,6 +13,7 @@ router.route('/').get(getIndex);
 router.route('/traducidas').get(getTraducidas);
 router.route('/store').post(postStore);
 router.route('/update').put(putUpdate);
+router.route('/cambiar-categoria').put(putCambiarCategoria);
 
 
 
@@ -280,5 +281,19 @@ function putUpdate(req, res) {
 }
     
 
+
+function putCambiarCategoria(req, res) {
+    User.fromToken(req).then(($user)=>{
+
+		$pregunta_id    = req.body.pregunta_id;
+		$categoria_id   = req.body.categoria_id;
+
+        db.query('UPDATE ws_preguntas_king SET categoria_id=? WHERE rowid=?', [$categoria_id, $pregunta_id]).then(($pregunta)=>{
+            res.send('Cambiada');
+        })
+        
+    }) // User.fromToken
+}
+        
 
 module.exports = router;

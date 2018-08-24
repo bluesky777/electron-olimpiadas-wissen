@@ -52,7 +52,7 @@ function descargarDatos(evento_id) {
                     result = result.concat(valoresArray);
                     argum += parentesis;
                 }
-                argum = argum.substring(0, argum.length - 1) // Para quitar la cómo del final
+                argum = argum.substring(0, argum.length - 1) // Para quitar la coma del final
                 return result;
             }
             

@@ -56,13 +56,13 @@ function postStore(req, res) {
     $event.nombre 					= req.body.nombre               || 'Evento default';
     $event.alias 					= req.body.alias                || null;
     $event.descripcion              = req.body.descripcion          || null;
-    //$event.examen_actual_id 		= req.body.examen_actual_id     || null;
-    $event.idioma_principal_id 	    = req.body.idioma_principal_id  || 1;
-    $event.es_idioma_unico          = req.body.es_idioma_unico      || 1;
-    $event.enable_public_chat 		= req.body.enable_public_chat   || 0;
+    //$event.examen_actual_id 		= req.body.examen_actual_id;
+    $event.idioma_principal_id 	    = req.body.idioma_principal_id;
+    $event.es_idioma_unico          = req.body.es_idioma_unico;
+    $event.enable_public_chat 		= req.body.enable_public_chat;
     $event.enable_private_chat      = req.body.enable_private_chat  || 0;
-    $event.with_pay 				= req.body.with_pay             || 0;
-    $event.actual 					= req.body.actual               || 0;
+    $event.with_pay 				= req.body.with_pay;
+    $event.actual 					= req.body.actual;
 
     $event.precio1 = req.body.precio1 || 0;
     $event.precio2 = req.body.precio2 || 0;
@@ -109,29 +109,59 @@ function postStore(req, res) {
 
 
 function putUpdate(req, res) {
+    console.log(req.body);
+    
+    db.find('ws_eventos', req.body.rowid).then(($ev)=>{
+        let now     = window.fixDate(new Date(), true);
+        let ev      = {};
+        
+        if ('with_pay' in req.body) { 
+            if(req.body.with_pay == 1)
+                { req.body.with_pay = 1; }else{ req.body.with_pay = 0; }
+        }else{ req.body.with_pay = $ev.with_pay; }
+        
+        if ('es_idioma_unico' in req.body) { 
+            if(req.body.es_idioma_unico == 1)
+                { req.body.es_idioma_unico = 1; }else{ req.body.es_idioma_unico = 0; }
+        }else{ req.body.es_idioma_unico = $ev.es_idioma_unico; }
+        
+        if ('enable_public_chat' in req.body) { 
+            if(req.body.enable_public_chat == 1)
+                { req.body.enable_public_chat = 1; }else{ req.body.enable_public_chat = 0; }
+        }else{ req.body.enable_public_chat = $ev.enable_public_chat; }
+        
+        ev.nombre                       = req.body.nombre               || $ev.nombre;
+        ev.alias                        = req.body.alias                || $ev.alias;
+        ev.descripcion                  = req.body.descripcion          || $ev.descripcion;
+        //$event.examen_actual_id 	    = req.body.examen_actual_id     || $event.examen_actual_id;
+        ev.idioma_principal_id          = req.body.idioma_principal_id  || $ev.idioma_principal_id;
+        ev.es_idioma_unico              = req.body.es_idioma_unico;
+        ev.enable_public_chat           = req.body.enable_public_chat;
+        ev.enable_private_chat          = req.body.enable_private_chat;
+        ev.with_pay                     = req.body.with_pay;
 
-    $event = db.find(req.body.rowid);
+        ev.precio1      = req.body.precio1 || $ev.precio1;
+        ev.precio2      = req.body.precio2 || $ev.precio2;
+        ev.precio3      = req.body.precio3 || $ev.precio3;
+        ev.precio4      = req.body.precio4 || $ev.precio4;
+        ev.precio5      = req.body.precio5 || $ev.precio5;
+        ev.precio6      = req.body.precio6 || $ev.precio6;
+        ev.updated_at   = now;
+        ev.rowid        = req.body.rowid; // para el WHERE
+        
+        let consulta = 
+            'UPDATE ws_eventos SET nombre=?, alias=?, descripcion=?, idioma_principal_id=?, ' + 
+                'es_idioma_unico=?, enable_public_chat=?, enable_private_chat=?, with_pay=?, actual=?, ' + 
+                'precio1=?, precio2=?, precio3=?, precio4=?, precio5=?, precio6=?, updated_at=? ' +
+            'WHERE rowid=?';
+        
+        valores = window.getValores(ev);
+        console.log(valores);
+        db.query(consulta, valores).then(()=>{
+            res.send('Guardado');
+        })
 
-    $event.nombre 					= req.body.nombre               || 'Evento default';
-    $event.alias 					= req.body.alias                || null;
-    $event.descripcion              = req.body.descripcion          || null;
-    //$event.examen_actual_id 		= req.body.examen_actual_id     || null;
-    $event.idioma_principal_id 	    = req.body.idioma_principal_id  || 1;
-    $event.es_idioma_unico          = req.body.es_idioma_unico      || 1;
-    $event.enable_public_chat 		= req.body.enable_public_chat   || 0;
-    $event.enable_private_chat      = req.body.enable_private_chat  || 0;
-    $event.with_pay 				= req.body.with_pay             || 0;
-    $event.actual 					= req.body.actual               || 0;
-
-    $event.precio1 = req.body.precio1 || 0;
-    $event.precio2 = req.body.precio2 || 0;
-    $event.precio3 = req.body.precio3 || 0;
-    $event.precio4 = req.body.precio4 || 0;
-    $event.precio5 = req.body.precio5 || 0;
-    $event.precio6 = req.body.precio6 || 0;
-
-
-    // Terminar
+    })
 
 }
 

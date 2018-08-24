@@ -1,12 +1,7 @@
 db = require('../connWeb');
 
 
-class Categoria {
-    
-    static crear(codigo, comando) {
-        let consulta 	= `INSERT INTO ws_disciplinas_king(codigo, comando) VALUES (?,?)`;
-        return db.query(consulta, [codigo, comando]);
-    }
+class Disciplina {
     
     
     static traduc($kings) {
@@ -43,6 +38,24 @@ class Categoria {
     }
     
     
+    
+    static traducciones_single($king) {
+        let promesa = new Promise(function(resolve, reject){
+
+            let $consulta = "SELECT t.id, t.rowid, t.nombre, t.disciplina_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma   " +
+                "FROM ws_disciplinas_traduc t, ws_idiomas i " +
+                "where i.id=t.idioma_id and t.disciplina_id =? and t.deleted_at is null";
+
+            db.query($consulta, [$king.rowid]).then((result_trads)=>{
+                $king.disciplinas_traducidas = result_trads;
+                resolve($king);
+            });
+            
+        })
+        return promesa;
+    }
+    
+    
     static updateTraduc(rowid, nombre, descripcion, traducido) {
         let promesa = new Promise(function(resolve, reject){
             
@@ -62,5 +75,7 @@ class Categoria {
     
 };
 
-module.exports = Categoria;
+
+
+module.exports = Disciplina;
 

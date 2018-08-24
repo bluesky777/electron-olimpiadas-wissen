@@ -828,3 +828,9 @@ window.fixDate = function(fec, con_hora){
 window.getRandomInt = function(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+window.getValores = (element)=>{
+	valores = Object.keys(element).map(function(clave){
+		return element[clave];
+	})
+	return valores;
+}

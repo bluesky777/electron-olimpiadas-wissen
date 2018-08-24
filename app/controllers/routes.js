@@ -10,6 +10,7 @@ router.use('/login', require('./LoginController'));
 router.use('/eventos', require('./EventosController'));
 router.use('/imagenes', require('./ImagenesController'));
 router.use('/preguntas', require('./PreguntasController'));
+router.use('/pregunta_evaluacion', require('./Pregunta_evaluacionController'));
 router.use('/niveles', require('./NivelesController'));
 router.use('/entidades', require('./EntidadesController'));
 router.use('/categorias', require('./CategoriasController'));

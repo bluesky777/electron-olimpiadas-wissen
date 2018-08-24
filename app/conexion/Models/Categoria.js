@@ -53,14 +53,32 @@ class Categoria {
         let promesa = new Promise(function(resolve, reject){
             
 
-            let $consulta = "SELECT t.id, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma  " +
+            let $consulta = "SELECT t.id, t.rowid, t.nombre, t.abrev, t.categoria_id, t.descripcion, t.idioma_id, t.traducido, i.nombre as idioma  " +
                 "FROM ws_categorias_traduc t, ws_idiomas i " +
-                "where i.id=t.idioma_id and t.categoria_id =? and t.deleted_at is null";
+                "where i.rowid=t.idioma_id and t.categoria_id =? and t.deleted_at is null";
 
             db.query($consulta, [$king.rowid] ).then((result_trads)=>{
                 $king.categorias_traducidas = result_trads;
                 resolve($king);
             });
+            
+        })
+        return promesa;
+    }
+  
+    
+    static updateTraduc(rowid, nombre, alias, descripcion, traducido) {
+        let promesa = new Promise(function(resolve, reject){
+            
+            let now = window.fixDate(new Date(), true);
+            let $consulta = "UPDATE ws_categorias_traduc SET nombre=?, abrev=?, descripcion=?, traducido=?, updated_at=? WHERE rowid=?";
+
+            db.query($consulta, [nombre, alias, descripcion, traducido, now, rowid] )
+            
+            .then((result_trads)=>{
+                resolve('Guardado');
+            });
+            
             
         })
         return promesa;

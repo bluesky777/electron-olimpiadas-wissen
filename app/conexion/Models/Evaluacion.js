@@ -3,10 +3,6 @@ db = require('../connWeb');
 
 class Evaluacion {
     
-    static crear(codigo, comando) {
-        let consulta 	= `INSERT INTO ws_disciplinas_king(codigo, comando) VALUES (?,?)`;
-        return db.query(consulta, [codigo, comando]);
-    }
     
     static deCategoria(categoria_id, evento_id) {
         let consulta 	= `SELECT *, rowid FROM ws_evaluaciones WHERE categoria_id=? and evento_id=? and deleted_at is null`;
@@ -155,6 +151,34 @@ class Evaluacion {
         let $consulta = "SELECT *, rowid FROM ws_evaluaciones WHERE actual=1 and evento_id=? and categoria_id=?";
         return db.query($consulta, [$evento_id, categoria_id] );
     }
+    
+    
+    static crearPrimera($evento_id, $categoria_id, $descripcion, $user_id){
+        let promesa = new Promise(function(resolve, reject){
+            let now = window.fixDate(new Date(), true);
+            let $ev = {};
+
+            $ev.categoria_id 	= $categoria_id;
+            $ev.evento_id 		= $evento_id;
+            $ev.descripcion 	= $descripcion;
+            $ev.duracion_preg 	= 60;
+            $ev.duracion_exam 	= 20;
+            $ev.one_by_one      = 1;
+            $ev.actual          = 1;
+            $ev.created_by      = $user_id;
+            $ev.created_at      = now;
+            
+            valores = getValores($ev);
+            
+            let $consulta = "INSERT INTO ws_evaluaciones(categoria_id, evento_id, descripcion, duracion_preg, duracion_exam, one_by_one, actual, created_by, created_at) VALUES(?,?,?,?,?,?,?,?,?) ";
+            db.query($consulta, valores).then((evalu)=>{
+                $ev.rowid = evalu.insertId;
+                resolve($ev);
+            })
+        })
+        return promesa;
+    }
+    
     
 };
 
