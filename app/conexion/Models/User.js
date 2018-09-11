@@ -105,15 +105,18 @@ class User {
             let nivel_id        = parseInt($usuario_new.nivel_id);
             
             let $pass = $usuario_new.password;
+            let passSql = '';
+            
             if ($pass) {
                 password = bcrypt.hashSync($pass, 10);
+                passSql = '';
             }else{
-                password = $usuario_old.entidad_id;
+                password = $usuario_old.password;
             }
             
             
             if ($usuario_new.entidad) {
-                entidad_id = $usuario_new.entidad.rowid;
+                entidad_id = $usuario_new.entidad_id;
             }
             
             let consulta 	= 'UPDATE users SET nombres=?, apellidos=?, sexo=?, username=?, password=?, email=?, is_superuser=?, cell=?, edad=?, entidad_id=?, updated_at=? ' +

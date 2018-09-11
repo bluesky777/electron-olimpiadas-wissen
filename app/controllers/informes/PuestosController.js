@@ -32,7 +32,7 @@ function putCalcularResultados(req, res) {
                 'u.nombres, u.apellidos, u.sexo, u.username, u.entidad_id, ' +
                 'u.imagen_id, IFNULL("' + perfil_path + '" || im.nombre, CASE WHEN u.sexo="F" THEN "' + User.$default_female + '" ELSE "' + User.$default_male + '" END ) as imagen_nombre, ' +
                 'en.nombre as nombre_entidad, en.alias as alias_entidad, en.lider_id, en.lider_nombre, en.alias, ' +
-                'en.logo_id, IFNULL("' + perfil_path + '" || im.nombre, "perfil/system/avatars/no-photo.jpg") as logo_nombre, ' +
+                'en.logo_id, IFNULL("' + perfil_path + '" || im2.nombre, "perfil/system/avatars/no-photo.jpg") as logo_nombre, ' +
                 'ct.nombre as nombre_categ, ct.abrev as abrev_categ, ct.descripcion as descripcion_categ, ct.idioma_id, ct.traducido ' +
             'FROM ws_examen_respuesta e ' +
             'inner join ws_inscripciones i on i.rowid=e.inscripcion_id and i.deleted_at is null ' +
@@ -47,8 +47,15 @@ function putCalcularResultados(req, res) {
 			
 		db.query($consulta, [$evento_id]).then(($examenes)=>{
             
+            console.log($examenes);
 			let mapeando = $examenes.map(($examen, $key)=>{
-				return ExamenRespuesta.calcular($examen);
+                exa = ExamenRespuesta.calcular($examen);
+                exa.then((resultado)=>{
+                    //console.log(resultado);
+                }, (err)=>{
+                    console.log('Problemas calculandoo', err);
+                });
+                return exa;
 			})
 			return Promise.all(mapeando);
 		}).then(($examenes_all)=>{
@@ -341,7 +348,7 @@ function putExamenesCategorias(req, res) {
                         'u.nombres, u.apellidos, u.sexo, u.username, u.entidad_id, ' + 
                         'u.imagen_id, IFNULL("' + perfil_path + '" || im.nombre, CASE WHEN u.sexo="F" THEN "' + User.$default_female + '" ELSE "' + User.$default_male + '" END ) as imagen_nombre, ' + 
                         'en.nombre as nombre_entidad, en.alias as alias_entidad, en.lider_id, en.lider_nombre, en.alias, ' + 
-                        'en.logo_id, IFNULL("' + perfil_path + '" || im.nombre, "perfil/system/avatars/no-photo.jpg") as logo_nombre, ' + 
+                        'en.logo_id, IFNULL("' + perfil_path + '" || im2.nombre, "perfil/system/avatars/no-photo.jpg") as logo_nombre, ' + 
                         'ct.nombre as nombre_categ, ct.abrev as abrev_categ, ct.descripcion as descripcion_categ, ct.idioma_id, ct.traducido ' + 
                     'FROM ws_examen_respuesta e ' + 
                     'INNER JOIN ws_inscripciones i on i.rowid=e.inscripcion_id and i.deleted_at is null ' + 
@@ -398,7 +405,7 @@ function putExamenesEjecutandose(req, res) {
 			if ($i == 0) {
 				$condicionales = 'e.rowid=' + $ids_participantes[$i];
 			}else{
-				$condicionales = $condicionales + ' or e.rowid=' + $cant_ids[$i];
+				$condicionales = $condicionales + ' or e.rowid=' + $ids_participantes[$i];
 			}
         }
         

@@ -18,7 +18,6 @@ function putDatos(req, res) {
 	User.fromToken(req).then(($user)=>{
 		
 		$datos 	    = [];
-        $categorias = [];
         $events     = [];
         
         Evento.todos().then((events)=>{
@@ -33,14 +32,14 @@ function putDatos(req, res) {
                         $consulta 	= 'SELECT *, rowid FROM ws_categorias_king c WHERE c.evento_id=? AND c.deleted_at is null';
                         return db.query($consulta, [$event.rowid] );
                         
-                    }).then(($categorias)=>{
-
-                        return Categoria.traduc($categorias);
+                    }).then((categorias)=>{
+                        
+                        return Categoria.traduc(categorias);
                         
                     }).then((categorias)=>{
-                        $categorias = categorias;
+                        categorias = categorias;
                         
-                        let mapeando = $categorias.map((categoria, $i)=>{
+                        let mapeando = categorias.map((categoria, $i)=>{
                             return new Promise((resolveCate, rejectCate)=>{
                                 $consulta = 'SELECT *, rowid FROM ws_evaluaciones e where e.categoria_id=? and e.evento_id=? and e.deleted_at is null';
                                 db.query($consulta, [categoria.rowid, $event.rowid] ).then(($evaluaciones)=>{
@@ -53,7 +52,7 @@ function putDatos(req, res) {
                         return Promise.all(mapeando)
                     }).then((categorias)=>{
                         
-                        $event.categorias = $categorias;
+                        $event.categorias = categorias;
                         $consulta = 'SELECT *, rowid FROM ws_entidades e where e.evento_id=? and e.deleted_at is null';
                         
                         db.query($consulta, [$event.rowid] ).then(($entidades)=>{

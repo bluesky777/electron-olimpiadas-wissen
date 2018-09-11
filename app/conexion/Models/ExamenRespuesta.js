@@ -47,22 +47,28 @@ class ExamenRespuesta {
             let $tiempo 		= 0;
             let $cantidad_pregs = 0;
             
-            let consulta = 'SELECT *, rowid FROM ws_respuestas WHERE examen_respuesta_id=?';
+            let consulta = 'SELECT *, rowid FROM ws_respuestas WHERE examen_respuesta_id=? and pregunta_king_id is not null group by pregunta_king_id';
             db.query(consulta, [$examen.examen_id]).then((respuestas)=>{
                 $respuestas = respuestas;
                 return ExamenRespuesta.cantidadPreguntas($examen.evaluacion_id)
+            }, (error)=>{
+                console.log('Error trayendo cantidad de preguntas', error);
+                
             }).then((cantidad_pregs)=>{
                 $cantidad_pregs = cantidad_pregs;
                 consulta        = 'SELECT SUM(tiempo) as duracion FROM ws_respuestas WHERE examen_respuesta_id=?';
                 return db.query(consulta, [$examen.examen_id])
+            }, (error)=>{
+                console.log('Error las respuestas', error);
+                
             }).then((duracion)=>{
                 $tiempo = duracion[0].duracion;
-                
+
                 let promesas = $respuestas.map((respuesta, $i)=>{
                     let promResp = new Promise(function(resolveResp, rejectResp){
                         
                         if (respuesta.opcion_id) {
-                            $consulta 	= 'SELECT *, rowid FROM ws_opciones where rowid=?';
+                            let $consulta 	= 'SELECT *, rowid FROM ws_opciones where rowid=?';
                             db.query($consulta, [ respuesta.opcion_id ] ).then(($opcion)=>{
                                 let promPuntos = new Promise(function(resolvePunt, rejectPunt){
                                     
@@ -77,6 +83,8 @@ class ExamenRespuesta {
 
                                             $puntos         = $puntos + $preg_king.puntos;
                                             resolvePunt();
+                                        }, (error)=>{
+                                            console.log('Error trayendo la pregunta para los puntos', error);
                                         });
 
                                     }else{
@@ -85,6 +93,8 @@ class ExamenRespuesta {
                                     }
                                 })
                                 return promPuntos;
+                            }, (error)=>{
+                                console.log('Error trayendo las opciones', error);
                             }).then(()=>{
                                 resolveResp();
                             });

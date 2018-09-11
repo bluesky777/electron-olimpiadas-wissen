@@ -10,9 +10,7 @@ var db              = require('../conexion/connWeb');
 
 
 
-router.route('/')
-	.get(getIndex)
-
+router.route('/').get(getIndex)
 router.route('/categorias-con-preguntas').get(getCategoriasConPreguntas);
 router.route('/guardar').put(putGuardar);
 router.route('/update').put(putUpdate);

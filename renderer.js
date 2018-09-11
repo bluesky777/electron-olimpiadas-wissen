@@ -63,8 +63,8 @@ var db              = require(path.join(__dirname, '/app/conexion/connWeb'));
 self 		= this;
 self.io 	= io;
 
-var count_clients 	= 0;
-var all_clts 		= [];
+var count_clients 	= localStorage.count_clients 	|| 0;
+var all_clts 		= localStorage.all_clts 		|| [];
 var categorias_king = [];
 var info_evento 	= {
 		examen_iniciado: 		false, 
@@ -833,4 +833,14 @@ window.getValores = (element)=>{
 		return element[clave];
 	})
 	return valores;
+}
+window.array_rand = (items, reqCant)=>{
+	result 	= [];
+	for (let i = 0; i < reqCant; i++) {
+		var num 	= Math.floor(Math.random()*items.length);
+		var item 	= items.splice(num, 1)[0];
+		
+		result.push(item);
+	}
+	return result;
 }

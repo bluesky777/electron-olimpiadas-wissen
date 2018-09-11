@@ -10,8 +10,8 @@ class Pregunta {
 			$exa_resp_id = $exa_resp_id || 0;
 			
 			let $consulta = "SELECT p.*, p.rowid, pe.evaluacion_id, pe.orden FROM ws_preguntas_king p " +
-				"inner join ws_pregunta_evaluacion pe on pe.pregunta_id=p.id " +
-				"where pe.evaluacion_id=? and p.deleted_at is null;";
+				"inner join ws_pregunta_evaluacion pe on pe.pregunta_id=p.rowid " +
+				"where pe.evaluacion_id=? and p.deleted_at is null order by orden;";
 
 			db.query($consulta, [$evaluacion_id] ).then(($preguntas_king)=>{
 				

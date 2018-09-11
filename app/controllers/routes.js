@@ -23,6 +23,7 @@ router.use('/inscripciones', require('./InscripcionesController'));
 router.use('/examenes_respuesta', require('./ExamenesRespuestaController'));
 router.use('/qr', require('./QrController'));
 router.use('/exportar-importar', require('./ExportarImportar/ExportarImportarController'));
+router.use('/opciones', require('./OpcionesController'));
 
 
 module.exports = router;
