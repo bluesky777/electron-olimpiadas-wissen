@@ -65,15 +65,7 @@ class ExamenRespuesta {
 				
 			}).then((cantidad_pregs)=>{
 				$cantidad_pregs = cantidad_pregs;
-				/*
-				consulta        = 'SELECT SUM(tiempo) as duracion FROM ws_respuestas WHERE examen_respuesta_id=?';
-				return db.query(consulta, [$examen.examen_id])
-			}, (error)=>{
-				console.log('Error las respuestas', error);
-				
-			}).then((duracion)=>{
-				//$tiempo = duracion[0].duracion;
-*/
+
 				let promesas = $respuestas.map((respuesta, $i)=>{
 					let promResp = new Promise(function(resolveResp, rejectResp){
 						
