@@ -37,18 +37,19 @@ class Pregunta {
 	
 	static traducidas($preguntas_king, $i, $exa_resp_id){
 		return new Promise(function(resolve_pregs_traducidas, reject_pregs_evaluacioines){
-			let $consulta = "SELECT t.id, t.rowid, t.enunciado, t.ayuda, t.pregunta_id,  " +
+			let $consulta = "SELECT t.id, t.rowid, t.enunciado, t.ayuda, t.pregunta_id, r.rowid as respuesta_id, r.tiempo, " +
 					"t.idioma_id, t.traducido, i.nombre as idioma " +
 				"FROM ws_pregunta_traduc t, ws_idiomas i " +
+				"LEFT JOIN ws_respuestas r ON r.preg_traduc_id=t.rowid and r.examen_respuesta_id=? " + 
 				"where i.id=t.idioma_id and t.pregunta_id =? and t.deleted_at is null";
 
-			db.query($consulta, [$preguntas_king[$i].rowid] ).then((result_trads)=>{
+			db.query($consulta, [ $exa_resp_id, $preguntas_king[$i].rowid ] ).then((result_trads)=>{
 
 				$preguntas_king[$i].preguntas_traducidas = result_trads;
 			
 				let mapeando_preguntas_traducidas = $preguntas_king[$i].preguntas_traducidas.map((pregunta_traducida, $i)=>{
 					let $promesa_pregs_evaluaciones = new Promise(function(resolve_opciones, reject_opciones){
-						
+					
 						
 						$consulta = 'SELECT o.id, o.rowid, o.definicion, o.orden, o.pregunta_traduc_id, o.is_correct ' + 
 								'FROM ws_opciones o ' + 
@@ -56,7 +57,7 @@ class Pregunta {
 
 						db.query($consulta, [pregunta_traducida.rowid] ).then((opciones)=>{
 							pregunta_traducida.opciones = opciones;
-							
+
 							if ($exa_resp_id) {
 								
 								let mapeando_opciones = pregunta_traducida.opciones.map((opcion, $i)=>{

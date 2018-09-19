@@ -36,7 +36,7 @@ class ExamenRespuesta {
 	
 	
 	
-	static calcular($examen) {
+	static calcular($examen, cant_respondidas) {
 		let promesa = new Promise(function(resolve, reject){
 			
 			let $respuestas     = [];
@@ -116,6 +116,10 @@ class ExamenRespuesta {
 								$puntos = $puntos + $preg_agrup.puntos;
 								resolveResp();
 							})
+						}else{
+							// No tiene opción respondida, quiere decir que no la respondió por falta de tiempo
+							$incorrectas++;
+							resolveResp();
 						}
 						
 					})
@@ -123,7 +127,6 @@ class ExamenRespuesta {
 				})
 				return Promise.all(promesas);
 			}).then(()=>{
-				
 				// Calculamos por promedio
 				let $promedio = 0;
 				if ($cantidad_pregs > 0) {

@@ -48,7 +48,7 @@ function getMisExamenes(req, res) {
 			})
 			return Promise.all(mapeando);
 		}).then((examenes_all)=>{			
-			
+
 			
 			return new Promise((resolve, reject)=>{
 				if(examenes_all.length > 0){
@@ -68,12 +68,13 @@ function getMisExamenes(req, res) {
 							$examenes_all.push(element);
 						}
 					}
-					
 					let mapeando = $examenes_all.map(($examen, $key)=>{
 						return ExamenRespuesta.calcular($examen);
 					})
 					Promise.all(mapeando).then(($examenes_puntajes)=>{
 						resolve($examenes_puntajes);
+					}, (err)=>{
+						console.log(err);
 					});
 				}else{
 					resolve();

@@ -59,12 +59,100 @@ var User            = require(path.join(__dirname, 'app/conexion/Models/User'));
 var db              = require(path.join(__dirname, '/app/conexion/connWeb'));
 
 
+// FUNCIONES LOCAL STORAGE 
+function getClts(){
+	clts 		= localStorage.getItem('all_clts');
+	clts 		= JSON.parse(clts);
+	if (clts && typeof clts === 'object' && clts.constructor === Array) {
+		return clts;
+	}else{
+		localStorage.setItem('all_clts', JSON.stringify([]));
+		return [];
+	}
+}
+function setClts(clts){
+	localStorage.setItem('all_clts', JSON.stringify(clts));
+}
+function addClt(clt){
+	clts 		= getClts();
+	clts.push(clt);
+	localStorage.setItem('all_clts', JSON.stringify(clts));
+}
+function updateClt(clt){
+	all_clts = getClts();
+		
+	for (var i = 0; i < all_clts.length; i++) {
+		if (all_clts[i].resourceId == clt.resourceId ) {
+			all_clts.splice(i, 1, clt);
+		}
+	}
+	setClts(all_clts);
+}
+function verificarClienteRepetidoLoguear(clt, examen_actual){
+	return new Promise((resolve, reject)=>{
+		
+		all_clts 	= getClts();
+		nuevos 		= [];
+		//id 			= propiedad == 'resourceId' ? clt.resourceId : clt.user_data.rowid;
+		id 			= clt.resourceId;
+		
+		for (var i = 0; i < all_clts.length; i++) {
+			if (all_clts[i].resourceId != id ) {
+				nuevos.push(all_clts[i]);
+			}
+		}
+console.log(nuevos, clt);
+		definitivos = [];
+		found 		= false;
+		for (var i = nuevos.length - 1; i >= 0; i--) {
+			
+			if (nuevos[i].user_data.rowid == clt.user_data.rowid) {
+				if (!found) {
+					clt.user_data 	= nuevos[i].user_data;
+					found 			= true;
+				}
+			} else {
+				definitivos.push(nuevos[i]);
+			}
+		}
+
+		console.log(definitivos, clt.user_data.rowid);
+		
+		if (examen_actual) {
+			var ExamenRespuesta = require('./app/conexion/Models/ExamenRespuesta');
+			exa = ExamenRespuesta.calcular(examen_actual);
+			exa.then((resultado)=>{
+				//console.log(resultado);
+				clt.respondidas		= resultado.cantidad_pregs;
+				clt.correctas		= resultado.correctas;
+				clt.tiempo			= resultado.tiempo;
+				clt.puntos			= resultado.puntos;
+				definitivos.push(clt);
+				setClts(definitivos);
+				resolve(clt);
+			}, (err)=>{
+				reject(clt);
+				console.log('Problemas calculandoo', err);
+			});
+		}else{
+			setClts(definitivos);
+			resolve(clt);
+		}
+		
+	})
+	
+}
+// FIN FUNCIONES LOCAL STORAGE
+
+
+
+
 
 self 		= this;
 self.io 	= io;
 
 var count_clients 	= localStorage.count_clients 	|| 0;
-var all_clts 		= localStorage.all_clts 		|| [];
+var all_clts 		= getClts();
 var categorias_king = [];
 var info_evento 	= {
 		examen_iniciado: 		false, 
@@ -72,13 +160,11 @@ var info_evento 	= {
 		free_till_question: 	-1,
 		puestos_ordenados: 		true
 	};
-
+console.log(all_clts);
 
 http.listen(process.env.NODE_PORT, function(){
   console.log('listening on *:'+process.env.NODE_PORT);
 });
-
-
 
 
 
@@ -99,14 +185,15 @@ self.io.on('connection', (socket)=> {
 	datos.user_data 		= {};
 	socket.datos 			= datos;
 
-	all_clts.push(socket.datos);
+
+	addClt(socket.datos);
 
 
 	console.log('New connection: ', socket.id);
 	setTimeout(function(){
 		socket.emit('te_conectaste', { datos: socket.datos });
 		socket.broadcast.emit('conectado:alguien', {clt: socket.datos} );
-	}, 1000);
+    }, 1000);
 
 
 	socket.on('reconocer:punto:registered', (data)=>{
@@ -117,11 +204,7 @@ self.io.on('connection', (socket)=> {
 			socket.datos.registered = data.registered;
 		}
 		
-		for(var i=0; i < all_clts.length; i++){
-			if (all_clts[i].resourceId == socket.id) {
-				all_clts.splice(i, 1, socket.datos);
-			}
-		}
+		updateClt(socket.datos);
 		
 		datos = {nombre_punto: socket.datos.nombre_punto, resourceId: socket.id, registered: socket.datos.registered };
 		self.io.sockets.emit('reconocido:punto:registered', datos );
@@ -142,6 +225,7 @@ self.io.on('connection', (socket)=> {
 	});
 
 	socket.on('loguear', (data)=> {
+		console.log('loguear', data)
 		if (data.usuario.eventos) {
 			delete data.usuario.eventos;
 		}
@@ -153,9 +237,9 @@ self.io.on('connection', (socket)=> {
 		datos.respondidas		= 0;
 		datos.correctas			= 0;
 		datos.tiempo			= 0;
-		datos.puntos			= 0;
 		datos.nombre_punto		= data.nombre_punto?data.nombre_punto:socket.datos.nombre_punto;
 		datos.user_data 		= data.usuario;
+		datos.examen_actual 	= data.examen_actual;
 		socket.datos 			= datos;
 
 		if(socket.room)
@@ -166,7 +250,8 @@ self.io.on('connection', (socket)=> {
 			socket.room = 'etapa' + data.usuario.evento_selected_id;
 		}else{
 			if (data.usuario.evento_actual) {
-				socket.room = 'etapa' + data.usuario.evento_actual.id;
+				eve_id = data.usuario.evento_actual.rowid ? data.usuario.evento_actual.rowid : data.usuario.evento_actual.id
+				socket.room = 'etapa' + eve_id;
 			}else{
 				console.log('No tiene evento actual :( ', data.usuario);
 				socket.room = 'etapa' + 1;
@@ -187,54 +272,26 @@ self.io.on('connection', (socket)=> {
 			}
 		}
 		
-
-		for (var i = 0; i < all_clts.length; i++) {
-			if (all_clts[i].resourceId == socket.id) {
-				all_clts.splice(i, 1, socket.datos);
-			}
-		}
+		verificarClienteRepetidoLoguear(socket.datos, data.examen_actual).then((clt)=>{;
 		
-		
-		if (data.examen_actual) {
-			if (data.examen_actual.rowid) {
-				data.examen_actual.evaluacion_id = data.examen_actual.rowid;
+			
+			socket.broadcast.emit('logueado:alguien', {clt: clt} );
 
-				console.log(data.examen_actual);
-				var ExamenRespuesta = require('./app/conexion/Models/ExamenRespuesta');
-				exa = ExamenRespuesta.calcular(data.examen_actual);
-				exa.then((resultado)=>{
-					console.log(resultado);
-					socket.datos.respondidas	= resultado.correctas + resultado.incorrec_reales;
-					socket.datos.correctas		= resultado.correctas;
-					socket.datos.tiempo			= resultado.tiempo;
-					socket.datos.puntos			= resultado.puntos;
-
-					for (var i = 0; i < all_clts.length; i++) {
-						if (all_clts[i].resourceId == socket.id) {
-							all_clts.splice(i, 1, socket.datos);
-						}
-					}
-				}, (err)=>{
-					console.log('Problemas calculandoo', err);
+			if (categorias_king.length > 0) {
+				socket.broadcast.emit('logueado:alguien', {clt: clt, categorias_king: categorias_king} );
+				socket.emit('logueado:yo', { yo: clt, info_evento: info_evento, categorias_king: categorias_king } );
+			}else{
+				categorias_king_con_traducciones(datos.user_data.evento_selected_id).then(function(result){
+					categorias_king = result;
+					socket.broadcast.emit('logueado:alguien', {clt: clt, categorias_king: categorias_king} );
+					socket.emit('logueado:yo', { yo: clt, info_evento: info_evento, categorias_king: categorias_king } );
 				});
 			}
-		}
-		
-
-		socket.broadcast.emit('logueado:alguien', {clt: socket.datos} );
-
-		if (categorias_king.length > 0) {
-			socket.broadcast.emit('logueado:alguien', {clt: socket.datos, categorias_king: categorias_king} );
-			socket.emit('logueado:yo', { yo: socket.datos, info_evento: info_evento, categorias_king: categorias_king } );
-		}else{
-			categorias_king_con_traducciones(datos.user_data.evento_selected_id).then(function(result){
-				categorias_king = result;
-				socket.broadcast.emit('logueado:alguien', {clt: socket.datos, categorias_king: categorias_king} );
-				socket.emit('logueado:yo', { yo: socket.datos, info_evento: info_evento, categorias_king: categorias_king } );
-			});
-		}
+		});
 		
 	});
+	
+	
 
 	socket.on('guardar:nombre_punto', function(data){
 		for (var i = 0; i < all_clts.length; i++) {
@@ -246,6 +303,7 @@ self.io.on('connection', (socket)=> {
 	});
 
 	socket.on('get_clts', function(data){
+		all_clts = getClts();
 		socket.emit('take:clientes',{ clts: all_clts, info_evento: info_evento });
 	});
 
@@ -451,9 +509,6 @@ self.io.on('connection', (socket)=> {
 			}
 		}
 		socket.broadcast.to(data.resourceId).emit('me_registraron');
-		if (socket.id == data.resourceId) {
-			socket.emit('me_registraron')
-		}
 	});
 
 	socket.on('desregistrar_a', function (data) {
@@ -470,11 +525,14 @@ self.io.on('connection', (socket)=> {
 	// clean up when a user leaves, and broadcast it to other users
 	socket.on('disconnect', function () {
 		//console.log(socket);
+		all_clts = getClts();
 		for (var i = 0; i < all_clts.length; i++) {
 			if (all_clts[i].resourceId == socket.id) {
 				all_clts.splice(i, 1);
 			}
 		}
+		localStorage.setItem('all_clts', JSON.stringify(all_clts));
+		
 		socket.broadcast.emit('user:left', {
 			resourceId: socket.datos.resourceId
 		});
@@ -627,7 +685,6 @@ self.io.on('connection', (socket)=> {
 		socket.datos.tiempo 		= socket.datos.tiempo + data.tiempo;
 		if (data.valor == 'correct') {
 			socket.datos.correctas++;
-			socket.datos.puntos 	= socket.datos.puntos + data.puntos;
 		}
 
 		participante = {};
@@ -658,10 +715,8 @@ self.io.on('connection', (socket)=> {
 	});
 
 	socket.on('next_question_cliente', function (data) {
-		
 		for (var i = 0; i < all_clts.length; i++) {
 			all_clts[i].answered = 'waiting';
-			console.log(data, all_clts[i].resourceId, (data.resourceId==all_clts[i].resourceId));
 			if(data.resourceId==all_clts[i].resourceId && all_clts[i].logged && all_clts[i].resourceId != socket.resourceId){
 				socket.broadcast.to(all_clts[i].resourceId).emit('next_question');
 			}
@@ -879,7 +934,7 @@ window.msToTime = function(s) {
 }
   
 window.getRandomInt = function(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 window.getValores = (element)=>{
 	valores = Object.keys(element).map(function(clave){
