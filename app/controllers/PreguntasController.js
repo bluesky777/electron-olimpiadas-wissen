@@ -14,6 +14,7 @@ router.route('/traducidas').get(getTraducidas);
 router.route('/store').post(postStore);
 router.route('/update').put(putUpdate);
 router.route('/cambiar-categoria').put(putCambiarCategoria);
+router.route('/destroy').put(putDestroy);
 
 
 
@@ -290,6 +291,21 @@ function putCambiarCategoria(req, res) {
 
         db.query('UPDATE ws_preguntas_king SET categoria_id=? WHERE rowid=?', [$categoria_id, $pregunta_id]).then(($pregunta)=>{
             res.send('Cambiada');
+        })
+        
+    }) // User.fromToken
+}
+        
+
+
+function putDestroy(req, res) {
+    User.fromToken(req).then(($user)=>{
+
+        $pregunta_id    = req.body.rowid;
+        let now         = window.fixDate(new Date(), true);
+
+        db.query('UPDATE ws_preguntas_king SET deleted_at=? WHERE rowid=?', [now, $pregunta_id]).then(($pregunta)=>{
+            res.send('Eliminada');
         })
         
     }) // User.fromToken

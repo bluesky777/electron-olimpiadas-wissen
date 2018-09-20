@@ -36,7 +36,7 @@ class Database {
                     resolve(items);
                 }, function(tx,error){
                     
-                    console.log("Error", sql);
+                    console.log("Error", sql, datos);
                     reject(error);
                 })
             })

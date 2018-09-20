@@ -5,8 +5,9 @@ require('dotenv').config();
 
             
 
-function descargarDatos(evento_id) {
+function descargarDatos(evento_id, todas_pregs) {
     if (!evento_id){ evento_id = 1 };
+    if (!todas_pregs){ todas_pregs = 0 };
     
     return new Promise(function(resolve, reject) {
     
@@ -17,13 +18,13 @@ function descargarDatos(evento_id) {
 
         let promesa_http = new Promise(function(resolve_http, reject_http) {
         
-            axios.get('http://localhost/wissenLaravel/public/api/datos-laravel/descargar?evento_id='+evento_id).then(response => {
+            axios.get('http://localhost/wissenLaravel/public/api/datos-laravel/descargar?evento_id='+evento_id+'&todas_pregs='+todas_pregs).then(response => {
                 resolve_http(response.data);
             
             }).catch(error => {
                 console.log('NO HAY LOCALHOST, DESCARGAREMOS DE INTERNET');
                 
-                axios.get('https://ws.micolevirtual.com/wissenLaravel/public/api/datos-laravel/descargar?evento_id='+evento_id).then(response => {
+                axios.get('https://ws.micolevirtual.com/wissenLaravel/public/api/datos-laravel/descargar?evento_id='+evento_id+'&todas_pregs='+todas_pregs).then(response => {
                     resolve_http(response.data);
                     
                 }).catch(error => {

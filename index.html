@@ -85,15 +85,17 @@
         
         
         
-        window.descargarDatos = function (evento_id) {
+        window.descargarDatos = function (evento_id, todas_pregs) {
           if (!evento_id){ evento_id = 1 };
+          if (!todas_pregs){ todas_pregs = 0 };
+          
           let btn       = document.getElementById('btn-descargar');
           btn.value     = 'Descargando, espere...';
           btn.disabled  = true;
           
           const path    = require('path');
           
-          require(path.join(__dirname, 'app/conexion/connDescargarDatos'))(evento_id).then(()=>{
+          require(path.join(__dirname, 'app/conexion/connDescargarDatos'))(evento_id, todas_pregs).then(()=>{
             console.log('Datos descargados');
             alert('Datos descargados y agregados');
           }, (r2)=>{
