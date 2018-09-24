@@ -13,8 +13,8 @@ class Evaluacion {
         let consulta 	= `SELECT p.id, p.rowid, pe.rowid as inscripcion_id, pe.evaluacion_id, pe.pregunta_id, pe.grupo_pregs_id, pe.orden, pe.aleatorias, pe.added_by, 
                 p.descripcion, p.tipo_pregunta, p.duracion, p.categoria_id, p.puntos
             FROM ws_preguntas_king p
-            inner join ws_pregunta_evaluacion pe on pe.pregunta_id=p.id and p.deleted_at is null
-            where pe.evaluacion_id = ?`;
+            INNER JOIN ws_pregunta_evaluacion pe on pe.pregunta_id=p.rowid and p.deleted_at is null
+            WHERE pe.evaluacion_id = ?`;
         return db.query(consulta, [evaluacion_id]);
     }
     

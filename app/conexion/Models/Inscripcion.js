@@ -5,15 +5,16 @@ class Inscripcion {
     
 	static todas($user_id, $evento_id)
 	{
+
         let promesa = new Promise(function(resolve, reject){
             let $consulta = "SELECT i.id, i.rowid, i.categoria_id, i.allowed_to_answer " +
                             "FROM ws_inscripciones i  " +
-                            "inner join ws_categorias_king c on c.deleted_at is null and c.id=i.categoria_id and c.evento_id = ? " +
+                            "inner join ws_categorias_king c on c.deleted_at is null and c.rowid=i.categoria_id and c.evento_id = ? " +
                             "where i.user_id=? and i.deleted_at is null ";
 
             db.query($consulta, [$evento_id, $user_id] ).then(($inscripciones)=>{
                 let promises = [];
-                
+
                 for (let index = 0; index < $inscripciones.length; index++) {
                     inscripciones(index);
                 }

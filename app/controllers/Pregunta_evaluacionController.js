@@ -221,6 +221,9 @@ function putAsignarAleatoriamente(req, res) {
             
         }).then(($pg_traducidas)=>{
             // NO SÉ POR CUÁL FUNCTION CAMBIAR array_rand
+            if ($pg_traducidas.length < $cantPreg) {
+                $cantPreg = $pg_traducidas.length;
+            }
             $aleatorias = window.array_rand($pg_traducidas, $cantPreg);
             $promesas   = [];
 

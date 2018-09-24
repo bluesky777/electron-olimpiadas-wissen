@@ -137,7 +137,6 @@ function putUpdate(req, res) {
         ev.idioma_principal_id          = req.body.idioma_principal_id  || $ev.idioma_principal_id;
         ev.es_idioma_unico              = req.body.es_idioma_unico;
         ev.enable_public_chat           = req.body.enable_public_chat;
-        ev.enable_private_chat          = req.body.enable_private_chat;
         ev.with_pay                     = req.body.with_pay;
 
         ev.precio1      = req.body.precio1 || $ev.precio1;
@@ -151,12 +150,12 @@ function putUpdate(req, res) {
         
         let consulta = 
             'UPDATE ws_eventos SET nombre=?, alias=?, descripcion=?, idioma_principal_id=?, ' + 
-                'es_idioma_unico=?, enable_public_chat=?, with_pay=?, actual=?, ' + 
+                'es_idioma_unico=?, enable_public_chat=?, with_pay=?, ' + 
                 'precio1=?, precio2=?, precio3=?, precio4=?, precio5=?, precio6=?, updated_at=? ' +
             'WHERE rowid=?';
         
         valores = window.getValores(ev);
-        console.log(valores);
+
         db.query(consulta, valores).then(()=>{
             res.send('Guardado');
         })

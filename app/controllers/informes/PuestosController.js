@@ -47,7 +47,6 @@ function putCalcularResultados(req, res) {
 			
 		db.query($consulta, [$evento_id]).then(($examenes)=>{
             
-            console.log($examenes);
 			let mapeando = $examenes.map(($examen, $key)=>{
                 exa = ExamenRespuesta.calcular($examen);
                 exa.then((resultado)=>{
@@ -436,7 +435,7 @@ function putExamenesEjecutandose(req, res) {
                         
                         $consulta = "UPDATE ws_examen_respuesta SET res_correctas=?, res_incorrectas=?, res_by_promedio=?, res_promedio=?, res_puntos=?, res_cant_pregs=?, res_tiempo=?, res_tiempo_format=? WHERE rowid=?";
                         datos = [$resultado.correctas, $resultado.incorrec_reales, $resultado.por_promedio, $resultado.promedio, $resultado.puntos, $resultado.cantidad_pregs, $resultado.tiempo, $resultado.tiempo_format, $examen.examen_id];
-                        console.log(datos);
+
                         db.query($consulta, datos).then(()=>{
                             resolve();
                         });    

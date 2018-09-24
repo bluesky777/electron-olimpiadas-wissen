@@ -46,7 +46,7 @@ class Nivel {
                 "where i.id=t.idioma_id and t.nivel_id =? and t.deleted_at is null";
 
             db.query($consulta, [$king.rowid]).then((result_trads)=>{
-                $king.niveles_traducidas = result_trads;
+                $king.niveles_traducidos = result_trads;
                 resolve($king);
             });
             

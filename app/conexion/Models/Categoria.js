@@ -67,13 +67,13 @@ class Categoria {
     }
   
     
-    static updateTraduc(rowid, nombre, alias, descripcion, traducido) {
+    static updateTraduc(rowid, nombre, abrev, descripcion, traducido) {
         let promesa = new Promise(function(resolve, reject){
             
             let now = window.fixDate(new Date(), true);
             let $consulta = "UPDATE ws_categorias_traduc SET nombre=?, abrev=?, descripcion=?, traducido=?, updated_at=? WHERE rowid=?";
 
-            db.query($consulta, [nombre, alias, descripcion, traducido, now, rowid] )
+            db.query($consulta, [nombre, abrev, descripcion, traducido, now, rowid] )
             
             .then((result_trads)=>{
                 resolve('Guardado');

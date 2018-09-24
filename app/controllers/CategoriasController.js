@@ -108,13 +108,13 @@ function putGuardar(req, res) {
             let promesas = [];
             
             let temp = new Promise((resolve, reject)=>{
-                console.log($cat_king.nombre, $cat_traducidas[0]['nombre']);
+
                 if ($cat_king.nombre != $cat_traducidas[0]['nombre'] ) {
                     $cat_king.nombre = $cat_traducidas[0]['nombre'];
                     
                     // Cambio el nombre a la Evaluación creada automáticamente
                     db.find('ws_categorias_traduc', $cat_traducidas[0]['rowid']).then(($cat_trad)=>{
-                        console.log($cat_trad.nombre);
+
                         if ($cat_trad.nombre == "") {
                             consulta = 'SELECT rowid, * FROM ws_evaluaciones WHERE evento_id=? AND categoria_id=? AND deleted_at is null';
                             db.query(consulta, [$cat_king.evento_id, $cat_king.rowid]).then(($eva)=>{
@@ -152,7 +152,7 @@ function putGuardar(req, res) {
             }
             
             function actualizarTraduccion($cat_traducida){
-                let $promesa_trad = Categoria.updateTraduc($cat_traducida['rowid'], $cat_traducida['nombre'], $cat_traducida['alias'], $cat_traducida['descripcion'], $cat_traducida['traducido']);
+                let $promesa_trad = Categoria.updateTraduc($cat_traducida['rowid'], $cat_traducida['nombre'], $cat_traducida['abrev'], $cat_traducida['descripcion'], $cat_traducida['traducido']);
                 promesas.push($promesa_trad);
             }
             

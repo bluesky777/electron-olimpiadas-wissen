@@ -208,6 +208,7 @@ self.io.on('connection', (socket)=> {
 					socket.datos.correctas		= resultado.correctas;
 					socket.datos.tiempo			= resultado.tiempo;
 					socket.datos.puntos			= resultado.puntos;
+					socket.datos.categsel		= resultado.categoria_id;
 
 					for (var i = 0; i < all_clts.length; i++) {
 						if (all_clts[i].resourceId == socket.id) {
