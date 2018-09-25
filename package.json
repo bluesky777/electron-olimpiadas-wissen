@@ -1,6 +1,6 @@
 {
   "name": "electron-olimpiadas-wissen",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "Aplicación para trabajar las olimpiadas sin necesidad de internet ni engorrosas instalaciones",
   "main": "main.js",
   "scripts": {
