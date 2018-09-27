@@ -70,7 +70,7 @@ function postStore(req, res) {
         
 		dat 		    = req.body;
 		$evento_id      = $user.evento_selected_id;
-        bcrypt          = require('bcrypt');
+        bcrypt          = require('bcryptjs');
         signed_by       = $user.rowid;
         entidad_id	    = null;
         

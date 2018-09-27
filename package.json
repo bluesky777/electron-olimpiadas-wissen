@@ -51,7 +51,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "base64-img": "^1.0.4",
-    "bcrypt": "^3.0.0",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "electron-is-dev": "^0.3.0",

@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 var db              = require('../connWeb');
-var bcrypt          = require('bcrypt');
+var bcrypt          = require('bcryptjs');
 var jwt             = require('jsonwebtoken');
 var Role            = require('./Role');
 var Evento          = require('./Evento');

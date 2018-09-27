@@ -45,7 +45,7 @@ function crearDatosIniciales() {
                         resolve2('Usuarios ya estaban Insertados');
                     }else{
                         
-                        bcrypt          = require('bcrypt');
+                        bcrypt          = require('bcryptjs');
                         hash_password   = bcrypt.hashSync('123', 10);
                         consulta        = "INSERT INTO `users` VALUES (1,'Joseth David','Guerrero Escobar','M','admin','" + hash_password + "','davidguerrero777@gmail.com',NULL,1,NULL,NULL,10,1,1,NULL,NULL,NULL,'2016-08-11 19:06:02','2018-05-20 21:55:22'), " +
                                             "(2,'Screen','Segunda','M','sc','" + hash_password + "',NULL,1,0,NULL,NULL,5,1,NULL,NULL,NULL,NULL,'2016-08-11 19:06:02','2017-07-14 20:17:18'), " +
