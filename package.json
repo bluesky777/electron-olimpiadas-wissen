@@ -1,14 +1,14 @@
 {
   "name": "electron-olimpiadas-wissen",
-  "version": "1.0.11",
+  "version": "1.0.2",
   "description": "Aplicación para trabajar las olimpiadas sin necesidad de internet ni engorrosas instalaciones",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "pack": "build --dir",
-    "dist": "build -p always",
-    "publish": "build --mac --win -p always",
-    "postinstall": "install-app-deps"
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder -p always",
+    "publish": "electron-builder --mac --win -p always",
+    "postinstall": "electron-builder install-app-deps"
   },
   "repository": "https://github.com/bluesky777/electron-olimpiadas-wissen.git",
   "keywords": [
@@ -21,7 +21,9 @@
   "build": {
     "appId": "olimpiadasWissen",
     "mac": {
-      "category": "com.education.olimpiadas.wissen"
+      "category": "com.education.olimpiadas.wissen",
+      "icon": "build/icons/icon.icns",
+      "target":"pkg"
     },
     "dmg": {
       "contents": [
@@ -49,14 +51,14 @@
     }
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": ">=0.21.2",
     "base64-img": "^1.0.4",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.4",
     "dotenv": "^5.0.1",
     "electron-is-dev": "^0.3.0",
     "electron-log": "^2.2.16",
-    "electron-updater": "^3.0.3",
+    "electron-updater": "^4.0.0",
     "express": "^4.15.2",
     "express-fileupload": "^0.4.0",
     "ip": "^1.1.5",
@@ -68,7 +70,7 @@
   "devDependencies": {
     "@angular/cli": "^6.0.5",
     "electron": "^2.0.8",
-    "electron-builder": "^20.28.2",
+    "electron-builder": "23.0.9",
     "electron-reload": "^1.2.5"
   }
 }
