@@ -123,6 +123,7 @@ class User {
 				'WHERE rowid=?';
 			db.query(consulta, [nombres, apellidos, sexo, username, password, email, is_superuser, cell, edad, entidad_id, now, $usuario_new.rowid])
 			.then(function (result_event) {
+				if (!$evento_id) return resolve($usuario_new);
 				if (nivel_id>0) {
 					consulta = 'UPDATE ws_user_event SET nivel_id='+nivel_id+' WHERE user_id=? and evento_id=? ';
 				}else{
