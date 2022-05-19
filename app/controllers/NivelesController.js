@@ -21,7 +21,7 @@ function getNivelesUsuarioHandler(req, res) {
         
 		$evento_id = $user.evento_selected_id;
 
-		db.query('SELECT *, rowid FROM ws_niveles_king WHERE evento_id=? AND deleted_at is null', [$evento_id]).then((result)=>{
+		db.query('SELECT *, rowid, rowid as id FROM ws_niveles_king WHERE evento_id=? AND deleted_at is null', [$evento_id]).then((result)=>{
             $nivel = result;
             
             Nivel.traduc($nivel).then((result_nivel)=>{

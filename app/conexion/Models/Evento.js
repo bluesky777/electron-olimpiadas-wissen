@@ -37,7 +37,7 @@ class Evento {
     
     static actual() {
         let promesa = new Promise(function(resolve, reject){
-            let consulta 	= `SELECT *, rowid FROM ws_eventos WHERE actual=1 and deleted_at is null`;
+            let consulta 	= `SELECT *, rowid, rowid as id FROM ws_eventos WHERE actual=1 and deleted_at is null`;
             db.query(consulta).then(function (result) {
 
                 if( result.length == 0){
@@ -60,7 +60,7 @@ class Evento {
     
     static todos() {
         let promesa = new Promise(function(resolve, reject){
-            let consulta 	= `SELECT *, rowid FROM ws_eventos where deleted_at is null`;
+            let consulta 	= `SELECT *, rowid, rowid as id FROM ws_eventos where deleted_at is null`;
             db.query(consulta).then(function (eventos) {
 
                 if( eventos.length == 0){
@@ -149,7 +149,7 @@ class Evento {
 
                     db.query(consulta, [evento.rowid] ).then((result)=>{
                         idiomas_all = result;
-                        consulta    = 'SELECT *, rowid FROM ws_idiomas where rowid=? and deleted_at is null';
+                        consulta    = 'SELECT *, rowid, rowid as id FROM ws_idiomas where rowid=? and deleted_at is null';
                         
                         return db.query(consulta, [ evento.idioma_principal_id ] )
                     }).then((result)=>{

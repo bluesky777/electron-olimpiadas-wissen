@@ -29,7 +29,7 @@ function putDatos(req, res) {
                     Evento.idiomas_all($event.rowid).then((idiomas)=>{
                         $event.idiomas 	= idiomas;
                         
-                        $consulta 	= 'SELECT *, rowid FROM ws_categorias_king c WHERE c.evento_id=? AND c.deleted_at is null';
+                        $consulta 	= 'SELECT *, rowid, rowid as id FROM ws_categorias_king c WHERE c.evento_id=? AND c.deleted_at is null';
                         return db.query($consulta, [$event.rowid] );
                         
                     }).then((categorias)=>{
@@ -41,7 +41,7 @@ function putDatos(req, res) {
                         
                         let mapeando = categorias.map((categoria, $i)=>{
                             return new Promise((resolveCate, rejectCate)=>{
-                                $consulta = 'SELECT *, rowid FROM ws_evaluaciones e where e.categoria_id=? and e.evento_id=? and e.deleted_at is null';
+                                $consulta = 'SELECT *, rowid, rowid as id FROM ws_evaluaciones e where e.categoria_id=? and e.evento_id=? and e.deleted_at is null';
                                 db.query($consulta, [categoria.rowid, $event.rowid] ).then(($evaluaciones)=>{
                                     categoria.evaluaciones = $evaluaciones;
                                     resolveCate(categoria);
@@ -53,7 +53,7 @@ function putDatos(req, res) {
                     }).then((categorias)=>{
                         
                         $event.categorias = categorias;
-                        $consulta = 'SELECT *, rowid FROM ws_entidades e where e.evento_id=? and e.deleted_at is null';
+                        $consulta = 'SELECT *, rowid, rowid as id FROM ws_entidades e where e.evento_id=? and e.deleted_at is null';
                         
                         db.query($consulta, [$event.rowid] ).then(($entidades)=>{
                             $event.entidades = $entidades;

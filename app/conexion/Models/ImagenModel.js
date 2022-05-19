@@ -21,7 +21,7 @@ class ImagenModel {
             let consulta    = 'INSERT INTO images(nombre, user_id, publica, created_at, updated_at) VALUES(?,?,?,?,?)'
             
             db.query(consulta, [nombre, user_id, publica, now, now]).then((result)=>{
-                consulta = 'SELECT *, rowid FROM images WHERE rowid=?';
+                consulta = 'SELECT *, rowid, rowid as id FROM images WHERE rowid=?';
                 db.query(consulta, [result.insertId]).then((imagen)=>{
                     resolve(imagen[0]);
                 })
@@ -41,7 +41,7 @@ class ImagenModel {
             if (imagen_id) {
 
             
-                let consulta 	= `SELECT *, rowid FROM images WHERE rowid=? and deleted_at is null`;
+                let consulta 	= `SELECT *, rowid, rowid as id FROM images WHERE rowid=? and deleted_at is null`;
                 db.query(consulta, [imagen_id]).then(function (result) {
     
                     if( result.length > 0 ){

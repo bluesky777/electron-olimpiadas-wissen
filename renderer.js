@@ -797,7 +797,7 @@ function categorias_king_con_traducciones(evento_id) {
 		db.query(consulta).then(function (eventoRes) {
 			evento      = eventoRes[0];
 
-			consulta    = `SELECT *, rowid FROM ws_categorias_king where evento_id = ? and deleted_at is null`;
+			consulta    = `SELECT *, rowid, rowid as id FROM ws_categorias_king where evento_id = ? and deleted_at is null`;
 			event_id 	= evento.id;
 			if(evento.rowid) event_id = evento.rowid;
 			

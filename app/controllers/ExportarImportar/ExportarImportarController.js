@@ -52,7 +52,7 @@ function putVerCambios(req, res) {
                     $usuario.examenes   = $examenes;
                     let promExa         = $usuario.examenes.map(($examen, $j)=>{
                         
-                        $consulta_ex = 'SELECT *, rowid FROM ws_respuestas r WHERE r.examen_respuesta_id=?';
+                        $consulta_ex = 'SELECT *, rowid, rowid as id FROM ws_respuestas r WHERE r.examen_respuesta_id=?';
 
                         return db.query($consulta_ex, [ $examen.examen_id ] ).then(($respuestas)=>{
                             $examen.respuestas = $respuestas;

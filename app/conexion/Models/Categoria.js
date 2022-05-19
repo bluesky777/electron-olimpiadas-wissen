@@ -9,7 +9,7 @@ class Categoria {
     }
     
     static all(evento_id) {
-        let consulta 	= `SELECT *, rowid FROM ws_categorias_king WHERE evento_id=? and deleted_at is null`;
+        let consulta 	= `SELECT *, rowid, rowid as id FROM ws_categorias_king WHERE evento_id=? and deleted_at is null`;
         return db.query(consulta, [evento_id]);
     }
     

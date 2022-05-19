@@ -49,7 +49,7 @@ class Database {
         let self = this;
         let promesa = new Promise(function(resolve, reject){
             
-            let consulta 	= `SELECT *, rowid FROM `+tabla+` WHERE rowid=? AND deleted_at is null`;
+            let consulta 	= `SELECT *, rowid, rowid as id FROM `+tabla+` WHERE rowid=? AND deleted_at is null`;
             self.query(consulta, [id]).then(function (result) {
 
                 if( result.length == 0){

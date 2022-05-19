@@ -5,7 +5,7 @@ class Evaluacion {
     
     
     static deCategoria(categoria_id, evento_id) {
-        let consulta 	= `SELECT *, rowid FROM ws_evaluaciones WHERE categoria_id=? and evento_id=? and deleted_at is null`;
+        let consulta 	= `SELECT *, rowid, rowid as id FROM ws_evaluaciones WHERE categoria_id=? and evento_id=? and deleted_at is null`;
         return db.query(consulta, [categoria_id, evento_id]);
     }
     
@@ -25,7 +25,7 @@ class Evaluacion {
         let mapeando_categorias = $categorias.map((categoria, $h)=>{
             let $prome_evaluaciones = new Promise(function(resolve, reject){
                 
-                consulta 	= `SELECT *, rowid FROM ws_evaluaciones WHERE categoria_id=? and evento_id=? and deleted_at is null`;
+                consulta 	= `SELECT *, rowid, rowid as id FROM ws_evaluaciones WHERE categoria_id=? and evento_id=? and deleted_at is null`;
                 db.query(consulta, [categoria.rowid, $evento_id]).then(($evaluaciones)=>{
                     
                     
@@ -148,7 +148,7 @@ class Evaluacion {
     
     
     static actual($evento_id, categoria_id) {
-        let $consulta = "SELECT *, rowid FROM ws_evaluaciones WHERE actual=1 and evento_id=? and categoria_id=?";
+        let $consulta = "SELECT *, rowid, rowid as id FROM ws_evaluaciones WHERE actual=1 and evento_id=? and categoria_id=?";
         return db.query($consulta, [$evento_id, categoria_id] );
     }
     

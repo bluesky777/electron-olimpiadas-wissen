@@ -28,14 +28,14 @@ function getIndex(req, res) {
 		$evaluaciones = [];
 
 		if ($categoria_id) {
-			$consulta 		= 'SELECT *, rowid FROM ws_evaluaciones where categoria_id = ? and evento_id = ? and deleted_at is null';
+			$consulta 		= 'SELECT *, rowid, rowid as id FROM ws_evaluaciones where categoria_id = ? and evento_id = ? and deleted_at is null';
 			db.query($consulta, [$categoria_id, $evento_id] ).then(($evaluaciones_resp)=>{
 				$evaluaciones = $evaluaciones_resp;
 				pregs_eval();
 			});
 			
 		}else{
-			$consulta 		= 'SELECT *, rowid FROM ws_evaluaciones where evento_id = :evento_id and deleted_at is null order by categoria_id';
+			$consulta 		= 'SELECT *, rowid, rowid as id FROM ws_evaluaciones where evento_id = :evento_id and deleted_at is null order by categoria_id';
 			db.query($consulta, [$evento_id] ).then(($evaluaciones_resp)=>{
 				$evaluaciones = $evaluaciones_resp;
 				pregs_eval();
@@ -51,7 +51,7 @@ function getIndex(req, res) {
 			}
 			
 			function preguntas(i){
-				$consulta 		= 'SELECT *, rowid FROM ws_pregunta_evaluacion where evaluacion_id = ?';
+				$consulta 		= 'SELECT *, rowid, rowid as id FROM ws_pregunta_evaluacion where evaluacion_id = ?';
 				prome_preg 	= db.query($consulta, [$evaluaciones[i].rowid] );
 				promesas.push(prome_preg);
 				prome_preg.then(($pregs_eval)=>{

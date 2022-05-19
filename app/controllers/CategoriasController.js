@@ -24,7 +24,7 @@ function getCategoriasUsuarioHandler(req, res) {
         
 		$evento_id = $user.evento_selected_id;
 
-		db.query('SELECT *, rowid FROM ws_categorias_king WHERE evento_id = ? and deleted_at is null', [$evento_id]).then(($categorias)=>{
+		db.query('SELECT *, rowid, rowid as id FROM ws_categorias_king WHERE evento_id = ? and deleted_at is null', [$evento_id]).then(($categorias)=>{
 
             Categoria.traduc($categorias).then((result_categorias)=>{
                 res.send(result_categorias);                
@@ -48,7 +48,7 @@ function getCategoriasEvento(req, res) {
     
     }).then(($evento)=>{
         
-		db.query('SELECT *, rowid FROM ws_categorias_king WHERE evento_id = ? and deleted_at is null', [$evento.rowid]).then(($categorias)=>{
+		db.query('SELECT *, rowid, rowid as id FROM ws_categorias_king WHERE evento_id = ? and deleted_at is null', [$evento.rowid]).then(($categorias)=>{
 
             Categoria.traduc($categorias).then((result_categorias)=>{
                 res.send(result_categorias);                

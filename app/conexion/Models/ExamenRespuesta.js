@@ -70,7 +70,7 @@ class ExamenRespuesta {
 					let promResp = new Promise(function(resolveResp, rejectResp){
 						
 						if (respuesta.opcion_id) {
-							let $consulta 	= 'SELECT *, rowid FROM ws_opciones where rowid=?';
+							let $consulta 	= 'SELECT *, rowid, rowid as id FROM ws_opciones where rowid=?';
 							db.query($consulta, [ respuesta.opcion_id ] ).then(($opcion)=>{
 								let promPuntos = new Promise(function(resolvePunt, rejectPunt){
 									
@@ -78,7 +78,7 @@ class ExamenRespuesta {
 									
 									if ($opcion.is_correct) {
 										$correctas++;
-										$consulta 	= 'SELECT *, rowid FROM ws_preguntas_king where deleted_at is null and rowid=?';
+										$consulta 	= 'SELECT *, rowid, rowid as id FROM ws_preguntas_king where deleted_at is null and rowid=?';
 										db.query($consulta, [ respuesta.pregunta_king_id ] ).then(($preg_king)=>{
 											
 											if ($preg_king.length > 0) { $preg_king = $preg_king[0]; }
@@ -158,7 +158,7 @@ class ExamenRespuesta {
 			
 			let $cant       = 0;
 			let $preguntas  = [];
-			let consulta    = 'SELECT *, rowid FROM ws_pregunta_evaluacion WHERE evaluacion_id=?';
+			let consulta    = 'SELECT *, rowid, rowid as id FROM ws_pregunta_evaluacion WHERE evaluacion_id=?';
 			
 			db.query(consulta, [$evaluacion_id]).then((preguntas)=>{
 				$preguntas = preguntas;

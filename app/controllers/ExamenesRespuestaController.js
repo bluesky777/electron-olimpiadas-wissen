@@ -113,13 +113,13 @@ function putResponderPregunta(req, res) {
 		return db.find('ws_preguntas_king', $preg_king_id);
 	}).then((pregunta_king)=>{
 		$pregunta_king 	= pregunta_king;
-		return db.query('SELECT *, rowid FROM ws_opciones WHERE rowid=?', [$opcion_id]);
+		return db.query('SELECT *, rowid, rowid as id FROM ws_opciones WHERE rowid=?', [$opcion_id]);
 	}).then((opcion)=>{
 		if (opcion.length > 0) {
 			$opcion = opcion;
 		}
 		
-		consulta 	= 'SELECT *, rowid FROM ws_respuestas WHERE examen_respuesta_id=? and preg_traduc_id=?';
+		consulta 	= 'SELECT *, rowid, rowid as id FROM ws_respuestas WHERE examen_respuesta_id=? and preg_traduc_id=?';
 		return db.query(consulta, [$examen_actual_id, $preg_traduc_id]);
 	}).then(($respuesta)=>{
 		if ($respuesta.length > 0) {

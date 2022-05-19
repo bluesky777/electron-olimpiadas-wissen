@@ -24,7 +24,7 @@ class User {
 	
 	static find(id) {
 		let promesa = new Promise(function(resolve, reject){
-			let consulta 	= `SELECT *, rowid FROM users WHERE rowid=? AND deleted_at is null`;
+			let consulta 	= `SELECT *, rowid, rowid as id FROM users WHERE rowid=? AND deleted_at is null`;
 			db.query(consulta, [id]).then(function (result) {
 
 				if( result.length == 0){
@@ -201,7 +201,7 @@ class User {
 
 		let promesa = new Promise(function(resolve, reject){
 
-			db.query('SELECT *, rowid FROM users WHERE username=? and deleted_at is null', [user_data.username]).then(function(result){
+			db.query('SELECT *, rowid, rowid as id FROM users WHERE username=? and deleted_at is null', [user_data.username]).then(function(result){
 
 				if(result.length > 0){
 					let user = result[0];
@@ -301,7 +301,7 @@ class User {
 				return new Promise((resolve_categs, reject_ev)=>{
 					
 					if(Role.hasRole(user.roles, 'Pantalla') ){
-						consulta = 'SELECT *, rowid FROM ws_categorias_king WHERE evento_id=?';
+						consulta = 'SELECT *, rowid, rowid as id FROM ws_categorias_king WHERE evento_id=?';
 						db.query(consulta, [$evento_id]).then(($categorias_evento)=>{
 							
 							Categoria.traduc($categorias_evento).then((result_categorias)=>{ // Paso por referencia las categorias_king

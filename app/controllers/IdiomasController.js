@@ -14,7 +14,7 @@ router.route('/cambiar-idioma').put(putCambiarIdioma);
 
 function getIndex(req, res) {
 
-    consulta 	= 'SELECT *, rowid FROM ws_idiomas where deleted_at is null';
+    consulta 	= 'SELECT *, rowid, rowid as id FROM ws_idiomas where deleted_at is null';
     
     db.query(consulta).then(function(result){
         res.json( result );

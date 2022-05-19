@@ -20,7 +20,7 @@ class Inscripcion {
                 }
                 
                 function inscripciones(i){
-                    let promesa_exa = db.query("SELECT *, rowid FROM ws_examen_respuesta WHERE inscripcion_id=? ", [$inscripciones[i].rowid]);
+                    let promesa_exa = db.query("SELECT *, rowid, rowid as id FROM ws_examen_respuesta WHERE inscripcion_id=? ", [$inscripciones[i].rowid]);
                     promises.push(promesa_exa);
                     promesa_exa.then(($examenes)=>{
                         $inscripciones[i].examenes = $examenes;

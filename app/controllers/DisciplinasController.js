@@ -21,7 +21,7 @@ function getDisciplinasUsuarioHandler(req, res) {
         
 		$evento_id = $user.evento_selected_id;
 
-		db.query('SELECT *, rowid FROM ws_disciplinas_king WHERE evento_id = ? and deleted_at is null', [$evento_id]).then(($disciplinas)=>{
+		db.query('SELECT *, rowid, rowid as id FROM ws_disciplinas_king WHERE evento_id = ? and deleted_at is null', [$evento_id]).then(($disciplinas)=>{
 
             Disciplina.traduc($disciplinas).then((result_disciplinas)=>{
                 res.send(result_disciplinas);                

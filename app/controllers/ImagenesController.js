@@ -20,7 +20,7 @@ router.route('/destroy').put(putDestroy);
 // Funciones
 function getIndex(req, res) {
     User.fromToken(req).then((result_user)=>{
-        consulta = 'SELECT *, rowid FROM images WHERE user_id=? OR publica=1';
+        consulta = 'SELECT *, rowid, rowid as id FROM images WHERE user_id=? OR publica=1';
         db.query(consulta, [result_user.rowid]).then((result)=>{
             res.send(result);
         });
@@ -193,7 +193,7 @@ function guardar_imagen_tomada($user, foto, publica, res) {
             fs.mkdirSync($folder);
         }
         
-        db.query("SELECT *, rowid FROM images ORDER BY rowid DESC LIMIT 1").then(($ulti)=>{
+        db.query("SELECT *, rowid, rowid as id FROM images ORDER BY rowid DESC LIMIT 1").then(($ulti)=>{
             $ulti = $ulti[0];
             
             //asignamos de nuevo el nombre de la imagen completo
