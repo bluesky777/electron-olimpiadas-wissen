@@ -42,7 +42,15 @@ function sendStatusToWindow(text) {
   win.webContents.send('message', text);
 }
 function createDefaultWindow() {
-  win = new BrowserWindow({width: 1200, height: 600});
+  win = new BrowserWindow({
+    width: 1200,
+    height: 600,
+    webPreferences: {
+      nodeIntegration: true,
+      contextIsolation: false,
+      enableRemoteModule: true,
+    },
+  });
   win.webContents.openDevTools();
   win.on('closed', () => {
     win = null;

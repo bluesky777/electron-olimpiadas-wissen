@@ -703,8 +703,6 @@ function set_param_to_codigo_qr(qr, param) {
 	var self = this;
 	return new Promise(function(resolve, reject) {
 
-		//var connection 	= require('./app/conexion/conn');
-
 		db.query("UPDATE qrcodes SET parametro='"+ param +"' WHERE codigo = ?", [ qr ]).then( function (results) {
 			resolve(results.affectedRows);
 		}, (error)=>{throw error;});
